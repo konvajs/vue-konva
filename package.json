@@ -19,10 +19,13 @@
     "url": "https://github.com/rafaesc/vue-konva/issues"
   },
   "scripts": {
-    "dev": "node build/dev-server.js",
+    "dev": "npm-run-all --parallel dev:lib dev:docs",
     "dev:lib": "webpack --config build/webpack.lib.conf.js --watch --progress --hide-modules",
+    "dev:docs": "node build/dev-server.js",
     "start": "npm run dev",
-    "build": "node build/build.js",
+    "build": "npm run build:lib && npm run build:docs",
+    "build:lib": "node build/build-lib.js",
+    "build:docs": "node build/build.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs"
@@ -73,7 +76,6 @@
     "karma-spec-reporter": "0.0.31",
     "karma-webpack": "^2.0.2",
     "mocha": "^3.2.0",
-    "node-sass": "^4.5.2",
     "npm-run-all": "^4.0.2",
     "chai": "^4.1.2",
     "sinon": "^4.0.0",
@@ -87,7 +89,6 @@
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "ora": "^1.2.0",
     "rimraf": "^2.6.0",
-    "sass-loader": "^6.0.5",
     "url-loader": "^0.5.8",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
