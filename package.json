@@ -4,8 +4,12 @@
   "description": "Vue binding to canvas element via Konva framework",
   "keywords": ["vue", "konva", "canvas"],
   "homepage": "https://github.com/rafaesc/vue-konva#readme",
-  "author": "rafaesc <rafaesc92@gmail.com>",
-  "main": "index.js",
+  "author": "Rafael Escala <rafaesc92@gmail.com>",
+  "main": "lib/vue-konva.min.js",
+  "files": [
+    "src",
+    "lib"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rafaesc/vue-konva.git"
@@ -16,6 +20,7 @@
   },
   "scripts": {
     "dev": "node build/dev-server.js",
+    "dev:lib": "webpack --config build/webpack.lib.conf.js --watch --progress --hide-modules",
     "start": "npm run dev",
     "build": "node build/build.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
