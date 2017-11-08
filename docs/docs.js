@@ -1,5 +1,8 @@
 import Vue from 'vue'
+import VueKonva from '../src/lib'
 import App from './App'
+
+Vue.use(VueKonva)
 
 Vue.config.productionTip = false
 

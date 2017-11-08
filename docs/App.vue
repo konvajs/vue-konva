@@ -2,6 +2,7 @@
   <div id="app">
     <img src="./assets/logo.png">
     <HelloWorld/>
+    <v-rect></v-rect>
   </div>
 </template>
 
