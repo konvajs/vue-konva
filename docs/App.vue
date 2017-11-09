@@ -2,8 +2,8 @@
   <div id="app">
     <v-stage :config="configKonva">
       <v-layer>
-        <v-rect :config="configRect2"></v-rect>
         <v-rect :config="configRect"></v-rect>
+        <v-rect :config="configRect2" @click="hola()"></v-rect>
       </v-layer>
     </v-stage>
   </div>
@@ -34,7 +34,7 @@ export default {
       },
       configRect2: {
         x: 10,
-        y: 20,
+        y: 50,
         width: 70,
         height: 50,
         fill: 'blue',
@@ -42,11 +42,16 @@ export default {
       }
     };
   },
+  methods: {
+    hola(){
+      console.log('Holaaa')
+      this.configRect2.fill = window.Konva.Util.getRandomColor()
+    }
+  },
   mounted() {
-
     setTimeout(() => {
       console.log('cambiazo')
-      this.configKonva.width = 500;
+      this.configRect2.width = 90;
     }, 2000);
 
   }

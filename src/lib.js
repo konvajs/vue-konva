@@ -1,17 +1,42 @@
 import Stage from './components/Stage'
-import Layer from './components/Layer'
-import Rect from './components/Rect'
+import KonvaNode from './components/KonvaNode'
 import { componentPrefix } from './utils';
 
 if (typeof window !== 'undefined' && !window.Konva) {
   require('konva');
 }
 
+const KONVA_NODES = [
+  'Layer',
+  'FastLayer',
+  'Group',
+  'Label',
+  'Rect',
+  'Circle',
+  'Ellipse',
+  'Wedge',
+  'Line',
+  'Sprite',
+  'Image',
+  'Text',
+  'TextPath',
+  'Star',
+  'Ring',
+  'Arc',
+  'Tag',
+  'Path',
+  'RegularPolygon',
+  'Arrow',
+  'Shape'
+];
+
 const components = {
-  Stage,
-  Layer,
-  Rect
-}
+  Stage
+};
+
+KONVA_NODES.forEach(function(nodeName) {
+  components[nodeName] = KonvaNode;
+});
 
 const VueKonva = {
   ...components,
