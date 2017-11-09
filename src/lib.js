@@ -1,9 +1,12 @@
-import Rect from './components/Rect'
+import Stage from './components/Stage'
+
+if (typeof window !== 'undefined' && !window.Konva) {
+  require('konva');
+}
 
 const componentPrefix = 'v'
-
 const components = {
-  Rect
+  Stage
 }
 
 const VueKonva = {

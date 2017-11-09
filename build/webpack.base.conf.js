@@ -11,7 +11,7 @@ function resolve (dir) {
 module.exports = {
   entry: {
     docs: './docs/docs.js',
-    ['vue-konva']: './src/lib.js'
+    ['vue-konva']: './src/lib.js',
   },
   output: {
     path: config.build.assetsRoot,

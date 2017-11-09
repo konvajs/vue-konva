@@ -1,25 +1,34 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
-    <v-rect></v-rect>
+    <v-stage :config="configKonva"></v-stage>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import HelloWorld from "./components/HelloWorld";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
     HelloWorld
+  },
+  data() {
+    return {
+      configKonva: {
+        width: "200",
+        height: "200",
+        id: "ff"
+      }
+    };
+  },
+  mounted() {
   }
-}
+};
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
