@@ -82,6 +82,7 @@
     "karma-spec-reporter": "0.0.31",
     "karma-webpack": "^2.0.2",
     "konva": "^1.7.6",
+    "lodash": "^4.17.4",
     "mocha": "^3.2.0",
     "npm-run-all": "^4.0.2",
     "opn": "^5.1.0",

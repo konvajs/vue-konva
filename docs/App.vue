@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <v-stage :config="configKonva"></v-stage>
+    <v-stage :config="configKonva">
+      <v-layer>
+        <v-rect :config="configRect2"></v-rect>
+        <v-rect :config="configRect"></v-rect>
+      </v-layer>
+    </v-stage>
   </div>
 </template>
 
@@ -18,10 +23,32 @@ export default {
         width: "200",
         height: "200",
         id: "ff"
+      },
+      configRect: {
+        x: 10,
+        y: 10,
+        width: 70,
+        height: 50,
+        fill: 'green',
+        shadowBlur: 5
+      },
+      configRect2: {
+        x: 10,
+        y: 20,
+        width: 70,
+        height: 50,
+        fill: 'blue',
+        shadowBlur: 5
       }
     };
   },
   mounted() {
+
+    setTimeout(() => {
+      console.log('cambiazo')
+      this.configKonva.width = 500;
+    }, 2000);
+
   }
 };
 </script>

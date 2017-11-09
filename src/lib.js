@@ -1,12 +1,16 @@
 import Stage from './components/Stage'
+import Layer from './components/Layer'
+import Rect from './components/Rect'
+import { componentPrefix } from './utils';
 
 if (typeof window !== 'undefined' && !window.Konva) {
   require('konva');
 }
 
-const componentPrefix = 'v'
 const components = {
-  Stage
+  Stage,
+  Layer,
+  Rect
 }
 
 const VueKonva = {

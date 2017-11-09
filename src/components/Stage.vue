@@ -1,19 +1,33 @@
 <template>
- <div>{{this.config}}</div>
+ <div>{{this.config}}<slot></slot></div>
 </template>
 
 <script>
+import { updatePicture } from '../utils';
+const EventEmitter = require("events");
+
+class StageEmitter extends EventEmitter {}
+
 let cacheConfig = {};
 
 export default {
   props: ["config"],
+  data() {
+    return {
+      _stage: {}
+    };
+  },
+  created() {
+    this.StageEmitter = new StageEmitter();
+    this._stage = {};
+  },
   mounted() {
     this._stage = new window.Konva.Stage({
       width: this.config.width,
       height: this.config.height,
       container: this.$el
     });
-    console.clear();
+    this.StageEmitter.emit('mounted', this._stage);
     cacheConfig = this.config;
     applyNodeProps(this._stage, this.config);
   },
@@ -22,14 +36,9 @@ export default {
     cacheConfig = this.config;
   },
   beforeDestroy() {
-    this._stage.destroy();
+    // this._stage.destroy();
   }
 };
-
-function updatePicture(node) {
-  var drawingNode = node.getLayer() || node.getStage();
-  drawingNode && drawingNode.batchDraw();
-}
 
 function applyNodeProps(instance, props, oldProps = {}) {
   if ("id" in props) {
