@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { applyNodeProps, copy } from '../utils';
+import { applyNodeProps, createListener } from '../utils';
 const EventEmitter = require("events");
 
 class StageEmitter extends EventEmitter {}
@@ -28,15 +28,26 @@ export default {
       container: this.$el
     });
     this.StageEmitter.emit('mounted', this._stage);
-    cacheConfig = this.config;
-    applyNodeProps(this._stage, this.config);
+    this.uploadKonva();
   },
   updated() {
-    applyNodeProps(this._stage, this, cacheConfig);
-    cacheConfig = this.config;
+    this.uploadKonva();
   },
   beforeDestroy() {
     this._stage.destroy();
+  },
+  methods: {
+    getInstance() {
+      return this._stage;
+    },
+    uploadKonva() {
+      const props = {
+        ...this.config,
+        ...createListener(this.$listeners)
+      };
+      applyNodeProps(this._stage, props, cacheConfig);
+      cacheConfig = props;
+    }
   }
 };
 </script>

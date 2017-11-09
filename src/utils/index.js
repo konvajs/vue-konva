@@ -20,15 +20,15 @@ export function createListener(obj) {
   return output;
 }
 
-export function findStage(instance) {
+export function findParentKonva(instance) {
   function re(instance) {
     if (instance.StageEmitter) {
-      return instance.StageEmitter;
+      return instance;
     }
     if (instance.$parent) {
       return re(instance.$parent);
     }
-    return null;
+    return {};
   }
   return re(instance.$parent);
 }

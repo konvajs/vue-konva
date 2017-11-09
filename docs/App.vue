@@ -1,28 +1,22 @@
 <template>
   <div id="app">
-    <v-stage :config="configKonva">
-      <v-layer>
-        <v-rect :config="configRect"></v-rect>
-        <v-rect :config="configRect2" @click="hola()"></v-rect>
-      </v-layer>
-    </v-stage>
+    <Stars />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
+import Stars from "./components/Stars";
 
 export default {
   name: "app",
   components: {
-    HelloWorld
+    Stars
   },
   data() {
     return {
       configKonva: {
         width: "200",
         height: "200",
-        id: "ff"
       },
       configRect: {
         x: 10,
@@ -49,11 +43,12 @@ export default {
     }
   },
   mounted() {
+    /*
     setTimeout(() => {
       console.log('cambiazo')
       this.configRect2.width = 90;
     }, 2000);
-
+  */
   }
 };
 </script>

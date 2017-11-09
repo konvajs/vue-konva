@@ -7,7 +7,7 @@ import {
   applyNodeProps,
   copy,
   getName,
-  findStage,
+  findParentKonva,
   createListener
 } from "../utils";
 const EventEmitter = require("events");
@@ -28,35 +28,53 @@ export default {
   created() {
     this.StageEmitter = new StageEmitter();
     this._stage = {};
+    this._parentStage = {};
+    this.name = this.$options._componentTag;
   },
   mounted() {
-    const eventStage = findStage(this);
-    eventStage.on("mounted", parentStage => {
-      const tagName = this.$options._componentTag;
+    const parentKonva = findParentKonva(this);
+    const _parentStage = parentKonva._stage;
+
+    if (_parentStage && Object.keys(_parentStage).length) {
+      this.initKonva(_parentStage);
+    }
+    parentKonva.StageEmitter.on("mounted", parentStage => {
+      this.initKonva(parentStage);
+    });
+  },
+  updated() {
+    console.log("updated", this.name);
+
+    this.uploadKonva();
+  },
+  beforeDestroy() {
+    console.log("destruye" + this.name);
+    this._stage.destroy();
+  },
+  methods: {
+    getInstance() {
+      return this._stage;
+    },
+    initKonva(parentStage) {
+      const tagName = this.name;
+      console.log("initKonva", tagName);
+      this._parentStage = this.parentStage;
       const nameNode = getName(tagName);
       const NodeClass = window.Konva[nameNode];
       this._stage = new NodeClass();
 
+      this.uploadKonva();
+      this.StageEmitter.emit("mounted", this._stage);
+      parentStage.add(this._stage);
+    },
+    uploadKonva() {
       const props = {
         ...this.config,
         ...createListener(this.$listeners)
       };
+      applyNodeProps(this._stage, props, cacheConfig);
       cacheConfig = this.props;
-      applyNodeProps(this._stage, props);
-      this.StageEmitter.emit("mounted", this._stage);
-      parentStage.add(this._stage);
-    });
-  },
-  updated() {
-    const props = {
-      ...this.config,
-      ...createListener(this.$listeners)
-    };
-    applyNodeProps(this._stage, props, cacheConfig);
-    cacheConfig = this.props;
-  },
-  beforeDestroy() {
-    this._stage.destroy();
+    }
   }
 };
 </script>
