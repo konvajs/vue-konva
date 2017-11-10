@@ -11,7 +11,14 @@ class StageEmitter extends EventEmitter {}
 let cacheConfig = {};
 
 export default {
-  props: ["config"],
+  props: {
+    config: {
+      type: Object,
+      default: function() {
+        return {};
+      }
+    }
+  },
   data() {
     return {
       _stage: {}

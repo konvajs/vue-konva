@@ -10,7 +10,7 @@ function resolve (dir) {
 
 module.exports = {
   entry: {
-    docs: './docs/docs.js',
+    main: './examples/main.js',
     ['vue-konva']: './src/lib.js',
   },
   output: {

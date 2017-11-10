@@ -1,35 +1,19 @@
-# Vue Konva
-
-Vue Konva is a JavaScript library for drawing complex canvas graphics using Vue.
+**Vue Konva** is a JavaScript library for drawing complex canvas graphics using Vue.
 
 It provides declarative and reactive bindings to the [Konva Framework](http://konvajs.github.io/).
-
-All `vue-konva` components correspond to `Konva` components of the same name with the prefix 'v-'. All the parameters available for `Konva` objects can add as `config` in the prop for corresponding `vue-konva` components.
-
-Core shapes are: v-rect, v-circle, v-ellipse, v-line, v-image, v-text, v-text-path, v-star, v-label, SVG Path, v-regular-polygon.
-Also you can create custom shape.
-
-To get more info about `Konva` you can read [Konva Overview](http://konvajs.github.io/docs/overview.html).
-
-## Documentation / live edit
-All examples are editable. You can see a result right on the page.
-
-
-## Complex Demo
-* [Konva Star](http://rafaelescala.com/vue-konva/), [source](https://github.com/rafaesc/vue-konva/tree/master/examples)
 
 ## Quick Start
 
 [Vue.js](https://vuejs.org) version 2.4+ is required.
 
 ### 1 Install via npm
-```npm
+```html
 npm install vue-konva konva --save
 ```
 
 ### 2 Import and use VueKonva
 
-```javascript
+```javascript static
 import Vue from 'vue';
 import VueKonva from 'vue-konva'
 
@@ -39,14 +23,14 @@ Vue.use(VueKonva)
 ### 3 Reference in your component templates
 ```html
 <template>
-  <v-stage :config="configKonva">
-    <v-layer>
+  <v-stage ref="stage" :config="configKonva">
+    <v-layer ref="layer">
       <v-circle :config="configCircle"></v-circle>
     </v-layer>
   </v-stage>
 </template>
 ```
-```javascript
+```javascript static
 <script>
 export default {
   data() {
@@ -80,8 +64,8 @@ export default {
   </head>
   <body>
     <div id='app'>
-      <v-stage ref="stage" :config="configKonva">
-        <v-layer ref="layer">
+      <v-stage :config="configKonva">
+        <v-layer>
           <v-circle :config="configCircle"></v-circle>
         </v-layer>
       </v-stage>
@@ -115,7 +99,5 @@ export default {
 </html>
 ```
 
-## License
-[MIT](LICENSE) License
-
-Copyright (c) 2017-present, Rafael Escala
+## Complex Demo
+* [Konva Star](http://rafaelescala.com/vue-konva/), [source](https://github.com/rafaesc/vue-konva/tree/master/examples)

@@ -1,11 +1,15 @@
 import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
-import capitalize from 'lodash/capitalize';
+import camelCase from 'lodash/camelCase';
 
 export const componentPrefix = 'v'
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export function getName(componentTag) {
-  return capitalize(componentTag.replace(componentPrefix + '-', ''));
+  return capitalizeFirstLetter(camelCase(componentTag.replace(componentPrefix + '-', '')));
 }
 
 export function copy(obj) {
