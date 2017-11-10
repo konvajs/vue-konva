@@ -1,9 +1,9 @@
-import Stage from './components/Stage'
-import KonvaNode from './components/KonvaNode'
-import { componentPrefix } from './utils';
+import Stage from "./components/Stage";
+import KonvaNode from "./components/KonvaNode";
+import { componentPrefix } from "./utils";
 
-if (typeof window !== 'undefined' && !window.Konva) {
-  require('konva');
+if (typeof window !== "undefined" && !window.Konva) {
+  require("konva");
 }
 
 const KONVA_NODES = [
@@ -29,24 +29,24 @@ const KONVA_NODES = [
   'Arrow',
   'Shape'
 ];
-
 const components = {
   Stage
 };
 
 KONVA_NODES.forEach(function(nodeName) {
-  components[nodeName] = KonvaNode;
+  components[nodeName] = KonvaNode();
 });
 
 const VueKonva = {
   ...components,
-  install: Vue => Object
-    .keys(components)
-    .forEach(k => Vue.component(`${componentPrefix}${k}`, components[k]))
-}
+  install: Vue =>
+    Object.keys(components).forEach(k =>
+      Vue.component(`${componentPrefix}${k}`, components[k])
+    )
+};
 
-export default VueKonva
+export default VueKonva;
 
-if (typeof window !== 'undefined' && window.Vue) {
-  window.Vue.use(VueKonva)
+if (typeof window !== "undefined" && window.Vue) {
+  window.Vue.use(VueKonva);
 }

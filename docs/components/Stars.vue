@@ -40,8 +40,8 @@ export default {
       shape.moveTo(dragLayer);
       stage.draw();
 
-      starComponent.config.shadowOffset.x = 15;
-      starComponent.config.shadowOffset.y = 15;
+      starComponent.config.shadowOffsetX = 15;
+      starComponent.config.shadowOffsetY = 15;
       starComponent.config.scaleX = starComponent.config.startScale * 1.2;
       starComponent.config.scaleY = starComponent.config.startScale * 1.2;
     },
@@ -65,10 +65,10 @@ export default {
   },
   mounted() {
     vm = this;
-    for (let n = 0; n < 9; n++) {
+    for (let n = 0; n < 30; n++) {
       const scale = Math.random();
-      const stage = this.$refs.stage.getStage();
-      this.list.push({
+      const stage = vm.$refs.stage.getStage();
+      vm.list.push({
         x: Math.random() * stage.getWidth(),
         y: Math.random() * stage.getHeight(),
         rotation: Math.random() * 180,
@@ -82,10 +82,8 @@ export default {
         scaleY: scale,
         shadowColor: "black",
         shadowBlur: 10,
-        shadowOffset: {
-          x: 5,
-          y: 5
-        },
+        shadowOffsetX: 5,
+        shadowOffsetY: 5,
         shadowOpacity: 0.6,
         startScale: scale
       });

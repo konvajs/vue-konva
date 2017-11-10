@@ -1,6 +1,6 @@
 {
   "name": "vue-konva",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Vue binding to canvas element via Konva framework",
   "keywords": [
     "vue",
@@ -23,6 +23,7 @@
     "url": "https://github.com/rafaesc/vue-konva/issues"
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
     "dev": "npm-run-all --parallel dev:lib dev:docs",
     "dev:lib": "webpack --config build/webpack.lib.conf.js --watch --progress --hide-modules",
     "dev:docs": "node build/dev-server.js",

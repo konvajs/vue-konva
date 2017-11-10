@@ -19,6 +19,7 @@ export default {
   },
   created() {
     this.StageEmitter = new StageEmitter();
+    this.StageEmitter.setMaxListeners(0);
     this._stage = {};
   },
   mounted() {

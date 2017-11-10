@@ -1,3 +1,5 @@
+// adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
+
 import updatePicture from './updatePicture';
 
 export default function applyNodeProps(vueComponent, props = {}, oldProps = {}) {
