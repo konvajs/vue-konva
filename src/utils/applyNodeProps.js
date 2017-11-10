@@ -1,11 +1,11 @@
 import updatePicture from './updatePicture';
 
-export default function applyNodeProps(instance, props = {}, oldProps = {}) {
+export default function applyNodeProps(vueComponent, props = {}, oldProps = {}) {
   if ("id" in props) {
     const message = `VueKonva: You are using "id" attribute for Konva node. In some very rare cases it may produce bugs. Currently we recommend not to use it and use "name" attribute instead.`;
     console.warn(message);
   }
-
+  const instance = vueComponent._stage;
   var updatedProps = {};
   var hasUpdates = false;
   for (let key in oldProps) {
@@ -39,7 +39,9 @@ export default function applyNodeProps(instance, props = {}, oldProps = {}) {
       }
       if (props[key]) {
         instance.off(eventName);
-        instance.on(eventName, props[key]);
+        instance.on(eventName, evt => {
+          props[key](evt.target.VueComponent, evt);
+        });
       }
     }
     if (

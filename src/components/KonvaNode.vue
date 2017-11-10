@@ -8,7 +8,8 @@ import {
   copy,
   getName,
   findParentKonva,
-  createListener
+  createListener,
+  updatePicture
 } from "../utils";
 const EventEmitter = require("events");
 
@@ -43,36 +44,50 @@ export default {
     });
   },
   updated() {
-    console.log("updated", this.name);
-
+    // this._stage.moveToTop();
     this.uploadKonva();
   },
   beforeDestroy() {
-    console.log("destruye" + this.name);
     this._stage.destroy();
   },
   methods: {
-    getInstance() {
+    getStage() {
       return this._stage;
     },
     initKonva(parentStage) {
+      const vm = this;
       const tagName = this.name;
       console.log("initKonva", tagName);
       this._parentStage = this.parentStage;
       const nameNode = getName(tagName);
       const NodeClass = window.Konva[nameNode];
+
       this._stage = new NodeClass();
+      this._stage.VueComponent = this;
+      const animationStage = this._stage.to.bind(this._stage);
+
+      this._stage.to = function(newConfig) {
+        animationStage(newConfig);
+        setTimeout(() => {
+          Object.keys(vm._stage.attrs).forEach(key => {
+            if (typeof vm._stage.attrs[key] !== "function") {
+              vm.config[key] = vm._stage.attrs[key];
+            }
+          });
+        }, 200);
+      };
 
       this.uploadKonva();
       this.StageEmitter.emit("mounted", this._stage);
       parentStage.add(this._stage);
+      updatePicture(parentStage)
     },
     uploadKonva() {
       const props = {
         ...this.config,
         ...createListener(this.$listeners)
       };
-      applyNodeProps(this._stage, props, cacheConfig);
+      applyNodeProps(this, props, cacheConfig);
       cacheConfig = this.props;
     }
   }
