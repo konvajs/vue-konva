@@ -1,5 +1,14 @@
 # Vue Konva
 
+<span class="badge-npmdownloads">
+  <a href="https://www.npmjs.com/package/vue-konva">
+    <img src="https://img.shields.io/npm/v/vue-konva.svg" alt="Version">
+  </a>
+  <a href="https://www.npmjs.com/package/vue-konva">
+    <img src="https://img.shields.io/npm/l/vue-konva.svg" alt="License">
+  </a>
+  </span>
+
 Vue Konva is a JavaScript library for drawing complex canvas graphics using Vue.
 
 It provides declarative and reactive bindings to the [Konva Framework](http://konvajs.github.io/).
@@ -14,8 +23,9 @@ To get more info about `Konva` you can read [Konva Overview](http://konvajs.gith
 ## Documentation / live edit
 All examples are editable. You can see a result right on the page.
 
+[http://rafaelescala.com/vue-konva-doc/](http://rafaelescala.com/vue-konva-doc/)
 
-## Complex Demo
+## Examples
 * [Konva Star](http://rafaelescala.com/vue-konva/), [source](https://github.com/rafaesc/vue-konva/tree/master/examples)
 
 ## Quick Start
@@ -114,6 +124,12 @@ export default {
   </body>
 </html>
 ```
+
+
+## Change log
+
+The change log can be found on the [Releases page](https://github.com/rafaesc/vue-konva/releases).
+
 
 ## License
 [MIT](LICENSE) License

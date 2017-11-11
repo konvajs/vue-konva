@@ -1,3 +1,6 @@
+- [GitHub repository](https://github.com/rafaesc/vue-konva)
+- [NPM page](https://www.npmjs.com/package/vue-konva)
+
 **Vue Konva** is a JavaScript library for drawing complex canvas graphics using Vue.
 
 It provides declarative and reactive bindings to the [Konva Framework](http://konvajs.github.io/).
@@ -99,5 +102,5 @@ export default {
 </html>
 ```
 
-## Complex Demo
+## Examples
 * [Konva Star](http://rafaelescala.com/vue-konva/), [source](https://github.com/rafaesc/vue-konva/tree/master/examples)
