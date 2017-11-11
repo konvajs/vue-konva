@@ -10,10 +10,7 @@ export default {
      * All the parameters available for Konva objects
      */
     config: {
-      type: Object,
-      default: function() {
-        return {};
-      }
+      type: Object
     }
   },
   methods: {
