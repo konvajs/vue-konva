@@ -84,7 +84,7 @@ export default function() {
           ...createListener(this.$listeners)
         };
         applyNodeProps(this, props, cacheConfig);
-        cacheConfig = this.props;
+        cacheConfig = props;
       }
     }
   };
