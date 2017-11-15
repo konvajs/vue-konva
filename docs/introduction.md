@@ -1,6 +1,12 @@
 - [GitHub repository](https://github.com/rafaesc/vue-konva)
 - [NPM page](https://www.npmjs.com/package/vue-konva)
 
+<div><iframe src="https://ghbtns.com/github-btn.html?user=rafaesc&repo=vue-konva&type=star&count=true"
+            frameborder="0" scrolling="0" width="170px" height="20px"></iframe></div>
+<div><iframe src="https://ghbtns.com/github-btn.html?user=rafaesc&repo=vue-konva&type=fork&count=true"
+            frameborder="0" scrolling="0" width="170px" height="20px"></iframe></div>
+<br>
+
 **Vue Konva** is a JavaScript library for drawing complex canvas graphics using Vue.
 
 It provides declarative and reactive bindings to the [Konva Framework](http://konvajs.github.io/).

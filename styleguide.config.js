@@ -16,13 +16,14 @@ module.exports = {
       ]
     }
   }),
-  mixins: [
-    'docs/mixin.js'
-  ],
-  template: 'docs/styleguide.template.html',
+  mixins: ["docs/mixin.js"],
+  styleguideComponents: {
+    Logo: path.join(__dirname, "docs/logo.js")
+  },
+  template: "docs/styleguide.template.html",
   require: [
-    path.join(__dirname, 'docs/styleguide.styles.css'),
-    path.join(__dirname, 'lib/vue-konva.min.js')
+    path.join(__dirname, "docs/styleguide.styles.css"),
+    path.join(__dirname, "lib/vue-konva.min.js")
   ],
   defaultExample: false,
   highlightTheme: "night",
@@ -31,25 +32,25 @@ module.exports = {
   styleguideDir: "distDoc",
   sections: [
     {
-      name: 'Introduction',
-      content: 'docs/introduction.md'
+      name: "Introduction",
+      content: "docs/introduction.md"
     },
     {
-      name: 'API',
-      content: 'docs/api.md',
-      components: 'docs/CoreShapes.vue'
+      name: "API",
+      content: "docs/api.md",
+      components: "docs/CoreShapes.vue"
     },
     {
-      name: 'PlayGround',
-      content: 'docs/playground.md'
+      name: "PlayGround",
+      content: "docs/playground.md"
     },
     {
-      name: 'Events',
-      content: 'docs/events.md'
+      name: "Events",
+      content: "docs/events.md"
     },
     {
-      name: 'Animations',
-      content: 'docs/animations.md'
+      name: "Animations",
+      content: "docs/animations.md"
     }
   ]
 };

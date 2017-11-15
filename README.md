@@ -9,7 +9,7 @@
   </a>
   </span>
 
-![ReactKonva Logo](vue-konva.png)
+![ReactKonva Logo](https://github.com/rafaesc/vue-konva/raw/master/vue-konva.png)
 
 Vue Konva is a JavaScript library for drawing complex canvas graphics using Vue.
 
@@ -135,7 +135,7 @@ The change log can be found on the [Releases page](https://github.com/rafaesc/vu
 ## Related repositories
 
 * [react-konva](https://github.com/lavrton/react-konva) - React + Konva
-* [ng2-konva](https://github.com/rafaesc/ng2-konva) - Angular + Konva
+* [ng2-konva](http://rafaelescala.com/ng2-konva/) - Angular + Konva
 
 ## License
 [MIT](LICENSE) License
