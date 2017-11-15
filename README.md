@@ -9,6 +9,8 @@
   </a>
   </span>
 
+![ReactKonva Logo](vue-konva.png)
+
 Vue Konva is a JavaScript library for drawing complex canvas graphics using Vue.
 
 It provides declarative and reactive bindings to the [Konva Framework](http://konvajs.github.io/).
@@ -130,8 +132,13 @@ export default {
 
 The change log can be found on the [Releases page](https://github.com/rafaesc/vue-konva/releases).
 
+## Related repositories
+
+* [react-konva](https://github.com/lavrton/react-konva) - React + Konva
+* [ng2-konva](https://github.com/rafaesc/ng2-konva) - Angular + Konva
 
 ## License
 [MIT](LICENSE) License
 
 Copyright (c) 2017-present, Rafael Escala
+
