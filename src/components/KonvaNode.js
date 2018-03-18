@@ -44,7 +44,7 @@ export default function() {
       // this._stage.moveToTop();
       this.uploadKonva();
     },
-    beforeDestroy() {
+    destroyed() {
       this._stage.destroy();
     },
     methods: {
