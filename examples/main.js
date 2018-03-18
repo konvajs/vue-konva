@@ -2,7 +2,7 @@ import Vue from "vue";
 
 import VueKonva from "../src/lib";
 import App from "./App";
-import store from "./store/store";
+import store from "./store";
 import router from "./router";
 
 Vue.use(VueKonva);
