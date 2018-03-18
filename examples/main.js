@@ -1,13 +1,20 @@
-import Vue from 'vue'
-import VueKonva from '../src/lib'
-import App from './App'
+import Vue from "vue";
 
-Vue.use(VueKonva)
+import VueKonva from "../src/lib";
+import App from "./App";
+import store from "./store/store";
+import router from "./router";
 
-Vue.config.productionTip = false
+Vue.use(VueKonva);
+
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  render: function(h){ return h(App)}
-})
+  el: "#app",
+  router,
+  store,
+  render: function(h) {
+    return h(App);
+  }
+});

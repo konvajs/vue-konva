@@ -1,17 +1,12 @@
 <template>
   <div id="app">
-    <Stars />
+    <router-view class="view"></router-view>
   </div>
 </template>
 
 <script>
-import Stars from "./components/Stars";
-
 export default {
-  name: "app",
-  components: {
-    Stars
-  }
+  name: "app"
 };
 </script>
 
