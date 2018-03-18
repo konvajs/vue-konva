@@ -1,6 +1,6 @@
 {
   "name": "vue-konva",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Vue binding to canvas element via Konva framework",
   "keywords": [
     "vue",
