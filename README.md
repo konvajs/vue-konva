@@ -28,7 +28,8 @@ All examples are editable. You can see a result right on the page.
 [http://rafaelescala.com/vue-konva-doc/](http://rafaelescala.com/vue-konva-doc/)
 
 ## Examples
-* [Konva Star](http://rafaelescala.com/vue-konva/), [source](https://github.com/rafaesc/vue-konva/tree/master/examples)
+* [Konva Star Demo](http://rafaelescala.com/vue-konva/)
+* [Source](https://github.com/rafaesc/vue-konva/tree/master/examples)
 
 ## Quick Start
 

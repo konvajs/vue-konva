@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Target from "./Target.vue";
+import Target from "./Target";
 
 export default {
   name: "HelloWorld",
@@ -42,14 +42,14 @@ export default {
       const targets = this.$store.getters.targets.filter(
         target => target.isDragging === false
       );
-      //console.log("targets", targets);
+      // console.log("targets", targets);
       return targets;
     },
     targetsDragging() {
       const targets = this.$store.getters.targets.filter(
         target => target.isDragging === true
       );
-      //console.log("targetsDrag", targets);
+      // console.log("targetsDrag", targets);
       return targets;
     }
   }
