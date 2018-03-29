@@ -8,10 +8,7 @@
       <input type="range" min="5" max="175" v-model="wedge.angle">
       {{wedge.angle}}
 
-    <v-stage ref="stage"
-      :config="configKonva"
-      @dragstart="handleDragstart"
-      @dragend="handleDragend">
+    <v-stage ref="stage" :config="configKonva">
       <v-layer ref="layer">
         <v-radar
           :config="wedge">
@@ -42,39 +39,6 @@ export default {
   components: {
     'v-radar': Radar
   },
-  methods: {
-    handleDragstart(component) {
-      const shape = component.getStage();
-      const dragLayer = vm.$refs.dragLayer.getStage();
-      const stage = vm.$refs.stage.getStage();
-
-      // moving to another layer will improve dragging performance
-      shape.moveTo(dragLayer);
-      stage.draw();
-
-      component.config.shadowOffsetX = 15;
-      component.config.shadowOffsetY = 15;
-      component.config.scaleX = component.config.startScale * 1.2;
-      component.config.scaleY = component.config.startScale * 1.2;
-    },
-    handleDragend(component) {
-      const shape = component.getStage();
-      const layer = vm.$refs.layer.getStage();
-      const stage = vm.$refs.stage.getStage();
-
-      shape.moveTo(layer);
-      stage.draw();
-
-      shape.to({
-        duration: 0.5,
-        easing: Konva.Easings.ElasticEaseOut,
-        scaleX: component.config.startScale,
-        scaleY: component.config.startScale,
-        shadowOffsetX: 5,
-        shadowOffsetY: 5
-      });
-    }
-  },
   mounted() {
     vm = this;
 
@@ -84,21 +48,20 @@ export default {
       radius: 100,
       angle: 60,
       direction: 90,
-      draggable: true,
+      draggable: true,  // todo: after dragging, changing direction and angle makes radar to go back initial position
       fillRadialGradientStartPoint: 0,
       fillRadialGradientStartRadius: 0,
       fillRadialGradientEndPoint: 0,
       fillRadialGradientEndRadius: 100,
-      fillRadialGradientColorStops: [0, 'red', 0.5, 'blue', 1, 'rgba(255,255,255,0)'],
+      fillRadialGradientColorStops: [0, 'red', 0.3, 'blue', 0.5, 'rgba(0,0,255,0.6)', 1, 'rgba(255,255,255,0)'],
       opacity: 0.8,
       stroke: 'transparent',
       strokeWidth: 1,
       scaleX: 1,
       scaleY: 1,
       startScale: 1,
-      handler: vm.wedgeHangler
+      handler: vm.wedgeHangler   // todo: draw handler for radar to rotate (to change direction)
     }
-
     vm.wedgeHangler = {
       radius: 10,
       angle: 60,

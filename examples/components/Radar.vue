@@ -1,5 +1,18 @@
+/**
+  Radar is usually used to describe where we are looking at in 360 panorama viewers or VR projects,
+  inspired by krpano's radar plugin https://krpano.com/tours/bkeller/index.html
+  angle: field of view
+  direction: center angle of the view
+*/
+
 <template>
-  <v-wedge :config='config'></v-wedge>
+<div>
+  <v-wedge :config='config' ref="wedge"></v-wedge>
+
+  <!-- not working in the moment, it is handler for diretion -->
+  <v-shape :config='config.handler'></v-shape>   
+</div>
+  
 </template>
 
 <script>
@@ -29,7 +42,10 @@ export default {
     },
     handleDirectionChange(angle) {
       // todo need better solution
-      const shape = this.$parent.getStage().children[0]
+      // const shape = this.$parent.getStage().children[0]
+
+      // got better solution now
+      const shape = this.$refs.wedge.getStage()
 
       var tween = new Konva.Tween({
         node: shape,

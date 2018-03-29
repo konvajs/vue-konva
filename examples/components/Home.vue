@@ -5,7 +5,7 @@
       <ul class="examples">
         <li><router-link to="/stars">Stars</router-link></li>
         <li><router-link to="/vuex-example">Vuex Example</router-link></li>
-        <li><router-link to="/wedge2-demo">Field Of Example</router-link></li>
+        <li><router-link to="/radar-demo">Radar Example</router-link></li>
       </ul>
     </div>
   </div>
