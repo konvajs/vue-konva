@@ -7,17 +7,22 @@
 
 <template>
 <v-group>
-  <v-wedge :config='config' ref="wedge"
-    @dragstart='onDragStart'
-    @dragmove='onDragMove'
-    @dragend='onDragEnd'>
+  <v-wedge 
+    :config='config' 
+    ref="wedge"
+    @mouseover='onMouseOver'
+    @mouseout='onMouseOut'
+    @dragmove='onDragMove'>
   </v-wedge>
   <v-circle 
     :config='handler' 
     ref='handler'
-    @dragstart='onHandlerDragStart'
+    @mouseover='onHandlerMouseOver'
+    @mouseout='onHandlerMouseOut'
+    @mousedown='onHandlerMouseDown'
     @dragmove='onHandlerDragMove'
-    @dragend='onHandlerDragEnd'>
+    @dragend='onHandlerDragEnd'
+    @mouseup='onHandlerMouseUp'>
   </v-circle>   
 </v-group>
   
@@ -25,8 +30,6 @@
 
 <script>
 import {Werge} from 'konva'
-
-let tween;
 
 export default {
   name: 'Radar',
@@ -45,18 +48,15 @@ export default {
       }
     }
   },
+  mounted() {
+    this.handler.draggable = true;
+  },
   watch: {
     'config.angle': function() {
       this.handleAngleChange()
     },
     'config.direction': function() {
       this.handleAngleChange()
-    },
-    'config.x': function() {
-      this.resetHandler()
-    },
-    'config.y': function() {
-      this.resetHandler()
     }
   },
   methods: {
@@ -73,31 +73,36 @@ export default {
       vm.$refs.handler.getStage().setX(r * Math.cos(vm.config.direction * DEG2RAD) + vm.config.x);
       vm.$refs.handler.getStage().setY(r * Math.sin(vm.config.direction * DEG2RAD) + vm.config.y);
     },
-    onDragStart() {
-      console.log('onDragStart')
-    },
-    onDragEnd() {
-      console.log('onDragEnd')
-    },
     onDragMove(target, e) {
-      console.log('onDragMove', e, target)
       this.config.x = e.target._lastPos.x;
       this.config.y = e.target._lastPos.y;
       this.resetHandler()
     },
-    onHandlerDragStart(target, e) {
-      console.log('onHandlerDragStart');
-      target.config.opacity = 0.5;
+    onMouseOver() {
+      document.body.style.cursor = 'move';
+    },
+    onMouseOut() {
+      document.body.style.cursor = 'default';
+    },
+    onHandlerMouseOver() {
+      document.body.style.cursor = 'ew-resize';
+    },
+    onHandlerMouseOut() {
+      document.body.style.cursor = 'default';
+    },
+    onHandlerMouseDown() {
+      console.log('mousedown')
+      this.handler.stroke = 'rgba(0,0,255,1)';
       this.resetHandler();
     },
-    onHandlerDragEnd(target, e) {
-      console.log('onHandlerDragEnd')
-      target.config.opacity = 1
+    onHandlerMouseUp() {
+      this.onHandlerDragEnd();
+    },
+    onHandlerDragEnd() {
+      this.handler.stroke = 'rgba(0,0,255,0.5)';
       this.resetHandler()
     },
     onHandlerDragMove(target, e) {
-      console.log('onHandlerDragMove', e, target)
-
       // radar's position
       var x0 = this.config.x;
       var y0 = this.config.y;

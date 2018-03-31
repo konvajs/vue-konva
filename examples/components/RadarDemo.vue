@@ -50,7 +50,7 @@ export default {
       radius: 160,
       angle: 60,
       direction: 90,
-      draggable: true,  // todo: after dragging, changing direction and angle makes radar to go back initial position
+      draggable: true,
       fillRadialGradientStartPoint: 0,
       fillRadialGradientStartRadius: 0,
       fillRadialGradientEndPoint: 0,
@@ -64,12 +64,13 @@ export default {
       startScale: 1
     }
 
-    vm.handler = { // todo: draw handler for radar to rotate (to change direction)
+    vm.handler = {
       radius: 10,
       strokeWidth: 2,
+      opacity: 1,
       stroke: 'rgba(0,0,255,0.5)',
       fill: 'rgba(255,255,255,1)',
-      draggable: true // this should be always true by default
+      draggable: true // should be always true always even we don't define
     }
   }
 };
