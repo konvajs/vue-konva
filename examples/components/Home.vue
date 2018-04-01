@@ -3,9 +3,9 @@
     <div class="inner">
       <h3>Vue-Konva, choose a example</h3>
       <ul class="examples">
-        <li><router-link to="/stars">Stars</router-link></li>
-        <li><router-link to="/vuex-example">Vuex Example</router-link></li>
-        <li><router-link to="/radar-demo">Radar Example</router-link></li>
+        <li><div class="link"><router-link to="/stars">Stars</router-link> by <a href="https://konvajs.github.io/docs/sandbox/Elastic_Stars.html" target="_blank">Konva</a></div></li>
+        <li><div class="link"><router-link to="/vuex-example">Vuex Example</router-link> by <a href="https://github.com/Ldoppea" target="_blank">@Ldoppea</a></div></li>
+        <li><div class="link"><router-link to="/radar-demo">Radar Example</router-link> by <a href="https://github.com/imudin" target="_blank">@imudin</a>, <a href="https://github.com/Ldoppea" target="_blank">@Ldoppea</a></div></li>
       </ul>
     </div>
   </div>
@@ -17,6 +17,10 @@
 * {
   font-size: 14px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.link {
+  font-size: 14px;
 }
 
 .wrapper {
