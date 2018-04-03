@@ -31,7 +31,7 @@ All examples are editable. You can see a result right on the page.
 
 * [Konva Star Demo](http://rafaelescala.com/vue-konva/#/stars), by [Konva](https://konvajs.github.io/docs/sandbox/Elastic_Stars.html)
 * [Demo with Vuex](http://rafaelescala.com/vue-konva/#/vuex-example), by [@Ldoppea](https://github.com/Ldoppea)
-* [Radar](http://rafaelescala.com/vue-konva/#/vuex-example), by [@imudin](https://github.com/imudin),[@Ldoppea](https://github.com/Ldoppea)
+* [Radar](http://rafaelescala.com/vue-konva/#/radar-demo), by [@imudin](https://github.com/imudin),[@Ldoppea](https://github.com/Ldoppea)
 
 [Examples sources](https://github.com/rafaesc/vue-konva/tree/master/examples)
 
