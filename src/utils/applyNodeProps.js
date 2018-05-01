@@ -1,8 +1,12 @@
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
 
-import updatePicture from './updatePicture';
+import updatePicture from "./updatePicture";
 
-export default function applyNodeProps(vueComponent, props = {}, oldProps = {}) {
+export default function applyNodeProps(
+  vueComponent,
+  props = {},
+  oldProps = {}
+) {
   if ("id" in props) {
     const message = `VueKonva: You are using "id" attribute for Konva node. In some very rare cases it may produce bugs. Currently we recommend not to use it and use "name" attribute instead.`;
     console.warn(message);
@@ -42,7 +46,11 @@ export default function applyNodeProps(vueComponent, props = {}, oldProps = {}) 
       if (props[key]) {
         instance.off(eventName);
         instance.on(eventName, evt => {
-          props[key](evt.target.VueComponent, evt);
+          if (evt.target) {
+            props[key](evt.target.VueComponent, evt);
+          } else {
+            props[key](evt.evt, evt);
+          }
         });
       }
     }
