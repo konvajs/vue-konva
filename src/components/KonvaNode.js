@@ -13,7 +13,13 @@ export default function() {
   class StageEmitter extends EventEmitter {}
   let cacheConfig = {};
   return {
-    template: '<div>{{this.config}}<slot></slot></div>',
+    // template: '<div>{{this.config}}<slot></slot></div>',
+    render(createElement) {
+      return createElement('div', [
+        this.config,
+        this.$slots.default
+      ]);
+    },
     props: {
       config: {
         type: Object,
