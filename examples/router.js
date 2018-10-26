@@ -6,6 +6,7 @@ import Stars from "./components/Stars";
 import Circle from "./components/Circle";
 import VuexExample from "./components/VuexExample";
 import RadarDemo from "./components/RadarDemo";
+import Transformer from "./components/Transformer";
 
 Vue.use(VueRouter);
 
@@ -16,6 +17,7 @@ export default new VueRouter({
     { path: "/stars", component: Stars },
     { path: "/circle", component: Circle },
     { path: "/vuex-example", component: VuexExample },
-    { path: "/radar-demo", component: RadarDemo }
+    { path: "/radar-demo", component: RadarDemo },
+    { path: "/transformer", component: Transformer }
   ]
 });
