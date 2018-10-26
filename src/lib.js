@@ -27,7 +27,8 @@ const KONVA_NODES = [
   'Path',
   'RegularPolygon',
   'Arrow',
-  'Shape'
+  'Shape',
+  'Transformer'
 ];
 const components = {
   Stage
