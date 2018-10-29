@@ -5,9 +5,11 @@ import {
   findParentKonva,
   createListener,
   updatePicture
-} from "../utils";
+} from '../utils';
 
-const EventEmitter = require("events");
+const EventEmitter = require('events');
+
+const EVENTS_NAMESPACE = '.vue-konva-event';
 
 export default function() {
   class StageEmitter extends EventEmitter {}
@@ -15,10 +17,15 @@ export default function() {
   return {
     // template: '<div>{{this.config}}<slot></slot></div>',
     render(createElement) {
-      return createElement('div', [
-        this.config,
-        this.$slots.default
-      ]);
+      return createElement('div', [this.config, this.$slots.default]);
+    },
+    watch: {
+      config: {
+        handler(val) {
+          this.uploadKonva();
+        },
+        deep: true
+      }
     },
     props: {
       config: {
@@ -42,18 +49,27 @@ export default function() {
       if (_parentStage && Object.keys(_parentStage).length) {
         this.initKonva(_parentStage);
       }
-      parentKonva.StageEmitter.on("mounted", parentStage => {
+      parentKonva.StageEmitter.on('mounted', parentStage => {
         this.initKonva(parentStage);
       });
     },
     updated() {
       // this._stage.moveToTop();
       this.uploadKonva();
+      // check indexes
+      this.$children.forEach((component, index) => {
+        // component.getNode().setZIndex(index);
+      });
     },
     destroyed() {
+      updatePicture(this._stage);
       this._stage.destroy();
+      this._stage.off(EVENTS_NAMESPACE);
     },
     methods: {
+      getNode() {
+        return this._stage;
+      },
       getStage() {
         return this._stage;
       },
@@ -72,7 +88,7 @@ export default function() {
           animationStage(newConfig);
           setTimeout(() => {
             Object.keys(vm._stage.attrs).forEach(key => {
-              if (typeof vm._stage.attrs[key] !== "function") {
+              if (typeof vm._stage.attrs[key] !== 'function') {
                 vm.config[key] = vm._stage.attrs[key];
               }
             });
@@ -80,8 +96,10 @@ export default function() {
         };
 
         this.uploadKonva();
-        this.StageEmitter.emit("mounted", this._stage);
+        this.StageEmitter.emit('mounted', this._stage);
+        const index = this.$parent.$children.indexOf(this);
         parentStage.add(this._stage);
+        this._stage.setZIndex(index);
         updatePicture(parentStage);
       },
       uploadKonva() {
