@@ -403,7 +403,7 @@ describe('test lifecycle methods', () => {
     expect(createdCount).to.equal(1);
   });
 
-  it('test update1', () => {
+  it('test update', () => {
     const wrap = mount({
       props: ['fill'],
       render(createElement) {
@@ -632,100 +632,127 @@ describe('test reconciler', () => {
     Konva.Layer.prototype.batchDraw.restore();
   });
 
-  // it('add before (mane)', function() {
-  //   class App extends React.Component {
-  //     render() {
-  //       const kids = this.props.drawMany
-  //         ? [
-  //             <Rect key="1" name="rect1" />,
-  //             <Rect key="2" name="rect2" />,
-  //             <Rect key="3" name="rect3" />
-  //           ]
-  //         : [<Rect key="1" name="rect1" />, <Rect key="3" name="rect3" />];
-  //       return (
-  //         <Stage ref={node => (this.stage = node)} width={300} height={300}>
-  //           <Layer ref={node => (this.layer = node)}>{kids}</Layer>
-  //         </Stage>
-  //       );
-  //     }
-  //   }
+  it('add before', function() {
+    const { vm } = mount({
+      template: `
+          <v-stage ref="stage">
+            <v-layer ref="layer">
+              <v-rect v-for="item in items" :config="{name: 'rect' + item}" :key="item">
+              </v-rect>
+            </v-layer>
+          </v-stage>
+        `,
+      data() {
+        return {
+          items: [1, 3]
+        };
+      }
+    });
 
-  //   const wrapper = mount(<App />);
-  //   wrapper.setProps({ drawMany: true });
+    vm.items = [1, 2, 3];
 
-  //   const layer = wrapper.instance().layer;
-  //   expect(layer.children[0].name()).to.equal('rect1');
-  //   expect(layer.children[1].name()).to.equal('rect2');
-  //   expect(layer.children[2].name()).to.equal('rect3');
-  // });
+    const layer = vm.$refs.layer.getNode();
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect3');
+  });
 
-  // it('add after', function() {
-  //   class App extends React.Component {
-  //     render() {
-  //       const kids = this.props.drawMany
-  //         ? [<Rect key="1" name="rect1" />, <Rect key="2" name="rect2" />]
-  //         : [<Rect key="1" name="rect1" />];
-  //       return (
-  //         <Stage ref={node => (this.stage = node)} width={300} height={300}>
-  //           <Layer ref={node => (this.layer = node)}>{kids}</Layer>
-  //         </Stage>
-  //       );
-  //     }
-  //   }
+  it('add after', function() {
+    const { vm } = mount({
+      template: `
+          <v-stage ref="stage">
+            <v-layer ref="layer">
+              <v-rect v-for="item in items" :config="{name: 'rect' + item}" :key="item">
+              </v-rect>
+            </v-layer>
+          </v-stage>
+        `,
+      data() {
+        return {
+          items: [1]
+        };
+      }
+    });
 
-  //   const wrapper = mount(<App />);
-  //   sinon.spy(Konva.Layer.prototype, 'batchDraw');
-  //   wrapper.setProps({ drawMany: true });
+    vm.items = [1, 2];
 
-  //   const layer = wrapper.instance().layer;
-  //   expect(layer.children[0].name()).to.equal('rect1');
-  //   expect(layer.children[1].name()).to.equal('rect2');
-  //   expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(1);
-  //   Konva.Layer.prototype.batchDraw.restore();
-  // });
+    const layer = vm.$refs.layer.getNode();
 
-  // it('change order', function() {
-  //   class App extends React.Component {
-  //     render() {
-  //       return (
-  //         <Stage ref={node => (this.stage = node)} width={300} height={300}>
-  //           <Layer ref={node => (this.layer = node)}>{this.props.kids}</Layer>
-  //         </Stage>
-  //       );
-  //     }
-  //   }
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect2');
+  });
 
-  //   let kids = [
-  //     <Rect key="1" name="rect1" />,
-  //     <Rect key="2" name="rect2" />,
-  //     <Rect key="3" name="rect3" />
-  //   ];
-  //   const wrapper = mount(<App kids={kids} />);
-  //   const layer = wrapper.instance().layer;
+  it('change order', function() {
+    const { vm } = mount({
+      template: `
+          <v-stage ref="stage">
+            <v-layer ref="layer">
+              <v-rect v-for="item in items" :config="{name: 'rect' + item}" :key="item">
+              </v-rect>
+            </v-layer>
+          </v-stage>
+        `,
+      data() {
+        return {
+          items: [1, 2, 3]
+        };
+      }
+    });
+    const layer = vm.$refs.layer.getNode();
 
-  //   expect(layer.children[0].name()).to.equal('rect1');
-  //   expect(layer.children[1].name()).to.equal('rect2');
-  //   expect(layer.children[2].name()).to.equal('rect3');
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect3');
 
-  //   kids = [
-  //     <Rect key="3" name="rect3" />,
-  //     <Rect key="1" name="rect1" />,
-  //     <Rect key="2" name="rect2" />
-  //   ];
-  //   wrapper.setProps({ kids });
-  //   expect(layer.children[0].name()).to.equal('rect3');
-  //   expect(layer.children[1].name()).to.equal('rect1');
-  //   expect(layer.children[2].name()).to.equal('rect2');
+    vm.items = [3, 2, 1];
+    expect(layer.children[0].name()).to.equal('rect3');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect1');
 
-  //   kids = [
-  //     <Rect key="1" name="rect1" />,
-  //     <Rect key="3" name="rect3" />,
-  //     <Rect key="2" name="rect2" />
-  //   ];
-  //   wrapper.setProps({ kids });
+    vm.items = [1, 3, 2];
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect3');
+    expect(layer.children[2].name()).to.equal('rect2');
+  });
 
-  //   expect(layer.children[0].name()).to.equal('rect1');
-  //   expect(layer.children[1].name()).to.equal('rect3');
-  //   expect(layer.children[2].name()).to.equal('rect2');
-  // });
+  it('change deep order', function() {
+    Vue.component('deep', {
+      props: ['name'],
+      render(createElement) {
+        return createElement('v-rect', {
+          attrs: { config: { name: this.name } }
+        });
+      }
+    });
+    const { vm } = mount({
+      template: `
+          <v-stage ref="stage">
+            <v-layer ref="layer">
+              <deep v-for="item in items" :name="'rect' + item" :key="item">
+              </deep>
+            </v-layer>
+          </v-stage>
+        `,
+      data() {
+        return {
+          items: [1, 2, 3]
+        };
+      }
+    });
+    const layer = vm.$refs.layer.getNode();
+
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect3');
+
+    vm.items = [3, 2, 1];
+    expect(layer.children[0].name()).to.equal('rect3');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect1');
+
+    vm.items = [1, 3, 2];
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect3');
+    expect(layer.children[2].name()).to.equal('rect2');
+  });
 });

@@ -4,7 +4,8 @@ import {
   getName,
   findParentKonva,
   createListener,
-  updatePicture
+  updatePicture,
+  findKonvaNode
 } from '../utils';
 
 const EventEmitter = require('events');
@@ -13,7 +14,6 @@ const EVENTS_NAMESPACE = '.vue-konva-event';
 
 export default function() {
   class StageEmitter extends EventEmitter {}
-  let cacheConfig = {};
   return {
     // template: '<div>{{this.config}}<slot></slot></div>',
     render(createElement) {
@@ -54,11 +54,15 @@ export default function() {
       });
     },
     updated() {
-      // this._stage.moveToTop();
       this.uploadKonva();
       // check indexes
-      this.$children.forEach((component, index) => {
-        // component.getNode().setZIndex(index);
+      // somehow this.$children are not ordered correctly
+      // so we have to dive-in into componentOptions of vnode
+      this.$children.forEach(component => {
+        const vnode = component.$vnode;
+        const index = this.$vnode.componentOptions.children.indexOf(vnode);
+        const konvaNode = findKonvaNode(component);
+        konvaNode.setZIndex(index);
       });
     },
     destroyed() {
@@ -76,7 +80,6 @@ export default function() {
       initKonva(parentStage) {
         const vm = this;
         const tagName = this.name;
-        this._parentStage = this.parentStage;
         const nameNode = getName(tagName);
         const NodeClass = window.Konva[nameNode];
 
@@ -97,18 +100,19 @@ export default function() {
 
         this.uploadKonva();
         this.StageEmitter.emit('mounted', this._stage);
-        const index = this.$parent.$children.indexOf(this);
+        // const index = this.$parent.$children.indexOf(this);
         parentStage.add(this._stage);
-        this._stage.setZIndex(index);
+        // this._stage.setZIndex(index);
         updatePicture(parentStage);
       },
       uploadKonva() {
+        const oldProps = this.oldProps || {};
         const props = {
           ...this.config,
           ...createListener(this.$listeners)
         };
-        applyNodeProps(this, props, cacheConfig);
-        cacheConfig = props;
+        applyNodeProps(this, props, oldProps);
+        this.oldProps = props;
       }
     }
   };
