@@ -1,6 +1,5 @@
 import {
   applyNodeProps,
-  copy,
   getName,
   findParentKonva,
   createListener,
@@ -15,11 +14,16 @@ const EVENTS_NAMESPACE = '.vue-konva-event';
 export default function() {
   class StageEmitter extends EventEmitter {}
   return {
-    // template: '<div>{{this.config}}<slot></slot></div>',
     render(createElement) {
       return createElement('div', [this.config, this.$slots.default]);
     },
     watch: {
+      // $attrs: {
+      //   handler(val) {
+      //     this.uploadKonva();
+      //   },
+      //   deep: true
+      // },
       config: {
         handler(val) {
           this.uploadKonva();
@@ -108,6 +112,7 @@ export default function() {
       uploadKonva() {
         const oldProps = this.oldProps || {};
         const props = {
+          ...this.$attrs,
           ...this.config,
           ...createListener(this.$listeners)
         };

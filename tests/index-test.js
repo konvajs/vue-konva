@@ -362,6 +362,36 @@ describe('Test props setting', function() {
 
     expect(rect.x()).to.equal(20);
   });
+
+  it.skip('can set props directly', () => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref="stage" :width="stage.width" :height="stage.height">
+          <v-layer>
+            <v-rect :x="10" :y="10" :width="rectWidth" :height="100" ref="rect">
+            </v-rect>
+          </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400
+          },
+          rectWidth: 100
+        };
+      }
+    });
+
+    const rect = vm.$refs.rect.getNode();
+
+    expect(rect.width()).to.equal(100);
+    expect(rect.height()).to.equal(100);
+
+    vm.rectWidth = 300;
+    expect(rect.width()).to.equal(300);
+  });
 });
 
 describe('test lifecycle methods', () => {
