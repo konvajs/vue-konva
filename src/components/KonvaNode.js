@@ -87,6 +87,11 @@ export default function() {
         const nameNode = getName(tagName);
         const NodeClass = window.Konva[nameNode];
 
+        if (!NodeClass) {
+          console.error('vue-konva error: Can not find node ' + nameNode);
+          return;
+        }
+
         this._stage = new NodeClass();
         this._stage.VueComponent = this;
         const animationStage = this._stage.to.bind(this._stage);
