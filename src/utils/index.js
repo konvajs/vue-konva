@@ -1,6 +1,5 @@
 import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
-import camelCase from 'lodash/camelCase';
 
 export const componentPrefix = 'v';
 
@@ -9,9 +8,7 @@ function capitalizeFirstLetter(string) {
 }
 
 export function getName(componentTag) {
-  return capitalizeFirstLetter(
-    camelCase(componentTag.replace(componentPrefix + '-', ''))
-  );
+  return capitalizeFirstLetter(componentTag.replace(componentPrefix + '-', ''));
 }
 
 export function copy(obj) {
