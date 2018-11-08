@@ -2,14 +2,16 @@ import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
 import camelCase from 'lodash/camelCase';
 
-export const componentPrefix = 'v'
+export const componentPrefix = 'v';
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 export function getName(componentTag) {
-  return capitalizeFirstLetter(camelCase(componentTag.replace(componentPrefix + '-', '')));
+  return capitalizeFirstLetter(
+    camelCase(componentTag.replace(componentPrefix + '-', ''))
+  );
 }
 
 export function copy(obj) {
@@ -18,9 +20,9 @@ export function copy(obj) {
 
 export function createListener(obj) {
   const output = {};
-  Object.keys(obj).forEach((eventName) => {
+  Object.keys(obj).forEach(eventName => {
     output['on' + eventName] = obj[eventName];
-  })
+  });
   return output;
 }
 
@@ -37,7 +39,14 @@ export function findParentKonva(instance) {
   return re(instance.$parent);
 }
 
-export {
-  updatePicture,
-  applyNodeProps
-};
+export function findKonvaNode(instance) {
+  if (instance.getNode) {
+    return instance.getNode();
+  } else if (instance.$children.length === 0) {
+    return null;
+  } else {
+    return findKonvaNode(instance.$children[0]);
+  }
+}
+
+export { updatePicture, applyNodeProps };

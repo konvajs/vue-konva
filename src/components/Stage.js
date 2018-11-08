@@ -1,16 +1,15 @@
-<template>
- <div>{{this.config}}<slot></slot></div>
-</template>
-
-<script>
+import Vue from 'vue';
 import { applyNodeProps, createListener } from '../utils';
-const EventEmitter = require("events");
+const EventEmitter = require('events');
 
 class StageEmitter extends EventEmitter {}
 
 let cacheConfig = {};
 
-export default {
+export default Vue.component('v-stage', {
+  render: function(createElement) {
+    return createElement('div', [this.config, this.$slots.default]);
+  },
   props: {
     config: {
       type: Object,
@@ -33,7 +32,6 @@ export default {
     this._stage = new window.Konva.Stage({
       width: this.config.width,
       height: this.config.height,
-      // container: this.$refs.node
       container: this.$el
     });
     this.StageEmitter.emit('mounted', this._stage);
@@ -46,6 +44,9 @@ export default {
     this._stage.destroy();
   },
   methods: {
+    getNode() {
+      return this._stage;
+    },
     getStage() {
       return this._stage;
     },
@@ -58,5 +59,4 @@ export default {
       cacheConfig = props;
     }
   }
-};
-</script>
+});

@@ -1,24 +1,35 @@
 import {
   applyNodeProps,
-  copy,
   getName,
   findParentKonva,
   createListener,
-  updatePicture
-} from "../utils";
+  updatePicture,
+  findKonvaNode
+} from '../utils';
 
-const EventEmitter = require("events");
+const EventEmitter = require('events');
+
+const EVENTS_NAMESPACE = '.vue-konva-event';
 
 export default function() {
   class StageEmitter extends EventEmitter {}
-  let cacheConfig = {};
   return {
-    // template: '<div>{{this.config}}<slot></slot></div>',
     render(createElement) {
-      return createElement('div', [
-        this.config,
-        this.$slots.default
-      ]);
+      return createElement('div', [this.config, this.$slots.default]);
+    },
+    watch: {
+      // $attrs: {
+      //   handler(val) {
+      //     this.uploadKonva();
+      //   },
+      //   deep: true
+      // },
+      config: {
+        handler(val) {
+          this.uploadKonva();
+        },
+        deep: true
+      }
     },
     props: {
       config: {
@@ -42,25 +53,37 @@ export default function() {
       if (_parentStage && Object.keys(_parentStage).length) {
         this.initKonva(_parentStage);
       }
-      parentKonva.StageEmitter.on("mounted", parentStage => {
+      parentKonva.StageEmitter.on('mounted', parentStage => {
         this.initKonva(parentStage);
       });
     },
     updated() {
-      // this._stage.moveToTop();
       this.uploadKonva();
+      // check indexes
+      // somehow this.$children are not ordered correctly
+      // so we have to dive-in into componentOptions of vnode
+      this.$children.forEach(component => {
+        const vnode = component.$vnode;
+        const index = this.$vnode.componentOptions.children.indexOf(vnode);
+        const konvaNode = findKonvaNode(component);
+        konvaNode.setZIndex(index);
+      });
     },
     destroyed() {
+      updatePicture(this._stage);
       this._stage.destroy();
+      this._stage.off(EVENTS_NAMESPACE);
     },
     methods: {
+      getNode() {
+        return this._stage;
+      },
       getStage() {
         return this._stage;
       },
       initKonva(parentStage) {
         const vm = this;
         const tagName = this.name;
-        this._parentStage = this.parentStage;
         const nameNode = getName(tagName);
         const NodeClass = window.Konva[nameNode];
 
@@ -72,7 +95,7 @@ export default function() {
           animationStage(newConfig);
           setTimeout(() => {
             Object.keys(vm._stage.attrs).forEach(key => {
-              if (typeof vm._stage.attrs[key] !== "function") {
+              if (typeof vm._stage.attrs[key] !== 'function') {
                 vm.config[key] = vm._stage.attrs[key];
               }
             });
@@ -80,17 +103,21 @@ export default function() {
         };
 
         this.uploadKonva();
-        this.StageEmitter.emit("mounted", this._stage);
+        this.StageEmitter.emit('mounted', this._stage);
+        // const index = this.$parent.$children.indexOf(this);
         parentStage.add(this._stage);
+        // this._stage.setZIndex(index);
         updatePicture(parentStage);
       },
       uploadKonva() {
+        const oldProps = this.oldProps || {};
         const props = {
+          ...this.$attrs,
           ...this.config,
           ...createListener(this.$listeners)
         };
-        applyNodeProps(this, props, cacheConfig);
-        cacheConfig = props;
+        applyNodeProps(this, props, oldProps);
+        this.oldProps = props;
       }
     }
   };
