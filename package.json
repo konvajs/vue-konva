@@ -11,8 +11,7 @@
   "author": "Rafael Escala <rafaesc92@gmail.com>",
   "main": "umd/vue-konva.js",
   "files": [
-    "src",
-    "lib"
+    "umd"
   ],
   "repository": {
     "type": "git",
