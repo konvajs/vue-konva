@@ -62,12 +62,19 @@ export default function() {
       // check indexes
       // somehow this.$children are not ordered correctly
       // so we have to dive-in into componentOptions of vnode
+      let needRedraw = false;
       this.$children.forEach(component => {
         const vnode = component.$vnode;
         const index = this.$vnode.componentOptions.children.indexOf(vnode);
         const konvaNode = findKonvaNode(component);
-        konvaNode.setZIndex(index);
+        if (konvaNode.getZIndex() !== index) {
+          konvaNode.setZIndex(index);
+          needRedraw = true;
+        }
       });
+      if (needRedraw) {
+        updatePicture(this._stage);
+      }
     },
     destroyed() {
       updatePicture(this._stage);

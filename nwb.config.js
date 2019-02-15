@@ -1,8 +1,15 @@
 module.exports = {
-  type: 'react-component',
+  type: 'web-module',
   npm: {
+    cjs: false,
     esModules: false,
-    umd: false
+    umd: {
+      global: 'VueKonva',
+      externals: {
+        vue: 'Vue',
+        konva: 'Konva'
+      }
+    }
   },
   // may be useful for debugging tests
   karma: {

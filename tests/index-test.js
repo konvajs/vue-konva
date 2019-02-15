@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import '../src/index';
 import './mocking';
 import Konva from 'konva';
 import sinon from 'sinon/pkg/sinon';
@@ -294,6 +293,50 @@ describe('Test props setting', function() {
     layer.batchDraw.restore();
   });
 
+  it.only('changing order should redraw layer', () => {
+    const { vm } = mount({
+      template: `
+          <v-stage ref="stage" :config="stage">
+            <v-layer ref="layer">
+            <v-rect v-for="item in items" :config="item" :key="item.id">
+              </v-rect>
+            </v-layer>
+          </v-stage>
+        `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400
+          },
+          items: [
+            {
+              id: 1,
+              width: 100,
+              height: 100
+            },
+            {
+              id: 2,
+              width: 100,
+              height: 100
+            }
+          ]
+        };
+      }
+    });
+
+    const layer = vm.$refs.layer.getNode();
+
+    sinon.spy(layer, 'batchDraw');
+
+    const items = vm.items.concat();
+    items.reverse();
+    vm.items = items;
+    console.log(items);
+    expect(layer.batchDraw.callCount).to.equal(1);
+    layer.batchDraw.restore();
+  });
+
   it('unset props', () => {
     const { vm } = mount({
       template: `
@@ -361,36 +404,6 @@ describe('Test props setting', function() {
     vm.rect.fill = 'white';
 
     expect(rect.x()).to.equal(20);
-  });
-
-  it.skip('can set props directly', () => {
-    const { vm } = mount({
-      template: `
-        <v-stage ref="stage" :width="stage.width" :height="stage.height">
-          <v-layer>
-            <v-rect :x="10" :y="10" :width="rectWidth" :height="100" ref="rect">
-            </v-rect>
-          </v-layer>
-        </v-stage>
-      `,
-      data() {
-        return {
-          stage: {
-            width: 300,
-            height: 400
-          },
-          rectWidth: 100
-        };
-      }
-    });
-
-    const rect = vm.$refs.rect.getNode();
-
-    expect(rect.width()).to.equal(100);
-    expect(rect.height()).to.equal(100);
-
-    vm.rectWidth = 300;
-    expect(rect.width()).to.equal(300);
   });
 });
 

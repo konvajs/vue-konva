@@ -9,7 +9,7 @@
   ],
   "homepage": "https://github.com/konvajs/vue-konva#readme",
   "author": "Rafael Escala <rafaesc92@gmail.com>",
-  "main": "lib/index.js",
+  "main": "umd/vue-konva.js",
   "files": [
     "src",
     "lib"
@@ -23,7 +23,7 @@
     "url": "https://github.com/konvajs/vue-konva/issues"
   },
   "scripts": {
-    "build": "nwb build-react-component",
+    "build": "nwb build",
     "clean": "nwb clean-module && nwb clean-demo",
     "test": "nwb test-react",
     "test:coverage": "nwb test-react --coverage",
