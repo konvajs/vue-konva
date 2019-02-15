@@ -23,18 +23,8 @@ Also you can create custom shape.
 To get more info about `Konva` you can read [Konva Overview](http://konvajs.github.io/docs/overview.html).
 
 ## Documentation / live edit
-All examples are editable. You can see a result right on the page.
 
-[http://rafaelescala.com/vue-konva-doc/](http://rafaelescala.com/vue-konva-doc/)
-
-## [Examples](http://rafaelescala.com/vue-konva/#/)
-
-* [Konva Star Demo](http://rafaelescala.com/vue-konva/#/stars), by [Konva](https://konvajs.github.io/docs/sandbox/Elastic_Stars.html)
-* [Demo with Vuex](http://rafaelescala.com/vue-konva/#/vuex-example), by [@Ldoppea](https://github.com/Ldoppea)
-* [Radar](http://rafaelescala.com/vue-konva/#/radar-demo), by [@imudin](https://github.com/imudin),[@Ldoppea](https://github.com/Ldoppea)
-* [Transformer](http://rafaelescala.com/vue-konva/#/transformer), by [@botz](https://github.com/Botz)
-
-[Examples sources](https://github.com/rafaesc/vue-konva/tree/master/examples)
+See [Tutorials page](https://konvajs.github.io/docs/vue/)
 
 ## Quick Start
 
