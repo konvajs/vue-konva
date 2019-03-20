@@ -696,12 +696,6 @@ var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
     },
 
     watch: {
-      // $attrs: {
-      //   handler(val) {
-      //     this.uploadKonva();
-      //   },
-      //   deep: true
-      // },
       config: {
         handler: function handler(val) {
           this.uploadKonva();
@@ -739,17 +733,20 @@ var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
       });
     },
     updated: function updated() {
-      var _this3 = this;
-
       this.uploadKonva();
+      var needRedraw = false;
       // check indexes
       // somehow this.$children are not ordered correctly
       // so we have to dive-in into componentOptions of vnode
-      var needRedraw = false;
-      this.$children.forEach(function (component) {
-        var vnode = component.$vnode;
-        var index = _this3.$vnode.componentOptions.children.indexOf(vnode);
-        var konvaNode = findKonvaNode(component);
+      // also componentOptions.children may have empty nodes, so we need to filter them first
+      var children = this.$vnode.componentOptions.children && this.$vnode.componentOptions.children.filter(function (c) {
+        return c.componentInstance;
+      });
+
+      children && children.forEach(function ($vnode, index) {
+        // const vnode = component.$vnode;
+        // const index = children.indexOf(vnode);
+        var konvaNode = findKonvaNode($vnode.componentInstance);
         if (konvaNode.getZIndex() !== index) {
           konvaNode.setZIndex(index);
           needRedraw = true;

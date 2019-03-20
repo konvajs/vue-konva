@@ -18,12 +18,6 @@ export default function() {
       return createElement('div', [this.config, this.$slots.default]);
     },
     watch: {
-      // $attrs: {
-      //   handler(val) {
-      //     this.uploadKonva();
-      //   },
-      //   deep: true
-      // },
       config: {
         handler(val) {
           this.uploadKonva();
@@ -59,19 +53,25 @@ export default function() {
     },
     updated() {
       this.uploadKonva();
+      let needRedraw = false;
       // check indexes
       // somehow this.$children are not ordered correctly
       // so we have to dive-in into componentOptions of vnode
-      let needRedraw = false;
-      this.$children.forEach(component => {
-        const vnode = component.$vnode;
-        const index = this.$vnode.componentOptions.children.indexOf(vnode);
-        const konvaNode = findKonvaNode(component);
-        if (konvaNode.getZIndex() !== index) {
-          konvaNode.setZIndex(index);
-          needRedraw = true;
-        }
-      });
+      // also componentOptions.children may have empty nodes, so we need to filter them first
+      const children =
+        this.$vnode.componentOptions.children &&
+        this.$vnode.componentOptions.children.filter(c => c.componentInstance);
+
+      children &&
+        children.forEach(($vnode, index) => {
+          // const vnode = component.$vnode;
+          // const index = children.indexOf(vnode);
+          const konvaNode = findKonvaNode($vnode.componentInstance);
+          if (konvaNode.getZIndex() !== index) {
+            konvaNode.setZIndex(index);
+            needRedraw = true;
+          }
+        });
       if (needRedraw) {
         updatePicture(this._stage);
       }

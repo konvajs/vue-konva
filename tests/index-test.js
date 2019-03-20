@@ -202,6 +202,53 @@ describe('Test props setting', function() {
     expect(rect.width()).to.equal(200);
   });
 
+  it('can use v-if', done => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref="stage" :config="stage">
+          <v-layer ref="layer">
+          <v-text
+            v-if="textVisible"
+            :config="{ text: 'some text' }"
+          />
+          <v-rect
+            :config="{
+              x: 20,
+              y: 50,
+              width: 100,
+              height: 100,
+              fill: 'red',
+              shadowBlur: 10
+            }"
+          />
+          </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400
+          },
+          textVisible: true
+        };
+      }
+    });
+
+    const layer = vm.$refs.layer.getNode();
+
+    expect(layer.children.length).to.equal(2);
+    sinon.spy(Konva.Util, 'warn');
+    vm.textVisible = false;
+    Vue.nextTick(() => {
+      expect(layer.children.length).to.equal(1);
+      expect(layer.children[0].className).to.equal('Rect');
+      expect(Konva.Util.warn.callCount).to.equal(0);
+      Konva.Util.warn.restore();
+      done();
+    });
+  });
+
   it('can set stage props', done => {
     const { vm } = mount({
       template: `
@@ -541,7 +588,7 @@ describe('Test Events', function() {
     // remove layer
     vm.drawLayer = false;
 
-    expect(layer.getParent()).to.equal(undefined);
+    expect(layer.getParent()).to.equal(null);
 
     rect._fire('click', {});
 
