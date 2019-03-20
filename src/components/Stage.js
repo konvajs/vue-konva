@@ -10,6 +10,14 @@ export default Vue.component('v-stage', {
   render: function(createElement) {
     return createElement('div', [this.config, this.$slots.default]);
   },
+  watch: {
+    config: {
+      handler(val) {
+        this.uploadKonva();
+      },
+      deep: true
+    }
+  },
   props: {
     config: {
       type: Object,

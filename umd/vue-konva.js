@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.0.0 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.0.2 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -604,6 +604,15 @@ var cacheConfig = {};
 /* harmony default export */ var Stage = (external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_default.a.component('v-stage', {
   render: function render(createElement) {
     return createElement('div', [this.config, this.$slots.default]);
+  },
+  watch: {
+    config: {
+      handler: function handler(val) {
+        this.uploadKonva();
+      },
+
+      deep: true
+    }
   },
   props: {
     config: {

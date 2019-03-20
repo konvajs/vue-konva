@@ -202,6 +202,33 @@ describe('Test props setting', function() {
     expect(rect.width()).to.equal(200);
   });
 
+  it('can set stage props', done => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref="stage" :config="stage">
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 0,
+            height: 400
+          }
+        };
+      },
+      mounted() {
+        this.stage.width = 300;
+      }
+    });
+
+    const stage = vm.$refs.stage.getNode();
+
+    Vue.nextTick(() => {
+      expect(stage.width()).to.equal(300);
+      done();
+    });
+  });
+
   it('can update component events', () => {
     const wrap = mount({
       render(createElement) {
@@ -293,7 +320,7 @@ describe('Test props setting', function() {
     layer.batchDraw.restore();
   });
 
-  it.only('changing order should redraw layer', () => {
+  it('changing order should redraw layer', () => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage" :config="stage">
@@ -332,7 +359,6 @@ describe('Test props setting', function() {
     const items = vm.items.concat();
     items.reverse();
     vm.items = items;
-    console.log(items);
     expect(layer.batchDraw.callCount).to.equal(1);
     layer.batchDraw.restore();
   });
