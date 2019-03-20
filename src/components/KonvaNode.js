@@ -65,7 +65,7 @@ export default function() {
       let needRedraw = false;
       this.$children.forEach(component => {
         const vnode = component.$vnode;
-        const index = this.$vnode.componentOptions.children.indexOf(vnode);
+        const index = this.$vnode.componentOptions.children.filter(vnode => vnode.tag !== undefined).indexOf(vnode);
         const konvaNode = findKonvaNode(component);
         if (konvaNode.getZIndex() !== index) {
           konvaNode.setZIndex(index);
