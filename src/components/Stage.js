@@ -59,12 +59,14 @@ export default Vue.component('v-stage', {
       return this._stage;
     },
     uploadKonva() {
+      const oldProps = this.oldProps || {};
       const props = {
+        ...this.$attrs,
         ...this.config,
         ...createListener(this.$listeners)
       };
-      applyNodeProps(this, props, cacheConfig);
-      cacheConfig = props;
+      applyNodeProps(this, props, oldProps);
+      this.oldProps = props;
     }
   }
 });

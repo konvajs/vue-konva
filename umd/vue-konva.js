@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.0.2 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.0.3 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -656,9 +656,10 @@ var cacheConfig = {};
       return this._stage;
     },
     uploadKonva: function uploadKonva() {
-      var props = _extends({}, this.config, createListener(this.$listeners));
-      applyNodeProps(this, props, cacheConfig);
-      cacheConfig = props;
+      var oldProps = this.oldProps || {};
+      var props = _extends({}, this.$attrs, this.config, createListener(this.$listeners));
+      applyNodeProps(this, props, oldProps);
+      this.oldProps = props;
     }
   }
 }));
