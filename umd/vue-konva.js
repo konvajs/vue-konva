@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.0.4 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.0.5 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -295,6 +295,7 @@ var fakeContainer = document.createElement('div');
       }
     }
   },
+
   created: function created() {
     this._konvaNode = new window.Konva.Stage({
       width: this.config.width,
@@ -303,6 +304,7 @@ var fakeContainer = document.createElement('div');
     });
   },
   mounted: function mounted() {
+    this.$el.innerHTML = '';
     this._konvaNode.container(this.$el);
     this.uploadKonva();
   },

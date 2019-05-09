@@ -21,6 +21,17 @@ describe('Test references', function() {
     expect(stage).to.not.equal(undefined);
   });
 
+  it('Make sure it does not draw HTML', () => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref="stage">
+        </v-stage>
+      `
+    });
+    const stage = vm.$refs.stage.getStage();
+    expect(stage).to.not.equal(undefined);
+  });
+
   it('set initial stage size', () => {
     const { vm } = mount({
       template: `
@@ -64,6 +75,34 @@ describe('Test references', function() {
 
     const layer = vm.$refs.layer.getNode();
     expect(layer instanceof Konva.Layer).to.equal(true);
+  });
+
+  it('Make sure it does not draw HTML', done => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref="stage" :config="stage">
+          <v-layer ref="layer">
+          </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400
+          }
+        };
+      }
+    });
+
+    const stage = vm.$refs.stage.getStage();
+
+    setTimeout(() => {
+      const container = stage.container();
+
+      expect(container.children.length).to.equal(1);
+      done();
+    }, 50);
   });
 });
 

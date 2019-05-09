@@ -23,6 +23,7 @@ export default Vue.component('v-stage', {
       }
     }
   },
+
   created() {
     this._konvaNode = new window.Konva.Stage({
       width: this.config.width,
@@ -31,6 +32,7 @@ export default Vue.component('v-stage', {
     });
   },
   mounted() {
+    this.$el.innerHTML = '';
     this._konvaNode.container(this.$el);
     this.uploadKonva();
   },
