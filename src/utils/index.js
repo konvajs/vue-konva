@@ -35,7 +35,7 @@ export function createListener(obj) {
 
 export function findParentKonva(instance) {
   function re(instance) {
-    if (instance.StageEmitter) {
+    if (instance._konvaNode) {
       return instance;
     }
     if (instance.$parent) {

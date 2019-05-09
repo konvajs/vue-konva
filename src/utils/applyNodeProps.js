@@ -14,7 +14,7 @@ export default function applyNodeProps(
     const message = `VueKonva: You are using "id" attribute for Konva node. In some very rare cases it may produce bugs. Currently we recommend not to use it and use "name" attribute instead.`;
     console.warn(message);
   }
-  const instance = vueComponent._stage;
+  const instance = vueComponent._konvaNode;
   var updatedProps = {};
   var hasUpdates = false;
   for (let key in oldProps) {

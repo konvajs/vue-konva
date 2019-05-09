@@ -1,10 +1,7 @@
 import Vue from 'vue';
 import { applyNodeProps, createListener } from '../utils';
-const EventEmitter = require('events');
 
-class StageEmitter extends EventEmitter {}
-
-let cacheConfig = {};
+const fakeContainer = document.createElement('div');
 
 export default Vue.component('v-stage', {
   render: function(createElement) {
@@ -26,37 +23,29 @@ export default Vue.component('v-stage', {
       }
     }
   },
-  data() {
-    return {
-      _stage: {}
-    };
-  },
   created() {
-    this.StageEmitter = new StageEmitter();
-    this.StageEmitter.setMaxListeners(0);
-    this._stage = {};
-  },
-  mounted() {
-    this._stage = new window.Konva.Stage({
+    this._konvaNode = new window.Konva.Stage({
       width: this.config.width,
       height: this.config.height,
-      container: this.$el
+      container: fakeContainer
     });
-    this.StageEmitter.emit('mounted', this._stage);
+  },
+  mounted() {
+    this._konvaNode.container(this.$el);
     this.uploadKonva();
   },
   updated() {
     this.uploadKonva();
   },
   beforeDestroy() {
-    this._stage.destroy();
+    this._konvaNode.destroy();
   },
   methods: {
     getNode() {
-      return this._stage;
+      return this._konvaNode;
     },
     getStage() {
-      return this._stage;
+      return this._konvaNode;
     },
     uploadKonva() {
       const oldProps = this.oldProps || {};
