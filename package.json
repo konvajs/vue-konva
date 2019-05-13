@@ -10,7 +10,7 @@
   "homepage": "https://github.com/konvajs/vue-konva#readme",
   "author": "Rafael Escala <rafaesc92@gmail.com>",
   "main": "umd/vue-konva.js",
-  "types": "",
+  "types": "index.d.ts",
   "files": [
     "umd"
   ],
