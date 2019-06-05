@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.0.5 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.0.6 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -147,10 +147,6 @@ function applyNodeProps(vueComponent) {
   var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var oldProps = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-  if ('id' in props) {
-    var message = 'VueKonva: You are using "id" attribute for Konva node. In some very rare cases it may produce bugs. Currently we recommend not to use it and use "name" attribute instead.';
-    console.warn(message);
-  }
   var instance = vueComponent._konvaNode;
   var updatedProps = {};
   var hasUpdates = false;
@@ -197,17 +193,6 @@ function applyNodeProps(vueComponent) {
   if (hasUpdates) {
     instance.setAttrs(updatedProps);
     updatePicture(instance);
-    // var val, prop;
-    // for (prop in updatedProps) {
-    //   val = updatedProps[prop];
-    //   if (val instanceof window.Image && !val.complete) {
-    //     var node = instance;
-    //     val.addEventListener('load', function() {
-    //       var layer = node.getLayer();
-    //       layer && layer.batchDraw();
-    //     });
-    //   }
-    // }
   }
 }
 // CONCATENATED MODULE: ./src/utils/index.js
@@ -272,8 +257,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
-var fakeContainer = document.createElement('div');
-
 /* harmony default export */ var Stage = (external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_default.a.component('v-stage', {
   render: function render(createElement) {
     return createElement('div', [this.config, this.$slots.default]);
@@ -300,7 +283,8 @@ var fakeContainer = document.createElement('div');
     this._konvaNode = new window.Konva.Stage({
       width: this.config.width,
       height: this.config.height,
-      container: fakeContainer
+      // create fake container, later it will be replaced with real div on the page
+      container: document.createElement('div')
     });
   },
   mounted: function mounted() {

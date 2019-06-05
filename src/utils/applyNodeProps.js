@@ -10,10 +10,6 @@ export default function applyNodeProps(
   props = {},
   oldProps = {}
 ) {
-  if ('id' in props) {
-    const message = `VueKonva: You are using "id" attribute for Konva node. In some very rare cases it may produce bugs. Currently we recommend not to use it and use "name" attribute instead.`;
-    console.warn(message);
-  }
   const instance = vueComponent._konvaNode;
   var updatedProps = {};
   var hasUpdates = false;
@@ -66,16 +62,5 @@ export default function applyNodeProps(
   if (hasUpdates) {
     instance.setAttrs(updatedProps);
     updatePicture(instance);
-    // var val, prop;
-    // for (prop in updatedProps) {
-    //   val = updatedProps[prop];
-    //   if (val instanceof window.Image && !val.complete) {
-    //     var node = instance;
-    //     val.addEventListener('load', function() {
-    //       var layer = node.getLayer();
-    //       layer && layer.batchDraw();
-    //     });
-    //   }
-    // }
   }
 }

@@ -910,4 +910,21 @@ describe('test reconciler', () => {
     expect(layer.children[1].name()).to.equal('rect3');
     expect(layer.children[2].name()).to.equal('rect2');
   });
+
+  it('can draw several stages', function() {
+    const { vm } = mount({
+      template: `
+      <div>
+          <v-stage ref="stage">
+            <v-layer ref="layer">
+            </v-layer>
+          </v-stage>
+          <v-stage ref="stage">
+            <v-layer ref="layer">
+            </v-layer>
+          </v-stage>
+          </div>
+        `
+    });
+  });
 });

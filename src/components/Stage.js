@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import { applyNodeProps, createListener } from '../utils';
 
-const fakeContainer = document.createElement('div');
-
 export default Vue.component('v-stage', {
   render: function(createElement) {
     return createElement('div', [this.config, this.$slots.default]);
@@ -28,7 +26,8 @@ export default Vue.component('v-stage', {
     this._konvaNode = new window.Konva.Stage({
       width: this.config.width,
       height: this.config.height,
-      container: fakeContainer
+      // create fake container, later it will be replaced with real div on the page
+      container: document.createElement('div')
     });
   },
   mounted() {
