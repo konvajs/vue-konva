@@ -3,7 +3,7 @@ import { applyNodeProps, createListener } from '../utils';
 
 export default Vue.component('v-stage', {
   render: function(createElement) {
-    return createElement('div', [this.config, this.$slots.default]);
+    return createElement('div', this.$slots.default);
   },
   watch: {
     config: {

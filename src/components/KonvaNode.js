@@ -12,7 +12,7 @@ const EVENTS_NAMESPACE = '.vue-konva-event';
 export default function() {
   return {
     render(createElement) {
-      return createElement('div', [this.config, this.$slots.default]);
+      return createElement('div', this.$slots.default);
     },
     watch: {
       config: {
