@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.0.6 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.0.8 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -259,7 +259,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 /* harmony default export */ var Stage = (external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_default.a.component('v-stage', {
   render: function render(createElement) {
-    return createElement('div', [this.config, this.$slots.default]);
+    return createElement('div', this.$slots.default);
   },
   watch: {
     config: {
@@ -324,7 +324,7 @@ var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
 /* harmony default export */ var KonvaNode = (function () {
   return {
     render: function render(createElement) {
-      return createElement('div', [this.config, this.$slots.default]);
+      return createElement('div', this.$slots.default);
     },
 
     watch: {
