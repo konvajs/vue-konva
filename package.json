@@ -30,14 +30,14 @@
     "test:watch": "nwb test-react --server"
   },
   "peerDependencies": {
-    "konva": "^3.2.2"
+    "konva": "^3.2.5 || ^4.0.3"
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.25",
     "vue-template-compiler": "^2.6.10",
     "vue": "^2.6.10",
     "chai": "^4.2.0",
-    "konva": "^3.2.2",
+    "konva": "^3.2.5 || ^4.0.3",
     "nwb": "^0.23.0",
     "sinon": "^7.3.0"
   },
