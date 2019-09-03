@@ -2,6 +2,7 @@ import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
 
 export const componentPrefix = 'v';
+export const konvaNodeMarker = '_konvaNode'
 
 function camelize(str) {
   return str
@@ -47,7 +48,7 @@ export function findParentKonva(instance) {
 }
 
 export function findKonvaNode(instance) {
-  if (instance.getNode) {
+  if (instance.$options[konvaNodeMarker]) {
     return instance.getNode();
   } else if (instance.$children.length === 0) {
     return null;

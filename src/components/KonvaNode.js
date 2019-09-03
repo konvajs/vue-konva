@@ -4,13 +4,17 @@ import {
   findParentKonva,
   createListener,
   updatePicture,
-  findKonvaNode
+  findKonvaNode,
+  konvaNodeMarker
 } from '../utils';
 
 const EVENTS_NAMESPACE = '.vue-konva-event';
 
 export default function() {
   return {
+    // Mark it to detect whether an Vue instance is KonvaNode or not later
+    [konvaNodeMarker]: true,
+
     render(createElement) {
       return createElement('div', this.$slots.default);
     },
