@@ -200,6 +200,7 @@ function applyNodeProps(vueComponent) {
 
 
 var componentPrefix = 'v';
+var konvaNodeMarker = '_konvaNode';
 
 function camelize(str) {
   return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (letter, index) {
@@ -241,7 +242,7 @@ function findParentKonva(instance) {
 }
 
 function findKonvaNode(instance) {
-  if (instance.getNode) {
+  if (instance.$options[konvaNodeMarker]) {
     return instance.getNode();
   } else if (instance.$children.length === 0) {
     return null;
@@ -322,98 +323,89 @@ var KonvaNode_extends = Object.assign || function (target) { for (var i = 1; i <
 var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
 
 /* harmony default export */ var KonvaNode = (function () {
-  return {
-    render: function render(createElement) {
-      return createElement('div', this.$slots.default);
-    },
+  var _ref;
 
-    watch: {
-      config: {
-        handler: function handler(val) {
-          this.uploadKonva();
-        },
-
-        deep: true
-      }
-    },
-    props: {
-      config: {
-        type: Object,
-        default: function _default() {
-          return {};
-        }
-      }
-    },
-    created: function created() {
-      this.name = this.$options._componentTag;
-      this.initKonva();
-    },
-    mounted: function mounted() {
-      var parentVueInstance = findParentKonva(this);
-      var parentKonvaNode = parentVueInstance._konvaNode;
-      parentKonvaNode.add(this._konvaNode);
-      updatePicture(this._konvaNode);
-    },
-    updated: function updated() {
-      this.uploadKonva();
-      var needRedraw = false;
-      // check indexes
-      // somehow this.$children are not ordered correctly
-      // so we have to dive-in into componentOptions of vnode
-      // also componentOptions.children may have empty nodes, so we need to filter them first
-      var children = this.$vnode.componentOptions.children && this.$vnode.componentOptions.children.filter(function (c) {
-        return c.componentInstance;
-      });
-
-      children && children.forEach(function ($vnode, index) {
-        // const vnode = component.$vnode;
-        // const index = children.indexOf(vnode);
-        var konvaNode = findKonvaNode($vnode.componentInstance);
-        if (konvaNode.getZIndex() !== index) {
-          konvaNode.setZIndex(index);
-          needRedraw = true;
-        }
-      });
-      if (needRedraw) {
-        updatePicture(this._konvaNode);
-      }
-    },
-    destroyed: function destroyed() {
-      updatePicture(this._konvaNode);
-      this._konvaNode.destroy();
-      this._konvaNode.off(KonvaNode_EVENTS_NAMESPACE);
-    },
-
-    methods: {
-      getNode: function getNode() {
-        return this._konvaNode;
-      },
-      getStage: function getStage() {
-        return this._konvaNode;
-      },
-      initKonva: function initKonva() {
-        var tagName = this.name;
-        var nameNode = getName(tagName);
-        var NodeClass = window.Konva[nameNode];
-
-        if (!NodeClass) {
-          console.error('vue-konva error: Can not find node ' + nameNode);
-          return;
-        }
-
-        this._konvaNode = new NodeClass();
-        this._konvaNode.VueComponent = this;
-
+  return _ref = {}, _ref[konvaNodeMarker] = true, _ref.render = function render(createElement) {
+    return createElement('div', this.$slots.default);
+  }, _ref.watch = {
+    config: {
+      handler: function handler(val) {
         this.uploadKonva();
       },
-      uploadKonva: function uploadKonva() {
-        var oldProps = this.oldProps || {};
-        var props = KonvaNode_extends({}, this.$attrs, this.config, createListener(this.$listeners));
-        applyNodeProps(this, props, oldProps);
-        this.oldProps = props;
+
+      deep: true
+    }
+  }, _ref.props = {
+    config: {
+      type: Object,
+      default: function _default() {
+        return {};
       }
     }
-  };
+  }, _ref.created = function created() {
+    this.name = this.$options._componentTag;
+    this.initKonva();
+  }, _ref.mounted = function mounted() {
+    var parentVueInstance = findParentKonva(this);
+    var parentKonvaNode = parentVueInstance._konvaNode;
+    parentKonvaNode.add(this._konvaNode);
+    updatePicture(this._konvaNode);
+  }, _ref.updated = function updated() {
+    this.uploadKonva();
+    var needRedraw = false;
+    // check indexes
+    // somehow this.$children are not ordered correctly
+    // so we have to dive-in into componentOptions of vnode
+    // also componentOptions.children may have empty nodes, so we need to filter them first
+    var children = this.$vnode.componentOptions.children && this.$vnode.componentOptions.children.filter(function (c) {
+      return c.componentInstance;
+    });
+
+    children && children.forEach(function ($vnode, index) {
+      // const vnode = component.$vnode;
+      // const index = children.indexOf(vnode);
+      var konvaNode = findKonvaNode($vnode.componentInstance);
+      if (konvaNode.getZIndex() !== index) {
+        konvaNode.setZIndex(index);
+        needRedraw = true;
+      }
+    });
+    if (needRedraw) {
+      updatePicture(this._konvaNode);
+    }
+  }, _ref.destroyed = function destroyed() {
+    updatePicture(this._konvaNode);
+    this._konvaNode.destroy();
+    this._konvaNode.off(KonvaNode_EVENTS_NAMESPACE);
+  }, _ref.methods = {
+    getNode: function getNode() {
+      return this._konvaNode;
+    },
+    getStage: function getStage() {
+      return this._konvaNode;
+    },
+    initKonva: function initKonva() {
+      var tagName = this.name;
+      var nameNode = getName(tagName);
+      var NodeClass = window.Konva[nameNode];
+
+      if (!NodeClass) {
+        console.error('vue-konva error: Can not find node ' + nameNode);
+        return;
+      }
+
+      this._konvaNode = new NodeClass();
+      this._konvaNode.VueComponent = this;
+
+      this.uploadKonva();
+    },
+    uploadKonva: function uploadKonva() {
+      var oldProps = this.oldProps || {};
+      var props = KonvaNode_extends({}, this.$attrs, this.config, createListener(this.$listeners));
+      applyNodeProps(this, props, oldProps);
+      this.oldProps = props;
+    }
+  }, _ref;
 });
 // CONCATENATED MODULE: ./src/index.js
 var src_extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
