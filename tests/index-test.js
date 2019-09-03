@@ -871,14 +871,14 @@ describe('test reconciler', () => {
   });
 
   it('change deep order', function() {
-    Vue.component('deep', {
+    const Deep = {
       props: ['name'],
       render(createElement) {
         return createElement('v-rect', {
           attrs: { config: { name: this.name } }
         });
       }
-    });
+    };
     const { vm } = mount({
       template: `
           <v-stage ref="stage">
@@ -888,6 +888,9 @@ describe('test reconciler', () => {
             </v-layer>
           </v-stage>
         `,
+      components: {
+        Deep
+      },
       data() {
         return {
           items: [1, 2, 3]
@@ -910,6 +913,51 @@ describe('test reconciler', () => {
     expect(layer.children[1].name()).to.equal('rect3');
     expect(layer.children[2].name()).to.equal('rect2');
   });
+
+
+  it('change deep order with detecting konva node correctly', () => {
+    const Deep = {
+      props: ['name'],
+      render(createElement) {
+        return createElement('v-rect', {
+          attrs: { config: { name: this.name } }
+        });
+      },
+      methods: {
+        getNode() {
+          return {}
+        }
+      }
+    };
+    const { vm } = mount({
+      template: `
+          <v-stage ref="stage">
+            <v-layer ref="layer">
+              <deep v-for="item in items" :name="'rect' + item" :key="item">
+              </deep>
+            </v-layer>
+          </v-stage>
+        `,
+      components: {
+        Deep
+      },
+      data() {
+        return {
+          items: [1, 2, 3]
+        };
+      }
+    });
+    const layer = vm.$refs.layer.getNode();
+
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect3');
+
+    vm.items = [3, 2, 1];
+    expect(layer.children[0].name()).to.equal('rect3');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect1');
+  })
 
   it('can draw several stages', function() {
     const { vm } = mount({
