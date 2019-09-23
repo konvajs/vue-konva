@@ -12,7 +12,8 @@
   "main": "umd/vue-konva.js",
   "types": "index.d.ts",
   "files": [
-    "umd"
+    "umd",
+    "index.d.ts"
   ],
   "repository": {
     "type": "git",
