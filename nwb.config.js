@@ -1,5 +1,12 @@
 module.exports = {
   type: 'web-module',
+  webpack: {
+    extra: {
+      output: {
+        globalObject: 'this'
+      }
+    }
+  },
   npm: {
     cjs: false,
     esModules: false,

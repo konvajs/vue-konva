@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.0.8 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.0.10 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -11,7 +11,7 @@
 		exports["VueKonva"] = factory(require("vue"), require("konva"));
 	else
 		root["VueKonva"] = factory(root["Vue"], root["Konva"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE__0__, __WEBPACK_EXTERNAL_MODULE__2__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE__0__, __WEBPACK_EXTERNAL_MODULE__2__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
