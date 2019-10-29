@@ -1,0 +1,94 @@
+{
+  "v-stage/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-layer/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-fast-layer/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-group/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-label/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-rect/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-circle/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-ellipse/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-wedge/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-line/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-sprite/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-image/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-text/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-text-path/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-star/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-ring/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-arc/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-tag/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-path/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-regular-polygon/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-arrow/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-shape/config": {
+    "type": "object",
+    "description": "Konva config object"
+  },
+  "v-transformer/config": {
+    "type": "object",
+    "description": "Konva config object"
+  }
+}

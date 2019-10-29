@@ -1,0 +1,163 @@
+{
+  "v-stage": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva stage"
+  },
+  "v-layer": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva layer"
+  },
+  "v-fast-layer": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva fast layer"
+  },
+  "v-group": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva group"
+  },
+  "v-label": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva label"
+  },
+  "v-rect": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva rectangle"
+  },
+  "v-circle": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva circle"
+  },
+  "v-ellipse": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva ellipse"
+  },
+  "v-wedge": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva wedge"
+  },
+  "v-line": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva line"
+  },
+  "v-sprite": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva sprite"
+  },
+  "v-image": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva image"
+  },
+  "v-text": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva text"
+  },
+  "v-text-path": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva text path"
+  },
+  "v-star": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva star"
+  },
+  "v-ring": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva ring"
+  },
+  "v-arc": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva arc"
+  },
+  "v-tag": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva tag"
+  },
+  "v-path": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva path"
+  },
+  "v-regular-polygon": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva regular polygon"
+  },
+  "v-arrow": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva arrow"
+  },
+  "v-shape": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva shape"
+  },
+  "v-transformer": {
+    "attributes": [
+      "config"
+    ],
+    "subtags": [],
+    "description": "Konva transformer"
+  }
+}
