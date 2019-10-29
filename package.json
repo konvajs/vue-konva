@@ -1,6 +1,6 @@
 {
   "name": "vue-konva",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "Vue binding to canvas element via Konva framework",
   "keywords": [
     "vue",
@@ -11,9 +11,14 @@
   "author": "Rafael Escala <rafaesc92@gmail.com>",
   "main": "umd/vue-konva.js",
   "types": "index.d.ts",
+  "vetur":{
+    "tags": "vetur/tags.json",
+    "attributes": "vetur/attributes.json"
+  },
   "files": [
     "umd",
-    "index.d.ts"
+    "index.d.ts",
+    "vetur/"
   ],
   "repository": {
     "type": "git",
