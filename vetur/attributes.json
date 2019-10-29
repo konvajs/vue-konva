@@ -90,5 +90,5 @@
   "v-transformer/config": {
     "type": "object",
     "description": "Konva config object"
-  },
+  }
 }
