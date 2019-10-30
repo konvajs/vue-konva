@@ -30,20 +30,28 @@ const KONVA_NODES = [
   'Shape',
   'Transformer'
 ];
-const components = {
-  Stage
-};
-
-KONVA_NODES.forEach(function(nodeName) {
-  components[nodeName] = KonvaNode();
-});
+const components = [
+  {
+    name: 'Stage',
+    component: Stage
+  },
+  ...KONVA_NODES.map(name => ({
+    name,
+    component: KonvaNode(name)
+  }))
+];
 
 const VueKonva = {
-  ...components,
-  install: Vue =>
-    Object.keys(components).forEach(k => {
-      Vue.component(`${componentPrefix}${k}`, components[k]);
+  install: (Vue, options) => {
+    let prefixToUse = componentPrefix;
+    if(options && options.prefix){
+      prefixToUse = options.prefix;
+    }
+    components.forEach(k => {
+      console.log(`${prefixToUse}${k.name}`);
+      Vue.component(`${prefixToUse}${k.name}`, k.component);
     })
+  }
 };
 
 export default VueKonva;

@@ -1,6 +1,5 @@
 import {
   applyNodeProps,
-  getName,
   findParentKonva,
   createListener,
   updatePicture,
@@ -10,7 +9,7 @@ import {
 
 const EVENTS_NAMESPACE = '.vue-konva-event';
 
-export default function() {
+export default function(nameNode) {
   return {
     // Mark it to detect whether an Vue instance is KonvaNode or not later
     [konvaNodeMarker]: true,
@@ -35,7 +34,6 @@ export default function() {
       }
     },
     created() {
-      this.name = this.$options._componentTag;
       this.initKonva();
     },
     mounted() {
@@ -82,8 +80,6 @@ export default function() {
         return this._konvaNode;
       },
       initKonva() {
-        const tagName = this.name;
-        const nameNode = getName(tagName);
         const NodeClass = window.Konva[nameNode];
 
         if (!NodeClass) {
