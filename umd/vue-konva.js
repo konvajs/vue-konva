@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.0.10 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.1.12 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -202,20 +202,6 @@ function applyNodeProps(vueComponent) {
 var componentPrefix = 'v';
 var konvaNodeMarker = '_konvaNode';
 
-function camelize(str) {
-  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (letter, index) {
-    return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
-  }).replace(/(\s|-)+/g, '');
-}
-
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-function getName(componentTag) {
-  return capitalizeFirstLetter(camelize(componentTag.replace(componentPrefix + '-', '')));
-}
-
 function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
@@ -322,7 +308,7 @@ var KonvaNode_extends = Object.assign || function (target) { for (var i = 1; i <
 
 var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
 
-/* harmony default export */ var KonvaNode = (function () {
+/* harmony default export */ var KonvaNode = (function (nameNode) {
   var _ref;
 
   return _ref = {}, _ref[konvaNodeMarker] = true, _ref.render = function render(createElement) {
@@ -343,7 +329,6 @@ var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
       }
     }
   }, _ref.created = function created() {
-    this.name = this.$options._componentTag;
     this.initKonva();
   }, _ref.mounted = function mounted() {
     var parentVueInstance = findParentKonva(this);
@@ -385,8 +370,6 @@ var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
       return this._konvaNode;
     },
     initKonva: function initKonva() {
-      var tagName = this.name;
-      var nameNode = getName(tagName);
       var NodeClass = window.Konva[nameNode];
 
       if (!NodeClass) {
@@ -408,8 +391,6 @@ var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
   }, _ref;
 });
 // CONCATENATED MODULE: ./src/index.js
-var src_extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 
 
 
@@ -419,21 +400,28 @@ if (typeof window !== 'undefined' && !window.Konva) {
 }
 
 var KONVA_NODES = ['Layer', 'FastLayer', 'Group', 'Label', 'Rect', 'Circle', 'Ellipse', 'Wedge', 'Line', 'Sprite', 'Image', 'Text', 'TextPath', 'Star', 'Ring', 'Arc', 'Tag', 'Path', 'RegularPolygon', 'Arrow', 'Shape', 'Transformer'];
-var components = {
-  Stage: Stage
-};
+var components = [{
+  name: 'Stage',
+  component: Stage
+}].concat(KONVA_NODES.map(function (name) {
+  return {
+    name: name,
+    component: KonvaNode(name)
+  };
+}));
 
-KONVA_NODES.forEach(function (nodeName) {
-  components[nodeName] = KonvaNode();
-});
-
-var VueKonva = src_extends({}, components, {
-  install: function install(Vue) {
-    return Object.keys(components).forEach(function (k) {
-      Vue.component('' + componentPrefix + k, components[k]);
+var VueKonva = {
+  install: function install(Vue, options) {
+    var prefixToUse = componentPrefix;
+    if (options && options.prefix) {
+      prefixToUse = options.prefix;
+    }
+    components.forEach(function (k) {
+      console.log('' + prefixToUse + k.name);
+      Vue.component('' + prefixToUse + k.name, k.component);
     });
   }
-});
+};
 
 /* harmony default export */ var src = __webpack_exports__["default"] = (VueKonva);
 

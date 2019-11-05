@@ -1,6 +1,6 @@
 {
   "name": "vue-konva",
-  "version": "2.0.12",
+  "version": "2.1.12",
   "description": "Vue binding to canvas element via Konva framework",
   "keywords": [
     "vue",
@@ -40,12 +40,12 @@
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.25",
-    "vue-template-compiler": "^2.6.10",
-    "vue": "^2.6.10",
     "chai": "^4.2.0",
     "konva": "^3.2.5 || ^4.0.3",
     "nwb": "^0.23.0",
-    "sinon": "^7.3.0"
+    "sinon": "^7.3.0",
+    "vue": "^2.6.10",
+    "vue-template-compiler": "^2.6.10"
   },
   "engines": {
     "node": ">= 4.0.0",

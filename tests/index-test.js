@@ -3,7 +3,7 @@ import './mocking';
 import Konva from 'konva';
 import sinon from 'sinon/pkg/sinon';
 import Vue from 'vue';
-import { mount } from '@vue/test-utils';
+import { mount,createLocalVue } from '@vue/test-utils';
 
 import VueKonva from '../src/index';
 
@@ -975,4 +975,42 @@ describe('test reconciler', () => {
         `
     });
   });
+});
+
+describe('Test plugin', function() {
+  const localVue = createLocalVue();
+  localVue.use(VueKonva, { prefix: 'Konva'});
+  
+  it('registers components with custom prefix', () => {
+    const { vm } = mount({
+      template: `
+        <konva-stage ref="stage" :config="stage">
+          <konva-layer ref="layer">
+            <konva-rect ref="rect"/>
+          </konva-layer>
+        </konva-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400
+          }
+        };
+      }
+    },{
+      localVue,
+    });
+
+    const stage = vm.$refs.stage.getStage();
+    expect(stage.children.length).to.equal(1);
+
+    const layer = vm.$refs.layer.getNode();
+    expect(layer.children.length).to.equal(1);
+    expect(layer instanceof Konva.Layer).to.equal(true);
+
+    const rect = vm.$refs.rect.getNode();
+    expect(rect instanceof Konva.Rect).to.equal(true);
+  });
+
 });

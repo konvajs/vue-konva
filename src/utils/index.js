@@ -4,24 +4,6 @@ import applyNodeProps from './applyNodeProps';
 export const componentPrefix = 'v';
 export const konvaNodeMarker = '_konvaNode'
 
-function camelize(str) {
-  return str
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
-      return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
-    })
-    .replace(/(\s|-)+/g, '');
-}
-
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-export function getName(componentTag) {
-  return capitalizeFirstLetter(
-    camelize(componentTag.replace(componentPrefix + '-', ''))
-  );
-}
-
 export function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
