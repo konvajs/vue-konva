@@ -11,7 +11,7 @@
   "author": "Rafael Escala <rafaesc92@gmail.com>",
   "main": "umd/vue-konva.js",
   "types": "index.d.ts",
-  "vetur":{
+  "vetur": {
     "tags": "vetur/tags.json",
     "attributes": "vetur/attributes.json"
   },
