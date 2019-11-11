@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.1.12 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.1.0 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
