@@ -417,7 +417,6 @@ var VueKonva = {
       prefixToUse = options.prefix;
     }
     components.forEach(function (k) {
-      console.log('' + prefixToUse + k.name);
       Vue.component('' + prefixToUse + k.name, k.component);
     });
   }

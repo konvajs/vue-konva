@@ -48,7 +48,6 @@ const VueKonva = {
       prefixToUse = options.prefix;
     }
     components.forEach(k => {
-      console.log(`${prefixToUse}${k.name}`);
       Vue.component(`${prefixToUse}${k.name}`, k.component);
     })
   }
