@@ -13,18 +13,19 @@
 
 Vue Konva is a JavaScript library for drawing complex canvas graphics using Vue.
 
-It provides declarative and reactive bindings to the [Konva Framework](http://konvajs.github.io/).
+It provides declarative and reactive bindings to the [Konva Framework](https://konvajs.org/).
 
 All `vue-konva` components correspond to `Konva` components of the same name with the prefix 'v-'. All the parameters available for `Konva` objects can add as `config` in the prop for corresponding `vue-konva` components.
 
-Core shapes are: v-rect, v-circle, v-ellipse, v-line, v-image, v-text, v-text-path, v-star, v-label, SVG Path, v-regular-polygon.
+Core shapes are: `v-rect`, `v-circle`, `v-ellipse`, `v-line`, `v-image`, `v-text`, `v-text-path`, `v-star`, `v-label`, `v-path`, `v-regular-polygon`.
 Also you can create custom shape.
 
-To get more info about `Konva` you can read [Konva Overview](http://konvajs.github.io/docs/overview.html).
+To get more info about `Konva` you can read [Konva Overview](https://konvajs.org/docs/overview.html).
+
 
 ## Documentation / live edit
 
-See [Tutorials page](https://konvajs.github.io/docs/vue/)
+See [Tutorials page](https://konvajs.org/docs/vue/)
 
 ## Quick Start
 
@@ -123,18 +124,54 @@ export default {
 </html>
 ```
 
+# Core API
+
+## Getting reference to Konva objects
+
+You can use `ref` feature from `vue`.
+
+```
+<template>
+<v-stage ref="stage">
+  <v-layer ref="layer">
+    <v-rect
+      ref="rect"
+    />
+  </v-layer>
+</v-stage>
+</template>
+
+<script>
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+export default {
+  mounted() {
+    const stage = this.$refs.stage.getNode();
+    const layer = this.$refs.layer.getNode();
+    const rect = this.$refs.rect.getNode();
+  }
+};
+</script>
+```
+
+## Configurable prefix
+
+By default `vue-konva` is using `v-` prefix for all components.
+
+You can use your own prefix if default one conflicts with some other libs or your components.
+
+```
+import Vue from 'vue';
+import VueKonva from 'vue-konva'
+
+Vue.use(VueKonva, { prefix: 'Konva'});
+
+// in template:
+<konva-stage ref="stage" :config="stage">
+```
 
 ## Change log
 
-The change log can be found on the [Releases page](https://github.com/rafaesc/vue-konva/releases).
-
-## Related repositories
-
-* [react-konva](https://github.com/lavrton/react-konva) - React + Konva
-* [ng2-konva](http://rafaelescala.com/ng2-konva/) - Angular + Konva
-
-## License
-[MIT](LICENSE) License
-
-Copyright (c) 2017-present, Rafael Escala
+The change log can be found on the [Releases page](https://github.com/konvajs/vue-konva/releases).
 
