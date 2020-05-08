@@ -1014,3 +1014,19 @@ describe('Test plugin', function() {
   });
 
 });
+
+
+describe('validations', function() {
+  it.skip('Make sure no other DOM tags are used', () => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref="stage">
+          <span>hello</span>
+          <v-layer/>
+        </v-stage>
+      `
+    });
+    const stage = vm.$refs.stage.getStage();
+    expect(stage).to.not.equal(undefined);
+  });
+})

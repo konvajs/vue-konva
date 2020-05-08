@@ -34,9 +34,11 @@ export default Vue.component('v-stage', {
     this.$el.innerHTML = '';
     this._konvaNode.container(this.$el);
     this.uploadKonva();
+    this.validateChildren();
   },
   updated() {
     this.uploadKonva();
+    this.validateChildren();
   },
   beforeDestroy() {
     this._konvaNode.destroy();
@@ -57,6 +59,12 @@ export default Vue.component('v-stage', {
       };
       applyNodeProps(this, props, oldProps);
       this.oldProps = props;
+    },
+    validateChildren() {
+      // TODO: add a waring if we see non-Konva element here
+      // this.$vnode.componentOptions.children.forEach(child => {
+      //   console.log(child);
+      // })
     }
   }
 });
