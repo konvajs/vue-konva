@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.1.0 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.1.2 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -228,13 +228,16 @@ function findParentKonva(instance) {
 }
 
 function findKonvaNode(instance) {
+  if (!instance) {
+    return null;
+  }
   if (instance.$options[konvaNodeMarker]) {
     return instance.getNode();
-  } else if (instance.$children.length === 0) {
-    return null;
-  } else {
-    return findKonvaNode(instance.$children[0]);
   }
+  if (instance.$children.length === 0) {
+    return null;
+  }
+  return findKonvaNode(instance.$children[0]);
 }
 
 
@@ -278,9 +281,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     this.$el.innerHTML = '';
     this._konvaNode.container(this.$el);
     this.uploadKonva();
+    this.validateChildren();
   },
   updated: function updated() {
     this.uploadKonva();
+    this.validateChildren();
   },
   beforeDestroy: function beforeDestroy() {
     this._konvaNode.destroy();
@@ -298,6 +303,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       var props = _extends({}, this.$attrs, this.config, createListener(this.$listeners));
       applyNodeProps(this, props, oldProps);
       this.oldProps = props;
+    },
+    validateChildren: function validateChildren() {
+      // TODO: add a waring if we see non-Konva element here
+      // this.$vnode.componentOptions.children.forEach(child => {
+      //   console.log(child);
+      // })
     }
   }
 }));
@@ -308,11 +319,24 @@ var KonvaNode_extends = Object.assign || function (target) { for (var i = 1; i <
 
 var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
 
+var CONTAINERS = {
+  Group: true,
+  Layer: true,
+  FastLayer: true,
+  Label: true
+};
+
 /* harmony default export */ var KonvaNode = (function (nameNode) {
   var _ref;
 
   return _ref = {}, _ref[konvaNodeMarker] = true, _ref.render = function render(createElement) {
-    return createElement('div', this.$slots.default);
+    // containers should be able to draw children
+    var isContainer = CONTAINERS[nameNode];
+    if (isContainer) {
+      return createElement('slot', this.$slots.default);
+    }
+    // other elements are not containers
+    return null;
   }, _ref.watch = {
     config: {
       handler: function handler(val) {
@@ -341,20 +365,30 @@ var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
     // check indexes
     // somehow this.$children are not ordered correctly
     // so we have to dive-in into componentOptions of vnode
-    // also componentOptions.children may have empty nodes, so we need to filter them first
-    var children = this.$vnode.componentOptions.children && this.$vnode.componentOptions.children.filter(function (c) {
-      return c.componentInstance;
+    // also componentOptions.children may have empty nodes, and other non Konva elements so we need to filter them first
+
+    var children = this.$vnode.componentOptions.children || [];
+
+    var nodes = [];
+    children.forEach(function ($vnode) {
+      var konvaNode = findKonvaNode($vnode.componentInstance);
+      if (konvaNode) {
+        nodes.push(konvaNode);
+      }
+      if ($vnode.componentInstance && !konvaNode) {
+        var tag = $vnode.componentOptions.tag;
+
+        console.error('vue-konva error: You are trying to render "' + tag + '" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.');
+      }
     });
 
-    children && children.forEach(function ($vnode, index) {
-      // const vnode = component.$vnode;
-      // const index = children.indexOf(vnode);
-      var konvaNode = findKonvaNode($vnode.componentInstance);
+    nodes.forEach(function (konvaNode, index) {
       if (konvaNode.getZIndex() !== index) {
         konvaNode.setZIndex(index);
         needRedraw = true;
       }
     });
+
     if (needRedraw) {
       updatePicture(this._konvaNode);
     }
