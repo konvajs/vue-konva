@@ -3,19 +3,19 @@ import './mocking';
 import Konva from 'konva';
 import sinon from 'sinon/pkg/sinon';
 import Vue from 'vue';
-import { mount,createLocalVue } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 
 import VueKonva from '../src/index';
 
 Vue.use(VueKonva);
 
-describe('Test references', function() {
+describe('Test references', function () {
   it('create stage on mount', () => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage">
         </v-stage>
-      `
+      `,
     });
     const stage = vm.$refs.stage.getStage();
     expect(stage).to.not.equal(undefined);
@@ -26,7 +26,7 @@ describe('Test references', function() {
       template: `
         <v-stage ref="stage">
         </v-stage>
-      `
+      `,
     });
     const stage = vm.$refs.stage.getStage();
     expect(stage).to.not.equal(undefined);
@@ -42,10 +42,10 @@ describe('Test references', function() {
         return {
           stage: {
             width: 300,
-            height: 400
-          }
+            height: 400,
+          },
         };
-      }
+      },
     });
     const stage = vm.$refs.stage.getStage();
     expect(stage.width()).to.equal(300);
@@ -64,10 +64,10 @@ describe('Test references', function() {
         return {
           stage: {
             width: 300,
-            height: 400
-          }
+            height: 400,
+          },
         };
-      }
+      },
     });
 
     const stage = vm.$refs.stage.getStage();
@@ -77,7 +77,7 @@ describe('Test references', function() {
     expect(layer instanceof Konva.Layer).to.equal(true);
   });
 
-  it('Make sure it does not draw HTML', done => {
+  it('Make sure it does not draw HTML', (done) => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="stage">
@@ -89,10 +89,10 @@ describe('Test references', function() {
         return {
           stage: {
             width: 300,
-            height: 400
-          }
+            height: 400,
+          },
         };
-      }
+      },
     });
 
     const stage = vm.$refs.stage.getStage();
@@ -106,8 +106,8 @@ describe('Test references', function() {
   });
 });
 
-describe('Test stage component', function() {
-  it('can attach stage events', function() {
+describe('Test stage component', function () {
+  it('can attach stage events', function () {
     let eventCount = 0;
 
     const { vm } = mount({
@@ -122,19 +122,19 @@ describe('Test stage component', function() {
         return {
           stage: {
             width: 300,
-            height: 400
+            height: 400,
           },
           rect: {
             width: 100,
-            height: 100
-          }
+            height: 100,
+          },
         };
       },
       methods: {
         handleMouseDown() {
           eventCount += 1;
-        }
-      }
+        },
+      },
     });
 
     const stage = vm.$refs.stage.getStage();
@@ -142,7 +142,7 @@ describe('Test stage component', function() {
     expect(eventCount).to.equal(1);
   });
 
-  it('can attach stage content events', function() {
+  it('can attach stage content events', function () {
     let eventCount = 0;
 
     const { vm } = mount({
@@ -157,19 +157,19 @@ describe('Test stage component', function() {
         return {
           stage: {
             width: 300,
-            height: 400
+            height: 400,
           },
           rect: {
             width: 100,
-            height: 100
-          }
+            height: 100,
+          },
         };
       },
       methods: {
         handleMouseDown() {
           eventCount += 1;
-        }
-      }
+        },
+      },
     });
 
     const stage = vm.$refs.stage.getStage();
@@ -188,10 +188,10 @@ describe('Test stage component', function() {
           drawStage: true,
           stage: {
             width: 300,
-            height: 400
-          }
+            height: 400,
+          },
         };
-      }
+      },
     });
 
     const stagesNumber = Konva.stages.length;
@@ -200,7 +200,7 @@ describe('Test stage component', function() {
   });
 });
 
-describe('Test props setting', function() {
+describe('Test props setting', function () {
   it('can update component props', () => {
     const { vm } = mount({
       template: `
@@ -215,14 +215,14 @@ describe('Test props setting', function() {
         return {
           stage: {
             width: 300,
-            height: 400
+            height: 400,
           },
           rect: {
             width: 100,
-            height: 100
-          }
+            height: 100,
+          },
         };
-      }
+      },
     });
 
     const rect = vm.$refs.rect.getNode();
@@ -235,13 +235,13 @@ describe('Test props setting', function() {
 
     vm.rect = {
       width: 200,
-      height: 100
+      height: 100,
     };
 
     expect(rect.width()).to.equal(200);
   });
 
-  it('can use v-if', done => {
+  it('can use v-if', (done) => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="stage">
@@ -267,11 +267,11 @@ describe('Test props setting', function() {
         return {
           stage: {
             width: 300,
-            height: 400
+            height: 400,
           },
-          textVisible: true
+          textVisible: true,
         };
-      }
+      },
     });
 
     const layer = vm.$refs.layer.getNode();
@@ -288,7 +288,7 @@ describe('Test props setting', function() {
     });
   });
 
-  it('can set stage props', done => {
+  it('can set stage props', (done) => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="stage">
@@ -298,13 +298,13 @@ describe('Test props setting', function() {
         return {
           stage: {
             width: 0,
-            height: 400
-          }
+            height: 400,
+          },
         };
       },
       mounted() {
         this.stage.width = 300;
-      }
+      },
     });
 
     const stage = vm.$refs.stage.getNode();
@@ -320,27 +320,27 @@ describe('Test props setting', function() {
       render(createElement) {
         const events = this.click
           ? {
-              click: this.click
+              click: this.click,
             }
           : {};
 
         return createElement(
           'v-stage',
           {
-            config: this.stage
+            config: this.stage,
           },
           [
             createElement('v-layer', [
               createElement('v-rect', {
                 attrs: {
                   config: {
-                    width: 300
-                  }
+                    width: 300,
+                  },
                 },
                 on: events,
-                ref: 'rect'
-              })
-            ])
+                ref: 'rect',
+              }),
+            ]),
           ]
         );
       },
@@ -349,10 +349,10 @@ describe('Test props setting', function() {
         return {
           stage: {
             width: 300,
-            height: 400
-          }
+            height: 400,
+          },
         };
-      }
+      },
     });
 
     const rect = wrap.vm.$refs.rect.getNode();
@@ -360,13 +360,13 @@ describe('Test props setting', function() {
 
     const handler = () => {};
     wrap.setProps({
-      click: handler
+      click: handler,
     });
 
     expect(rect.eventListeners.click.length).to.equal(1);
 
     wrap.setProps({
-      click: null
+      click: null,
     });
     expect(rect.eventListeners.click).to.equal(undefined);
   });
@@ -385,14 +385,14 @@ describe('Test props setting', function() {
         return {
           stage: {
             width: 300,
-            height: 400
+            height: 400,
           },
           rect: {
             width: 100,
-            height: 100
-          }
+            height: 100,
+          },
         };
-      }
+      },
     });
 
     const layer = vm.$refs.layer.getNode();
@@ -420,22 +420,22 @@ describe('Test props setting', function() {
         return {
           stage: {
             width: 300,
-            height: 400
+            height: 400,
           },
           items: [
             {
               id: 1,
               width: 100,
-              height: 100
+              height: 100,
             },
             {
               id: 2,
               width: 100,
-              height: 100
-            }
-          ]
+              height: 100,
+            },
+          ],
         };
-      }
+      },
     });
 
     const layer = vm.$refs.layer.getNode();
@@ -463,14 +463,14 @@ describe('Test props setting', function() {
         return {
           stage: {
             width: 300,
-            height: 400
+            height: 400,
           },
           rect: {
             x: 10,
-            fill: 'red'
-          }
+            fill: 'red',
+          },
         };
-      }
+      },
     });
 
     const rect = vm.$refs.rect.getNode();
@@ -498,14 +498,14 @@ describe('Test props setting', function() {
         return {
           stage: {
             width: 300,
-            height: 400
+            height: 400,
           },
           rect: {
             x: 10,
-            fill: 'red'
-          }
+            fill: 'red',
+          },
         };
-      }
+      },
     });
 
     const rect = vm.$refs.rect.getNode();
@@ -527,7 +527,7 @@ describe('test lifecycle methods', () => {
     props: ['fill'],
     render(createElement) {
       return createElement('v-rect', {
-        attrs: { config: { fill: this.fill } }
+        attrs: { config: { fill: this.fill } },
       });
     },
     beforeCreate() {
@@ -538,7 +538,7 @@ describe('test lifecycle methods', () => {
     },
     updated() {
       updateCount += 1;
-    }
+    },
   });
 
   beforeEach(() => {
@@ -550,9 +550,9 @@ describe('test lifecycle methods', () => {
     mount({
       render(createElement) {
         return createElement('v-stage', { ref: 'stage' }, [
-          createElement('v-layer', [createElement('lifecycle', {})])
+          createElement('v-layer', [createElement('lifecycle', {})]),
         ]);
-      }
+      },
     });
 
     expect(createdCount).to.equal(1);
@@ -566,24 +566,24 @@ describe('test lifecycle methods', () => {
           createElement('v-layer', [
             createElement('lifecycle', {
               attrs: {
-                fill: this.fill
-              }
-            })
-          ])
+                fill: this.fill,
+              },
+            }),
+          ]),
         ]);
-      }
+      },
     });
 
     wrap.setProps({
-      fill: 'white'
+      fill: 'white',
     });
 
     expect(updateCount).to.equal(1);
   });
 });
 
-describe('Test Events', function() {
-  it('should remove events on unmount', function() {
+describe('Test Events', function () {
+  it('should remove events on unmount', function () {
     const onClickRect = sinon.spy();
     const onClickExternal = sinon.spy();
     const { vm } = mount(
@@ -599,14 +599,14 @@ describe('Test Events', function() {
       `,
         data() {
           return {
-            drawLayer: true
+            drawLayer: true,
           };
-        }
+        },
       },
       {
         propsData: {
-          click: onClickRect
-        }
+          click: onClickRect,
+        },
       }
     );
 
@@ -635,7 +635,7 @@ describe('Test Events', function() {
     expect(onClickExternal.callCount).to.equal(2);
   });
 
-  it('check arguments', function() {
+  it('check arguments', function () {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="size">
@@ -649,29 +649,29 @@ describe('Test Events', function() {
         return {
           size: {
             width: 100,
-            height: 100
-          }
+            height: 100,
+          },
         };
       },
       methods: {
         mousedown(e) {
           expect(this).to.equal(vm);
           expect(e.target instanceof Konva.Rect).to.equal(true);
-        }
-      }
+        },
+      },
     });
 
     const stage = vm.$refs.stage.getNode();
 
     stage.simulateMouseDown({
       x: 50,
-      y: 50
+      y: 50,
     });
   });
 });
 
 describe('Test drawing calls', () => {
-  it('Draw layer on mount', function() {
+  it('Draw layer on mount', function () {
     sinon.spy(Konva.Layer.prototype, 'batchDraw');
 
     const { vm } = mount({
@@ -682,14 +682,14 @@ describe('Test drawing calls', () => {
               </v-rect>
             </v-layer>
           </v-stage>
-        `
+        `,
     });
 
     expect(Konva.Layer.prototype.batchDraw.called).to.equal(true);
     Konva.Layer.prototype.batchDraw.restore();
   });
 
-  it('Draw layer on node add', function() {
+  it('Draw layer on node add', function () {
     sinon.spy(Konva.Layer.prototype, 'batchDraw');
 
     const { vm } = mount({
@@ -703,9 +703,9 @@ describe('Test drawing calls', () => {
         `,
       data() {
         return {
-          showRect: false
+          showRect: false,
         };
-      }
+      },
     });
 
     expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(1);
@@ -717,7 +717,7 @@ describe('Test drawing calls', () => {
     Konva.Layer.prototype.batchDraw.restore();
   });
 
-  it('Draw layer on node remove', function() {
+  it('Draw layer on node remove', function () {
     sinon.spy(Konva.Layer.prototype, 'batchDraw');
     const { vm } = mount({
       template: `
@@ -730,9 +730,9 @@ describe('Test drawing calls', () => {
         `,
       data() {
         return {
-          showRect: true
+          showRect: true,
         };
-      }
+      },
     });
 
     expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(2);
@@ -746,35 +746,35 @@ describe('Test drawing calls', () => {
 });
 
 describe('test reconciler', () => {
-  it('add before', function() {
+  it('add before', function () {
     const { vm } = mount({
       render(createElement) {
         const kids = this.drawMany
           ? [
               createElement('v-rect', {
                 key: 'k1',
-                attrs: { config: { name: 'rect1' } }
+                attrs: { config: { name: 'rect1' } },
               }),
               createElement('v-rect', {
                 key: 'k2',
-                attrs: { config: { name: 'rect2' } }
-              })
+                attrs: { config: { name: 'rect2' } },
+              }),
             ]
           : [
               createElement('v-rect', {
                 key: '2',
-                attrs: { config: { name: 'rect2' } }
-              })
+                attrs: { config: { name: 'rect2' } },
+              }),
             ];
         return createElement('v-stage', [
-          createElement('v-layer', { ref: 'layer' }, kids)
+          createElement('v-layer', { ref: 'layer' }, kids),
         ]);
       },
       data() {
         return {
-          drawMany: false
+          drawMany: false,
         };
-      }
+      },
     });
 
     sinon.spy(Konva.Layer.prototype, 'batchDraw');
@@ -787,7 +787,7 @@ describe('test reconciler', () => {
     Konva.Layer.prototype.batchDraw.restore();
   });
 
-  it('add before', function() {
+  it('add before', function () {
     const { vm } = mount({
       template: `
           <v-stage ref="stage">
@@ -799,9 +799,9 @@ describe('test reconciler', () => {
         `,
       data() {
         return {
-          items: [1, 3]
+          items: [1, 3],
         };
-      }
+      },
     });
 
     vm.items = [1, 2, 3];
@@ -812,7 +812,7 @@ describe('test reconciler', () => {
     expect(layer.children[2].name()).to.equal('rect3');
   });
 
-  it('add after', function() {
+  it('add after', function () {
     const { vm } = mount({
       template: `
           <v-stage ref="stage">
@@ -824,9 +824,9 @@ describe('test reconciler', () => {
         `,
       data() {
         return {
-          items: [1]
+          items: [1],
         };
-      }
+      },
     });
 
     vm.items = [1, 2];
@@ -837,7 +837,7 @@ describe('test reconciler', () => {
     expect(layer.children[1].name()).to.equal('rect2');
   });
 
-  it('change order', function() {
+  it('change order', function () {
     const { vm } = mount({
       template: `
           <v-stage ref="stage">
@@ -849,9 +849,9 @@ describe('test reconciler', () => {
         `,
       data() {
         return {
-          items: [1, 2, 3]
+          items: [1, 2, 3],
         };
-      }
+      },
     });
     const layer = vm.$refs.layer.getNode();
 
@@ -870,14 +870,14 @@ describe('test reconciler', () => {
     expect(layer.children[2].name()).to.equal('rect2');
   });
 
-  it('change deep order', function() {
+  it('change deep order', function () {
     const Deep = {
       props: ['name'],
       render(createElement) {
         return createElement('v-rect', {
-          attrs: { config: { name: this.name } }
+          attrs: { config: { name: this.name } },
         });
-      }
+      },
     };
     const { vm } = mount({
       template: `
@@ -889,13 +889,13 @@ describe('test reconciler', () => {
           </v-stage>
         `,
       components: {
-        Deep
+        Deep,
       },
       data() {
         return {
-          items: [1, 2, 3]
+          items: [1, 2, 3],
         };
-      }
+      },
     });
     const layer = vm.$refs.layer.getNode();
 
@@ -913,21 +913,20 @@ describe('test reconciler', () => {
     expect(layer.children[1].name()).to.equal('rect3');
     expect(layer.children[2].name()).to.equal('rect2');
   });
-
 
   it('change deep order with detecting konva node correctly', () => {
     const Deep = {
       props: ['name'],
       render(createElement) {
         return createElement('v-rect', {
-          attrs: { config: { name: this.name } }
+          attrs: { config: { name: this.name } },
         });
       },
       methods: {
         getNode() {
-          return {}
-        }
-      }
+          return {};
+        },
+      },
     };
     const { vm } = mount({
       template: `
@@ -939,13 +938,13 @@ describe('test reconciler', () => {
           </v-stage>
         `,
       components: {
-        Deep
+        Deep,
       },
       data() {
         return {
-          items: [1, 2, 3]
+          items: [1, 2, 3],
         };
-      }
+      },
     });
     const layer = vm.$refs.layer.getNode();
 
@@ -957,9 +956,9 @@ describe('test reconciler', () => {
     expect(layer.children[0].name()).to.equal('rect3');
     expect(layer.children[1].name()).to.equal('rect2');
     expect(layer.children[2].name()).to.equal('rect1');
-  })
+  });
 
-  it('can draw several stages', function() {
+  it('can draw several stages', function () {
     const { vm } = mount({
       template: `
       <div>
@@ -972,35 +971,38 @@ describe('test reconciler', () => {
             </v-layer>
           </v-stage>
           </div>
-        `
+        `,
     });
   });
 });
 
-describe('Test plugin', function() {
+describe('Test plugin', function () {
   const localVue = createLocalVue();
-  localVue.use(VueKonva, { prefix: 'Konva'});
-  
+  localVue.use(VueKonva, { prefix: 'Konva' });
+
   it('registers components with custom prefix', () => {
-    const { vm } = mount({
-      template: `
+    const { vm } = mount(
+      {
+        template: `
         <konva-stage ref="stage" :config="stage">
           <konva-layer ref="layer">
             <konva-rect ref="rect"/>
           </konva-layer>
         </konva-stage>
       `,
-      data() {
-        return {
-          stage: {
-            width: 300,
-            height: 400
-          }
-        };
+        data() {
+          return {
+            stage: {
+              width: 300,
+              height: 400,
+            },
+          };
+        },
+      },
+      {
+        localVue,
       }
-    },{
-      localVue,
-    });
+    );
 
     const stage = vm.$refs.stage.getStage();
     expect(stage.children.length).to.equal(1);
@@ -1012,21 +1014,39 @@ describe('Test plugin', function() {
     const rect = vm.$refs.rect.getNode();
     expect(rect instanceof Konva.Rect).to.equal(true);
   });
-
 });
 
-
-describe('validations', function() {
-  it.skip('Make sure no other DOM tags are used', () => {
+describe('validations', function () {
+  it('Make sure no other DOM tags are used', () => {
     const { vm } = mount({
+      data() {
+        return {
+          stage: {
+            width: 0,
+            height: 400,
+          },
+          items: [{ id: 1 }, { id: 2 }],
+        };
+      },
+      components: {
+        TestCounter: { template: '<span/>' },
+      },
       template: `
-        <v-stage ref="stage">
-          <span>hello</span>
-          <v-layer/>
+        <v-stage ref="stage" :config="stage">
+          <v-layer>
+            <test-counter />
+            <v-rect />
+            <v-circle v-for="item in items" :key="item.id" :config="item" />
+          </v-layer>
         </v-stage>
-      `
+      `,
     });
     const stage = vm.$refs.stage.getStage();
-    expect(stage).to.not.equal(undefined);
+
+    vm.items = [{ id: 2 }, { id: 1 }];
+
+    const circles = stage.find('Circle');
+    expect(circles[0].id()).to.equal(2);
+    expect(circles[1].id()).to.equal(1);
   });
-})
+});

@@ -4,34 +4,47 @@ import {
   createListener,
   updatePicture,
   findKonvaNode,
-  konvaNodeMarker
+  konvaNodeMarker,
 } from '../utils';
 
 const EVENTS_NAMESPACE = '.vue-konva-event';
 
-export default function(nameNode) {
+const CONTAINERS = {
+  Group: true,
+  Layer: true,
+  FastLayer: true,
+  Label: true,
+};
+
+export default function (nameNode) {
   return {
     // Mark it to detect whether an Vue instance is KonvaNode or not later
     [konvaNodeMarker]: true,
 
     render(createElement) {
-      return createElement('div', this.$slots.default);
+      // containers should be able to draw children
+      const isContainer = CONTAINERS[nameNode];
+      if (isContainer) {
+        return createElement('slot', this.$slots.default);
+      }
+      // other elements are not containers
+      return null;
     },
     watch: {
       config: {
         handler(val) {
           this.uploadKonva();
         },
-        deep: true
-      }
+        deep: true,
+      },
     },
     props: {
       config: {
         type: Object,
-        default: function() {
+        default: function () {
           return {};
-        }
-      }
+        },
+      },
     },
     created() {
       this.initKonva();
@@ -48,21 +61,31 @@ export default function(nameNode) {
       // check indexes
       // somehow this.$children are not ordered correctly
       // so we have to dive-in into componentOptions of vnode
-      // also componentOptions.children may have empty nodes, so we need to filter them first
-      const children =
-        this.$vnode.componentOptions.children &&
-        this.$vnode.componentOptions.children.filter(c => c.componentInstance);
+      // also componentOptions.children may have empty nodes, and other non Konva elements so we need to filter them first
 
-      children &&
-        children.forEach(($vnode, index) => {
-          // const vnode = component.$vnode;
-          // const index = children.indexOf(vnode);
-          const konvaNode = findKonvaNode($vnode.componentInstance);
-          if (konvaNode.getZIndex() !== index) {
-            konvaNode.setZIndex(index);
-            needRedraw = true;
-          }
-        });
+      const children = this.$vnode.componentOptions.children || [];
+
+      const nodes = [];
+      children.forEach(($vnode) => {
+        const konvaNode = findKonvaNode($vnode.componentInstance);
+        if (konvaNode) {
+          nodes.push(konvaNode);
+        }
+        if ($vnode.componentInstance && !konvaNode) {
+          const { tag } = $vnode.componentOptions;
+          console.error(
+            `vue-konva error: You are trying to render "${tag}" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.`
+          );
+        }
+      });
+
+      nodes.forEach((konvaNode, index) => {
+        if (konvaNode.getZIndex() !== index) {
+          konvaNode.setZIndex(index);
+          needRedraw = true;
+        }
+      });
+
       if (needRedraw) {
         updatePicture(this._konvaNode);
       }
@@ -97,11 +120,11 @@ export default function(nameNode) {
         const props = {
           ...this.$attrs,
           ...this.config,
-          ...createListener(this.$listeners)
+          ...createListener(this.$listeners),
         };
         applyNodeProps(this, props, oldProps);
         this.oldProps = props;
-      }
-    }
+      },
+    },
   };
 }
