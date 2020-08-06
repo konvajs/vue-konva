@@ -130,7 +130,7 @@ export default {
 
 You can use `ref` feature from `vue`.
 
-```
+```html
 <template>
 <v-stage ref="stage">
   <v-layer ref="layer">
@@ -161,7 +161,7 @@ By default `vue-konva` is using `v-` prefix for all components.
 
 You can use your own prefix if default one conflicts with some other libs or your components.
 
-```
+```javascript
 import Vue from 'vue';
 import VueKonva from 'vue-konva'
 
