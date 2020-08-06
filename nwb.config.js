@@ -3,9 +3,9 @@ module.exports = {
   webpack: {
     extra: {
       output: {
-        globalObject: 'this'
-      }
-    }
+        globalObject: 'this',
+      },
+    },
   },
   npm: {
     cjs: false,
@@ -14,12 +14,12 @@ module.exports = {
       global: 'VueKonva',
       externals: {
         vue: 'Vue',
-        konva: 'Konva'
-      }
-    }
+        konva: 'Konva',
+      },
+    },
   },
   // may be useful for debugging tests
   karma: {
-    browsers: ['Chrome']
-  }
+    browsers: ['Chrome'],
+  },
 };

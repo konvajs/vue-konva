@@ -25,7 +25,7 @@ export default function (nameNode) {
       // containers should be able to draw children
       const isContainer = CONTAINERS[nameNode];
       if (isContainer) {
-        return createElement('slot', this.$slots.default);
+        return createElement('template', this.$slots.default);
       }
       // other elements are not containers
       return null;
@@ -71,10 +71,12 @@ export default function (nameNode) {
         if (konvaNode) {
           nodes.push(konvaNode);
         }
-        if ($vnode.componentInstance && !konvaNode) {
-          const { tag } = $vnode.componentOptions;
+
+        const { elm, componentInstance } = $vnode;
+        if (elm && elm.tagName && componentInstance && !konvaNode) {
+          const name = elm && elm.tagName.toLowerCase();
           console.error(
-            `vue-konva error: You are trying to render "${tag}" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.`
+            `vue-konva error: You are trying to render "${name}" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.`
           );
         }
       });

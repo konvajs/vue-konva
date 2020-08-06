@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.1.2 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.1.3 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -122,6 +122,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__2__;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: external {"root":"Vue","commonjs2":"vue","commonjs":"vue","amd":"vue"}
@@ -130,7 +131,6 @@ var external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_default = /*#__PURE__*/
 
 // CONCATENATED MODULE: ./src/utils/updatePicture.js
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
-
 function updatePicture(node) {
   var drawingNode = node.getLayer() || node.getStage();
   drawingNode && drawingNode.batchDraw();
@@ -138,52 +138,73 @@ function updatePicture(node) {
 // CONCATENATED MODULE: ./src/utils/applyNodeProps.js
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
 
-
-
-var propsToSkip = { key: true, style: true, elm: true, isRootInsert: true };
+var propsToSkip = {
+  key: true,
+  style: true,
+  elm: true,
+  isRootInsert: true
+};
 var EVENTS_NAMESPACE = '.vue-konva-event';
+function applyNodeProps(vueComponent, props, oldProps) {
+  if (props === void 0) {
+    props = {};
+  }
 
-function applyNodeProps(vueComponent) {
-  var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var oldProps = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  if (oldProps === void 0) {
+    oldProps = {};
+  }
 
   var instance = vueComponent._konvaNode;
   var updatedProps = {};
   var hasUpdates = false;
+
   for (var key in oldProps) {
     if (propsToSkip[key]) {
       continue;
     }
+
     var isEvent = key.slice(0, 2) === 'on';
     var propChanged = oldProps[key] !== props[key];
+
     if (isEvent && propChanged) {
       var eventName = key.substr(2).toLowerCase();
+
       if (eventName.substr(0, 7) === 'content') {
         eventName = 'content' + eventName.substr(7, 1).toUpperCase() + eventName.substr(8);
       }
+
       instance.off(eventName + EVENTS_NAMESPACE, oldProps[key]);
     }
+
     var toRemove = !props.hasOwnProperty(key);
+
     if (toRemove) {
       instance.setAttr(key, undefined);
     }
   }
+
   for (var _key in props) {
     if (propsToSkip[_key]) {
       continue;
     }
+
     var _isEvent = _key.slice(0, 2) === 'on';
+
     var toAdd = oldProps[_key] !== props[_key];
+
     if (_isEvent && toAdd) {
       var _eventName = _key.substr(2).toLowerCase();
+
       if (_eventName.substr(0, 7) === 'content') {
         _eventName = 'content' + _eventName.substr(7, 1).toUpperCase() + _eventName.substr(8);
       }
+
       if (props[_key]) {
         instance.off(_eventName + EVENTS_NAMESPACE);
         instance.on(_eventName + EVENTS_NAMESPACE, props[_key]);
       }
     }
+
     if (!_isEvent && props[_key] !== oldProps[_key]) {
       hasUpdates = true;
       updatedProps[_key] = props[_key];
@@ -198,14 +219,11 @@ function applyNodeProps(vueComponent) {
 // CONCATENATED MODULE: ./src/utils/index.js
 
 
-
 var componentPrefix = 'v';
 var konvaNodeMarker = '_konvaNode';
-
 function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-
 function createListener(obj) {
   var output = {};
   Object.keys(obj).forEach(function (eventName) {
@@ -213,37 +231,39 @@ function createListener(obj) {
   });
   return output;
 }
-
 function findParentKonva(instance) {
   function re(instance) {
     if (instance._konvaNode) {
       return instance;
     }
+
     if (instance.$parent) {
       return re(instance.$parent);
     }
+
     return {};
   }
+
   return re(instance.$parent);
 }
-
 function findKonvaNode(instance) {
   if (!instance) {
     return null;
   }
+
   if (instance.$options[konvaNodeMarker]) {
     return instance.getNode();
   }
+
   if (instance.$children.length === 0) {
     return null;
   }
+
   return findKonvaNode(instance.$children[0]);
 }
 
-
 // CONCATENATED MODULE: ./src/components/Stage.js
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 
 
 
@@ -256,7 +276,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       handler: function handler(val) {
         this.uploadKonva();
       },
-
       deep: true
     }
   },
@@ -268,7 +287,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     }
   },
-
   created: function created() {
     this._konvaNode = new window.Konva.Stage({
       width: this.config.width,
@@ -279,7 +297,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   },
   mounted: function mounted() {
     this.$el.innerHTML = '';
+
     this._konvaNode.container(this.$el);
+
     this.uploadKonva();
     this.validateChildren();
   },
@@ -290,7 +310,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   beforeDestroy: function beforeDestroy() {
     this._konvaNode.destroy();
   },
-
   methods: {
     getNode: function getNode() {
       return this._konvaNode;
@@ -300,12 +319,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     uploadKonva: function uploadKonva() {
       var oldProps = this.oldProps || {};
+
       var props = _extends({}, this.$attrs, this.config, createListener(this.$listeners));
+
       applyNodeProps(this, props, oldProps);
       this.oldProps = props;
     },
-    validateChildren: function validateChildren() {
-      // TODO: add a waring if we see non-Konva element here
+    validateChildren: function validateChildren() {// TODO: add a waring if we see non-Konva element here
       // this.$vnode.componentOptions.children.forEach(child => {
       //   console.log(child);
       // })
@@ -313,36 +333,34 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   }
 }));
 // CONCATENATED MODULE: ./src/components/KonvaNode.js
-var KonvaNode_extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
+function KonvaNode_extends() { KonvaNode_extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return KonvaNode_extends.apply(this, arguments); }
 
 
 var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
-
 var CONTAINERS = {
   Group: true,
   Layer: true,
   FastLayer: true,
   Label: true
 };
-
 /* harmony default export */ var KonvaNode = (function (nameNode) {
   var _ref;
 
   return _ref = {}, _ref[konvaNodeMarker] = true, _ref.render = function render(createElement) {
     // containers should be able to draw children
     var isContainer = CONTAINERS[nameNode];
+
     if (isContainer) {
-      return createElement('slot', this.$slots.default);
-    }
-    // other elements are not containers
+      return createElement('template', this.$slots.default);
+    } // other elements are not containers
+
+
     return null;
   }, _ref.watch = {
     config: {
       handler: function handler(val) {
         this.uploadKonva();
       },
-
       deep: true
     }
   }, _ref.props = {
@@ -361,27 +379,28 @@ var CONTAINERS = {
     updatePicture(this._konvaNode);
   }, _ref.updated = function updated() {
     this.uploadKonva();
-    var needRedraw = false;
-    // check indexes
+    var needRedraw = false; // check indexes
     // somehow this.$children are not ordered correctly
     // so we have to dive-in into componentOptions of vnode
     // also componentOptions.children may have empty nodes, and other non Konva elements so we need to filter them first
 
     var children = this.$vnode.componentOptions.children || [];
-
     var nodes = [];
     children.forEach(function ($vnode) {
       var konvaNode = findKonvaNode($vnode.componentInstance);
+
       if (konvaNode) {
         nodes.push(konvaNode);
       }
-      if ($vnode.componentInstance && !konvaNode) {
-        var tag = $vnode.componentOptions.tag;
 
-        console.error('vue-konva error: You are trying to render "' + tag + '" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.');
+      var elm = $vnode.elm,
+          componentInstance = $vnode.componentInstance;
+
+      if (elm && elm.tagName && componentInstance && !konvaNode) {
+        var name = elm && elm.tagName.toLowerCase();
+        console.error("vue-konva error: You are trying to render \"" + name + "\" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.");
       }
     });
-
     nodes.forEach(function (konvaNode, index) {
       if (konvaNode.getZIndex() !== index) {
         konvaNode.setZIndex(index);
@@ -394,7 +413,9 @@ var CONTAINERS = {
     }
   }, _ref.destroyed = function destroyed() {
     updatePicture(this._konvaNode);
+
     this._konvaNode.destroy();
+
     this._konvaNode.off(KonvaNode_EVENTS_NAMESPACE);
   }, _ref.methods = {
     getNode: function getNode() {
@@ -413,12 +434,13 @@ var CONTAINERS = {
 
       this._konvaNode = new NodeClass();
       this._konvaNode.VueComponent = this;
-
       this.uploadKonva();
     },
     uploadKonva: function uploadKonva() {
       var oldProps = this.oldProps || {};
+
       var props = KonvaNode_extends({}, this.$attrs, this.config, createListener(this.$listeners));
+
       applyNodeProps(this, props, oldProps);
       this.oldProps = props;
     }
@@ -443,19 +465,19 @@ var components = [{
     component: KonvaNode(name)
   };
 }));
-
 var VueKonva = {
   install: function install(Vue, options) {
     var prefixToUse = componentPrefix;
+
     if (options && options.prefix) {
       prefixToUse = options.prefix;
     }
+
     components.forEach(function (k) {
-      Vue.component('' + prefixToUse + k.name, k.component);
+      Vue.component("" + prefixToUse + k.name, k.component);
     });
   }
 };
-
 /* harmony default export */ var src = __webpack_exports__["default"] = (VueKonva);
 
 if (typeof window !== 'undefined' && window.Vue) {

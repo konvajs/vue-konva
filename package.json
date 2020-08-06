@@ -42,10 +42,10 @@
     "@vue/test-utils": "^1.0.0-beta.25",
     "chai": "^4.2.0",
     "konva": ">3.2.5",
-    "nwb": "^0.23.0",
+    "nwb": "^0.25.2",
     "sinon": "^7.3.0",
-    "vue": "^2.6.10",
-    "vue-template-compiler": "^2.6.10"
+    "vue": "^2.6.11",
+    "vue-template-compiler": "^2.6.11"
   },
   "engines": {
     "node": ">= 4.0.0",
