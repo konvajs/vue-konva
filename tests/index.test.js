@@ -469,6 +469,51 @@ describe('Test props setting', function () {
     });
   });
 
+  it('checking for loop order', (done) => {
+    const { vm } = mount({
+      template: `
+      <div>
+          <v-stage ref="stage" :config="stage">
+            <v-layer v-for="item in items" :config="item" :key="item.id">
+              <v-rect />
+            </v-layer>
+            <v-layer :config="{ id: '3' }" />
+          </v-stage>
+          </div>
+        `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400,
+          },
+          items: [],
+        };
+      },
+    });
+
+    const stage = vm.$refs.stage.getNode();
+
+    vm.items = [
+      {
+        id: '1',
+        width: 100,
+        height: 100,
+      },
+      {
+        id: '2',
+        width: 100,
+        height: 100,
+      },
+    ];
+    Vue.nextTick(() => {
+      expect(stage.children[0].id()).to.equal('1');
+      expect(stage.children[1].id()).to.equal('2');
+      expect(stage.children[2].id()).to.equal('3');
+      done();
+    });
+  });
+
   it('unset props', (done) => {
     const { vm } = mount({
       template: `

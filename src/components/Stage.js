@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import { applyNodeProps, createListener } from '../utils';
+import { applyNodeProps, createListener, checkOrder } from '../utils';
 
 export default Vue.component('v-stage', {
-  render: function(createElement) {
+  render: function (createElement) {
     return createElement('div', this.$slots.default);
   },
   watch: {
@@ -10,16 +10,16 @@ export default Vue.component('v-stage', {
       handler(val) {
         this.uploadKonva();
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   props: {
     config: {
       type: Object,
-      default: function() {
+      default: function () {
         return {};
-      }
-    }
+      },
+    },
   },
 
   created() {
@@ -27,7 +27,7 @@ export default Vue.component('v-stage', {
       width: this.config.width,
       height: this.config.height,
       // create fake container, later it will be replaced with real div on the page
-      container: document.createElement('div')
+      container: document.createElement('div'),
     });
   },
   mounted() {
@@ -38,7 +38,8 @@ export default Vue.component('v-stage', {
   },
   updated() {
     this.uploadKonva();
-    this.validateChildren();
+    this.uploadKonva();
+    checkOrder(this.$vnode, this._konvaNode);
   },
   beforeDestroy() {
     this._konvaNode.destroy();
@@ -55,7 +56,7 @@ export default Vue.component('v-stage', {
       const props = {
         ...this.$attrs,
         ...this.config,
-        ...createListener(this.$listeners)
+        ...createListener(this.$listeners),
       };
       applyNodeProps(this, props, oldProps);
       this.oldProps = props;
@@ -65,6 +66,6 @@ export default Vue.component('v-stage', {
       // this.$vnode.componentOptions.children.forEach(child => {
       //   console.log(child);
       // })
-    }
-  }
+    },
+  },
 });
