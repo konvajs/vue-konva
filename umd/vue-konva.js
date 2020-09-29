@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.1.3 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.1.5 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -261,6 +261,40 @@ function findKonvaNode(instance) {
 
   return findKonvaNode(instance.$children[0]);
 }
+function checkOrder($vnode, konvaNode) {
+  var needRedraw = false; // check indexes
+  // somehow this.$children are not ordered correctly
+  // so we have to dive-in into componentOptions of vnode
+  // also componentOptions.children may have empty nodes, and other non Konva elements so we need to filter them first
+
+  var children = $vnode.componentOptions.children || [];
+  var nodes = [];
+  children.forEach(function ($vnode) {
+    var konvaNode = findKonvaNode($vnode.componentInstance);
+
+    if (konvaNode) {
+      nodes.push(konvaNode);
+    }
+
+    var elm = $vnode.elm,
+        componentInstance = $vnode.componentInstance;
+
+    if (elm && elm.tagName && componentInstance && !konvaNode) {
+      var name = elm && elm.tagName.toLowerCase();
+      console.error("vue-konva error: You are trying to render \"" + name + "\" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.");
+    }
+  });
+  nodes.forEach(function (konvaNode, index) {
+    if (konvaNode.getZIndex() !== index) {
+      konvaNode.setZIndex(index);
+      needRedraw = true;
+    }
+  });
+
+  if (needRedraw) {
+    updatePicture(konvaNode);
+  }
+}
 
 // CONCATENATED MODULE: ./src/components/Stage.js
 function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
@@ -305,7 +339,8 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
   },
   updated: function updated() {
     this.uploadKonva();
-    this.validateChildren();
+    this.uploadKonva();
+    checkOrder(this.$vnode, this._konvaNode);
   },
   beforeDestroy: function beforeDestroy() {
     this._konvaNode.destroy();
@@ -379,38 +414,7 @@ var CONTAINERS = {
     updatePicture(this._konvaNode);
   }, _ref.updated = function updated() {
     this.uploadKonva();
-    var needRedraw = false; // check indexes
-    // somehow this.$children are not ordered correctly
-    // so we have to dive-in into componentOptions of vnode
-    // also componentOptions.children may have empty nodes, and other non Konva elements so we need to filter them first
-
-    var children = this.$vnode.componentOptions.children || [];
-    var nodes = [];
-    children.forEach(function ($vnode) {
-      var konvaNode = findKonvaNode($vnode.componentInstance);
-
-      if (konvaNode) {
-        nodes.push(konvaNode);
-      }
-
-      var elm = $vnode.elm,
-          componentInstance = $vnode.componentInstance;
-
-      if (elm && elm.tagName && componentInstance && !konvaNode) {
-        var name = elm && elm.tagName.toLowerCase();
-        console.error("vue-konva error: You are trying to render \"" + name + "\" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.");
-      }
-    });
-    nodes.forEach(function (konvaNode, index) {
-      if (konvaNode.getZIndex() !== index) {
-        konvaNode.setZIndex(index);
-        needRedraw = true;
-      }
-    });
-
-    if (needRedraw) {
-      updatePicture(this._konvaNode);
-    }
+    checkOrder(this.$vnode, this._konvaNode);
   }, _ref.destroyed = function destroyed() {
     updatePicture(this._konvaNode);
 
