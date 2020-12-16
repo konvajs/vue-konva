@@ -20,6 +20,20 @@
     "index.d.ts",
     "vetur/"
   ],
+  "funding": [
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/lavrton"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/konva"
+    },
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/lavrton"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/konvajs/vue-konva.git"
