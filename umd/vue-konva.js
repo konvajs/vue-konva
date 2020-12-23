@@ -295,7 +295,6 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 /* harmony default export */ var Stage = ({
   render: function render() {
-    console.log(this.$slots);
     return Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["h"])('div', this.$slots.default());
   },
   watch: {
@@ -409,7 +408,7 @@ var CONTAINERS = {
   }, _ref.updated = function updated() {
     this.uploadKonva();
     checkOrder(this.$vnode, this._konvaNode);
-  }, _ref.destroyed = function destroyed() {
+  }, _ref.unmounted = function unmounted() {
     updatePicture(this._konvaNode);
 
     this._konvaNode.destroy();
@@ -439,6 +438,7 @@ var CONTAINERS = {
 
       var props = KonvaNode_extends({}, this.$attrs, this.config);
 
+      console.log(props);
       applyNodeProps(this, props, oldProps);
       this.oldProps = props;
     }

@@ -3,7 +3,6 @@ import { applyNodeProps, checkOrder } from '../utils';
 
 export default {
   render: function () {
-    console.log(this.$slots)
     return h('div', this.$slots.default());
   },
   watch: {
