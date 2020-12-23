@@ -1,9 +1,10 @@
-import Vue from 'vue';
-import { applyNodeProps, createListener, checkOrder } from '../utils';
+import { h } from 'vue'
+import { applyNodeProps, checkOrder } from '../utils';
 
-export default Vue.component('v-stage', {
-  render: function (createElement) {
-    return createElement('div', this.$slots.default);
+export default {
+  render: function () {
+    console.log(this.$slots)
+    return h('div', this.$slots.default());
   },
   watch: {
     config: {
@@ -21,7 +22,6 @@ export default Vue.component('v-stage', {
       },
     },
   },
-
   created() {
     this._konvaNode = new window.Konva.Stage({
       width: this.config.width,
@@ -41,7 +41,7 @@ export default Vue.component('v-stage', {
     this.uploadKonva();
     checkOrder(this.$vnode, this._konvaNode);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this._konvaNode.destroy();
   },
   methods: {
@@ -56,7 +56,6 @@ export default Vue.component('v-stage', {
       const props = {
         ...this.$attrs,
         ...this.config,
-        ...createListener(this.$listeners),
       };
       applyNodeProps(this, props, oldProps);
       this.oldProps = props;
@@ -68,4 +67,4 @@ export default Vue.component('v-stage', {
       // })
     },
   },
-});
+};

@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.1.5 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.1.6 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -127,7 +127,6 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: external {"root":"Vue","commonjs2":"vue","commonjs":"vue","amd":"vue"}
 var external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_ = __webpack_require__(0);
-var external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_default = /*#__PURE__*/__webpack_require__.n(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_);
 
 // CONCATENATED MODULE: ./src/utils/updatePicture.js
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
@@ -224,13 +223,6 @@ var konvaNodeMarker = '_konvaNode';
 function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-function createListener(obj) {
-  var output = {};
-  Object.keys(obj).forEach(function (eventName) {
-    output['on' + eventName] = obj[eventName];
-  });
-  return output;
-}
 function findParentKonva(instance) {
   function re(instance) {
     if (instance._konvaNode) {
@@ -301,9 +293,10 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 
 
-/* harmony default export */ var Stage = (external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_default.a.component('v-stage', {
-  render: function render(createElement) {
-    return createElement('div', this.$slots.default);
+/* harmony default export */ var Stage = ({
+  render: function render() {
+    console.log(this.$slots);
+    return Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["h"])('div', this.$slots.default());
   },
   watch: {
     config: {
@@ -342,7 +335,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
     this.uploadKonva();
     checkOrder(this.$vnode, this._konvaNode);
   },
-  beforeDestroy: function beforeDestroy() {
+  beforeUnmount: function beforeUnmount() {
     this._konvaNode.destroy();
   },
   methods: {
@@ -355,7 +348,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
     uploadKonva: function uploadKonva() {
       var oldProps = this.oldProps || {};
 
-      var props = _extends({}, this.$attrs, this.config, createListener(this.$listeners));
+      var props = _extends({}, this.$attrs, this.config);
 
       applyNodeProps(this, props, oldProps);
       this.oldProps = props;
@@ -366,9 +359,10 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       // })
     }
   }
-}));
+});
 // CONCATENATED MODULE: ./src/components/KonvaNode.js
 function KonvaNode_extends() { KonvaNode_extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return KonvaNode_extends.apply(this, arguments); }
+
 
 
 var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
@@ -381,12 +375,12 @@ var CONTAINERS = {
 /* harmony default export */ var KonvaNode = (function (nameNode) {
   var _ref;
 
-  return _ref = {}, _ref[konvaNodeMarker] = true, _ref.render = function render(createElement) {
+  return _ref = {}, _ref[konvaNodeMarker] = true, _ref.render = function render() {
     // containers should be able to draw children
     var isContainer = CONTAINERS[nameNode];
 
     if (isContainer) {
-      return createElement('template', this.$slots.default);
+      return Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["h"])('template', this.$slots.default());
     } // other elements are not containers
 
 
@@ -443,7 +437,7 @@ var CONTAINERS = {
     uploadKonva: function uploadKonva() {
       var oldProps = this.oldProps || {};
 
-      var props = KonvaNode_extends({}, this.$attrs, this.config, createListener(this.$listeners));
+      var props = KonvaNode_extends({}, this.$attrs, this.config);
 
       applyNodeProps(this, props, oldProps);
       this.oldProps = props;
@@ -470,7 +464,7 @@ var components = [{
   };
 }));
 var VueKonva = {
-  install: function install(Vue, options) {
+  install: function install(app, options) {
     var prefixToUse = componentPrefix;
 
     if (options && options.prefix) {
@@ -478,7 +472,7 @@ var VueKonva = {
     }
 
     components.forEach(function (k) {
-      Vue.component("" + prefixToUse + k.name, k.component);
+      app.component("" + prefixToUse + k.name, k.component);
     });
   }
 };

@@ -8,14 +8,6 @@ export function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export function createListener(obj) {
-  const output = {};
-  Object.keys(obj).forEach((eventName) => {
-    output['on' + eventName] = obj[eventName];
-  });
-  return output;
-}
-
 export function findParentKonva(instance) {
   function re(instance) {
     if (instance._konvaNode) {

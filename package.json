@@ -58,7 +58,7 @@
     "konva": ">3.2.5",
     "nwb": "^0.25.2",
     "sinon": "^7.3.0",
-    "vue": "^2.6.11",
+    "vue": "^3.0.4",
     "vue-template-compiler": "^2.6.11"
   },
   "engines": {

@@ -1,12 +1,11 @@
+import { h } from 'vue'
 import {
   applyNodeProps,
   findParentKonva,
-  createListener,
   updatePicture,
   konvaNodeMarker,
   checkOrder,
 } from '../utils';
-
 const EVENTS_NAMESPACE = '.vue-konva-event';
 
 const CONTAINERS = {
@@ -21,11 +20,11 @@ export default function (nameNode) {
     // Mark it to detect whether an Vue instance is KonvaNode or not later
     [konvaNodeMarker]: true,
 
-    render(createElement) {
+    render() {
       // containers should be able to draw children
       const isContainer = CONTAINERS[nameNode];
       if (isContainer) {
-        return createElement('template', this.$slots.default);
+        return h('template', this.$slots.default());
       }
       // other elements are not containers
       return null;
@@ -89,7 +88,6 @@ export default function (nameNode) {
         const props = {
           ...this.$attrs,
           ...this.config,
-          ...createListener(this.$listeners),
         };
         applyNodeProps(this, props, oldProps);
         this.oldProps = props;
