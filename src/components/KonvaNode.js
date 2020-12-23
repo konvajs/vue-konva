@@ -58,7 +58,7 @@ export default function (nameNode) {
       this.uploadKonva();
       checkOrder(this.$vnode, this._konvaNode);
     },
-    destroyed() {
+    unmounted() {
       updatePicture(this._konvaNode);
       this._konvaNode.destroy();
       this._konvaNode.off(EVENTS_NAMESPACE);
