@@ -1,4 +1,4 @@
-import { h } from 'vue'
+import { h } from 'vue';
 import { applyNodeProps, checkOrder } from '../utils';
 
 export default {
