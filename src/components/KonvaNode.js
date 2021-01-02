@@ -24,7 +24,7 @@ export default function (nameNode) {
       // containers should be able to draw children
       const isContainer = CONTAINERS[nameNode];
       if (isContainer) {
-        return h('template', this.$slots.default());
+        return h('template', this.$slots.default?.());
       }
       // other elements are not containers
       return null;
@@ -56,7 +56,7 @@ export default function (nameNode) {
     },
     updated() {
       this.uploadKonva();
-      checkOrder(this.$vnode, this._konvaNode);
+      checkOrder(this.$.vnode, this._konvaNode);
     },
     unmounted() {
       updatePicture(this._konvaNode);

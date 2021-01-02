@@ -3,7 +3,7 @@ import { applyNodeProps, checkOrder } from '../utils';
 
 export default {
   render: function () {
-    return h('div', this.$slots.default());
+    return h('div', this.$slots.default?.());
   },
   watch: {
     config: {
@@ -38,7 +38,7 @@ export default {
   updated() {
     this.uploadKonva();
     this.uploadKonva();
-    checkOrder(this.$vnode, this._konvaNode);
+    checkOrder(this.$.vnode, this._konvaNode);
   },
   beforeUnmount() {
     this._konvaNode.destroy();

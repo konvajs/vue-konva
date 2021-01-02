@@ -41,7 +41,7 @@ export function checkOrder($vnode, konvaNode) {
   // so we have to dive-in into componentOptions of vnode
   // also componentOptions.children may have empty nodes, and other non Konva elements so we need to filter them first
 
-  const children = $vnode.componentOptions.children || [];
+  const children = [];
 
   const nodes = [];
   children.forEach(($vnode) => {
