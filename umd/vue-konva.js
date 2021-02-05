@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.1.5 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v2.1.7 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -145,7 +145,7 @@ var propsToSkip = {
   isRootInsert: true
 };
 var EVENTS_NAMESPACE = '.vue-konva-event';
-function applyNodeProps(vueComponent, props, oldProps) {
+function applyNodeProps(vueComponent, props, oldProps, useStrict) {
   if (props === void 0) {
     props = {};
   }
@@ -205,7 +205,7 @@ function applyNodeProps(vueComponent, props, oldProps) {
       }
     }
 
-    if (!_isEvent && props[_key] !== oldProps[_key]) {
+    if (!_isEvent && (props[_key] !== oldProps[_key] || useStrict && props[_key] !== instance.getAttr(_key))) {
       hasUpdates = true;
       updatedProps[_key] = props[_key];
     }
@@ -319,6 +319,9 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       default: function _default() {
         return {};
       }
+    },
+    __useStrictMode: {
+      type: Boolean
     }
   },
   created: function created() {
@@ -357,7 +360,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
       var props = _extends({}, this.$attrs, this.config, createListener(this.$listeners));
 
-      applyNodeProps(this, props, oldProps);
+      applyNodeProps(this, props, oldProps, this.__useStrictMode);
       this.oldProps = props;
     },
     validateChildren: function validateChildren() {// TODO: add a waring if we see non-Konva element here
@@ -404,6 +407,9 @@ var CONTAINERS = {
       default: function _default() {
         return {};
       }
+    },
+    __useStrictMode: {
+      type: Boolean
     }
   }, _ref.created = function created() {
     this.initKonva();
@@ -445,7 +451,7 @@ var CONTAINERS = {
 
       var props = KonvaNode_extends({}, this.$attrs, this.config, createListener(this.$listeners));
 
-      applyNodeProps(this, props, oldProps);
+      applyNodeProps(this, props, oldProps, this.__useStrictMode);
       this.oldProps = props;
     }
   }, _ref;
