@@ -247,6 +247,48 @@ describe('Test props setting', function () {
     });
   });
 
+  it('can force update component props', (done) => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref="stage" :config="stage">
+          <v-layer>
+            <v-rect :config="rect" ref="rect" __useStrictMode >
+            </v-rect>
+          </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400,
+          },
+          rect: {
+            width: 100,
+            height: 100,
+            fill: 'red',
+          },
+        };
+      },
+    });
+
+    const rect = vm.$refs.rect.getNode();
+
+    console.log(rect.getAttrs());
+    expect(rect.width()).to.equal(100);
+    expect(rect.height()).to.equal(100);
+
+    rect.width(150);
+
+    Vue.set(vm.rect, 'fill', 'green');
+
+    Vue.nextTick(() => {
+      console.log(rect.getAttrs());
+      expect(rect.width()).to.equal(100);
+      done();
+    });
+  });
+
   it('can use v-if', (done) => {
     const { vm } = mount({
       template: `

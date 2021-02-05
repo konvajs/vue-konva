@@ -8,7 +8,8 @@ const EVENTS_NAMESPACE = '.vue-konva-event';
 export default function applyNodeProps(
   vueComponent,
   props = {},
-  oldProps = {}
+  oldProps = {},
+  useStrict
 ) {
   const instance = vueComponent._konvaNode;
   var updatedProps = {};
@@ -53,7 +54,11 @@ export default function applyNodeProps(
         instance.on(eventName + EVENTS_NAMESPACE, props[key]);
       }
     }
-    if (!isEvent && props[key] !== oldProps[key]) {
+    if (
+      !isEvent &&
+      (props[key] !== oldProps[key] ||
+        (useStrict && props[key] !== instance.getAttr(key)))
+    ) {
       hasUpdates = true;
       updatedProps[key] = props[key];
     }

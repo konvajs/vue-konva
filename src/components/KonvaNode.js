@@ -45,6 +45,9 @@ export default function (nameNode) {
           return {};
         },
       },
+      __useStrictMode: {
+        type: Boolean,
+      },
     },
     created() {
       this.initKonva();
@@ -91,7 +94,7 @@ export default function (nameNode) {
           ...this.config,
           ...createListener(this.$listeners),
         };
-        applyNodeProps(this, props, oldProps);
+        applyNodeProps(this, props, oldProps, this.__useStrictMode);
         this.oldProps = props;
       },
     },

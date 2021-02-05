@@ -20,6 +20,9 @@ export default Vue.component('v-stage', {
         return {};
       },
     },
+    __useStrictMode: {
+      type: Boolean,
+    },
   },
 
   created() {
@@ -58,7 +61,7 @@ export default Vue.component('v-stage', {
         ...this.config,
         ...createListener(this.$listeners),
       };
-      applyNodeProps(this, props, oldProps);
+      applyNodeProps(this, props, oldProps, this.__useStrictMode);
       this.oldProps = props;
     },
     validateChildren() {
