@@ -155,6 +155,21 @@ export default {
 </script>
 ```
 
+### Strict mode
+
+By default `vue-konva` works in "non-strict" mode. If you changed a property **manually** (or by user action like `drag&drop`) properties of the node will be not matched with properties passed as `config`. `vue-konva` updates ONLY changed properties.
+
+In strict mode `vue-konva` will update all properties of the nodes to the values that you provided in `config`, no matter changed they or not.
+
+You should decide what mode is better in your actual use case.
+
+To enable strict mode pass __useStrictMode attribute:
+
+```html
+<v-rect :config="{}" __useStrictMode >
+```
+
+
 ## Configurable prefix
 
 By default `vue-konva` is using `v-` prefix for all components.
