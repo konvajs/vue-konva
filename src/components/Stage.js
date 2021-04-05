@@ -1,9 +1,9 @@
-import Vue from 'vue';
-import { applyNodeProps, createListener, checkOrder } from '../utils';
+import { h } from 'vue';
+import { applyNodeProps, checkOrder } from '../utils';
 
-export default Vue.component('v-stage', {
-  render: function (createElement) {
-    return createElement('div', this.$slots.default);
+export default {
+  render: function () {
+    return h('div', this.$slots.default?.());
   },
   watch: {
     config: {
@@ -24,9 +24,8 @@ export default Vue.component('v-stage', {
       type: Boolean,
     },
   },
-
   created() {
-    this._konvaNode = new window.Konva.Stage({
+    this.__konvaNode = new window.Konva.Stage({
       width: this.config.width,
       height: this.config.height,
       // create fake container, later it will be replaced with real div on the page
@@ -35,31 +34,30 @@ export default Vue.component('v-stage', {
   },
   mounted() {
     this.$el.innerHTML = '';
-    this._konvaNode.container(this.$el);
+    this.__konvaNode.container(this.$el);
     this.uploadKonva();
     this.validateChildren();
   },
   updated() {
     this.uploadKonva();
     this.uploadKonva();
-    checkOrder(this.$vnode, this._konvaNode);
+    checkOrder(this.$, this.__konvaNode);
   },
-  beforeDestroy() {
-    this._konvaNode.destroy();
+  beforeUnmount() {
+    this.__konvaNode.destroy();
   },
   methods: {
     getNode() {
-      return this._konvaNode;
+      return this.__konvaNode;
     },
     getStage() {
-      return this._konvaNode;
+      return this.__konvaNode;
     },
     uploadKonva() {
       const oldProps = this.oldProps || {};
       const props = {
         ...this.$attrs,
         ...this.config,
-        ...createListener(this.$listeners),
       };
       applyNodeProps(this, props, oldProps, this.__useStrictMode);
       this.oldProps = props;
@@ -71,4 +69,4 @@ export default Vue.component('v-stage', {
       // })
     },
   },
-});
+};

@@ -8,17 +8,9 @@ export function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export function createListener(obj) {
-  const output = {};
-  Object.keys(obj).forEach((eventName) => {
-    output['on' + eventName] = obj[eventName];
-  });
-  return output;
-}
-
 export function findParentKonva(instance) {
   function re(instance) {
-    if (instance._konvaNode) {
+    if (instance.__konvaNode) {
       return instance;
     }
     if (instance.$parent) {
@@ -33,27 +25,42 @@ export function findKonvaNode(instance) {
   if (!instance) {
     return null;
   }
-  if (instance.$options[konvaNodeMarker]) {
-    return instance.getNode();
-  }
-  if (instance.$children.length === 0) {
+  if (!instance.component) {
     return null;
   }
-  return findKonvaNode(instance.$children[0]);
+  if (!instance.component.ctx) {
+    return null;
+  }
+  return instance.component.ctx.__konvaNode;
+
+  // if (instance.$options[konvaNodeMarker]) {
+  //   return instance.getNode();
+  // }
+  // if (instance.$children.length === 0) {
+  //   return null;
+  // }
+  // return findKonvaNode(instance.$children[0]);
 }
 
-export function checkOrder($vnode, konvaNode) {
+export function checkOrder($, konvaNode) {
   let needRedraw = false;
-  // check indexes
-  // somehow this.$children are not ordered correctly
-  // so we have to dive-in into componentOptions of vnode
-  // also componentOptions.children may have empty nodes, and other non Konva elements so we need to filter them first
 
-  const children = $vnode.componentOptions.children || [];
+  let children = [];
+
+  if ($.subTree.children) {
+    $.subTree.children.forEach((child) => {
+      if (!child.component && Array.isArray(child.children)) {
+        children.push(...child.children);
+      }
+      if (child.component) {
+        children.push(child);
+      }
+    });
+  }
 
   const nodes = [];
   children.forEach(($vnode) => {
-    const konvaNode = findKonvaNode($vnode.componentInstance);
+    const konvaNode = findKonvaNode($vnode);
     if (konvaNode) {
       nodes.push(konvaNode);
     }

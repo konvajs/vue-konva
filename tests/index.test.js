@@ -2,22 +2,30 @@ import { expect } from 'chai';
 import './mocking';
 import Konva from 'konva';
 import sinon from 'sinon/pkg/sinon';
-import Vue from 'vue';
-import { mount, createLocalVue } from '@vue/test-utils';
-
+import { nextTick, h, ref } from 'vue/dist/vue.esm-bundler.js';
+import {
+  mount,
+  config,
+} from '@vue/test-utils/dist/vue-test-utils.esm-bundler.js';
 import VueKonva from '../src/index';
 
-Vue.use(VueKonva);
-
 describe('Test references', function () {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
+
   it('create stage on mount', () => {
-    const { vm } = mount({
+    const wrapper = mount({
       template: `
         <v-stage ref="stage">
         </v-stage>
       `,
     });
-    const stage = vm.$refs.stage.getStage();
+    const stage = wrapper.vm.$refs.stage.getStage();
     expect(stage).to.not.equal(undefined);
   });
 
@@ -107,6 +115,13 @@ describe('Test references', function () {
 });
 
 describe('Test stage component', function () {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
   it('can attach stage events', function () {
     let eventCount = 0;
 
@@ -196,7 +211,7 @@ describe('Test stage component', function () {
 
     const stagesNumber = Konva.stages.length;
     vm.drawStage = false;
-    Vue.nextTick(() => {
+    nextTick(() => {
       expect(Konva.stages.length).to.equal(stagesNumber - 1);
       done();
     });
@@ -204,7 +219,14 @@ describe('Test stage component', function () {
 });
 
 describe('Test props setting', function () {
-  it('can update component props', (done) => {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
+  it('can update component props', async () => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="stage">
@@ -233,63 +255,18 @@ describe('Test props setting', function () {
     expect(rect.width()).to.equal(100);
     expect(rect.height()).to.equal(100);
 
-    Vue.set(vm.rect, 'width', 300);
-    Vue.nextTick(() => {
-      expect(rect.width()).to.equal(300);
-      vm.rect = {
-        width: 200,
-        height: 100,
-      };
-      Vue.nextTick(() => {
-        expect(rect.width()).to.equal(200);
-        done();
-      });
-    });
+    vm.rect.width = 300;
+    await nextTick();
+    expect(rect.width()).to.equal(300);
+    vm.rect = {
+      width: 200,
+      height: 100,
+    };
+    await nextTick();
+    expect(rect.width()).to.equal(200);
   });
 
-  it('can force update component props', (done) => {
-    const { vm } = mount({
-      template: `
-        <v-stage ref="stage" :config="stage">
-          <v-layer>
-            <v-rect :config="rect" ref="rect" __useStrictMode >
-            </v-rect>
-          </v-layer>
-        </v-stage>
-      `,
-      data() {
-        return {
-          stage: {
-            width: 300,
-            height: 400,
-          },
-          rect: {
-            width: 100,
-            height: 100,
-            fill: 'red',
-          },
-        };
-      },
-    });
-
-    const rect = vm.$refs.rect.getNode();
-
-    console.log(rect.getAttrs());
-    expect(rect.width()).to.equal(100);
-    expect(rect.height()).to.equal(100);
-
-    rect.width(150);
-
-    Vue.set(vm.rect, 'fill', 'green');
-
-    Vue.nextTick(() => {
-      console.log(rect.getAttrs());
-      expect(rect.width()).to.equal(100);
-      done();
-    });
-  });
-
-  it('can use v-if', (done) => {
+  it('can use v-if', async () => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="stage">
@@ -327,16 +304,14 @@ describe('Test props setting', function () {
     expect(layer.children.length).to.equal(2);
     sinon.spy(Konva.Util, 'warn');
     vm.textVisible = false;
-    Vue.nextTick(() => {
-      expect(layer.children.length).to.equal(1);
-      expect(layer.children[0].className).to.equal('Rect');
-      expect(Konva.Util.warn.callCount).to.equal(0);
-      Konva.Util.warn.restore();
-      done();
-    });
+    await nextTick();
+    expect(layer.children.length).to.equal(1);
+    expect(layer.children[0].className).to.equal('Rect');
+    expect(Konva.Util.warn.callCount).to.equal(0);
+    Konva.Util.warn.restore();
   });
 
-  it('can set stage props', (done) => {
+  it('can set stage props', async () => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="stage">
@@ -357,44 +332,19 @@ describe('Test props setting', function () {
 
     const stage = vm.$refs.stage.getNode();
 
-    Vue.nextTick(() => {
-      setTimeout(() => {
-        done();
-      }, 10000);
-      expect(stage.width()).to.equal(300);
-      done();
-    });
+    await nextTick();
+    expect(stage.width()).to.equal(300);
   });
 
-  it('can update component events', (done) => {
+  it('can update component events', async () => {
     const wrap = mount({
-      render(createElement) {
-        const events = this.click
-          ? {
-              click: this.click,
-            }
-          : {};
-
-        return createElement(
-          'v-stage',
-          {
-            config: this.stage,
-          },
-          [
-            createElement('v-layer', [
-              createElement('v-rect', {
-                attrs: {
-                  config: {
-                    width: 300,
-                  },
-                },
-                on: events,
-                ref: 'rect',
-              }),
-            ]),
-          ]
-        );
-      },
+      template: `
+        <v-stage :config="stage">
+          <v-layer>
+            <v-rect ref="rect" :config="{width: 300}" @click="click" />
+          </v-layer>
+        </v-stage>
+      `,
       props: ['click'],
       data() {
         return {
@@ -414,20 +364,17 @@ describe('Test props setting', function () {
       click: handler,
     });
 
-    Vue.nextTick(() => {
-      expect(rect.eventListeners.click.length).to.equal(1);
+    await nextTick();
+    expect(rect.eventListeners.click.length).to.equal(1);
 
-      wrap.setProps({
-        click: null,
-      });
-      Vue.nextTick(() => {
-        expect(rect.eventListeners.click).to.equal(undefined);
-        done();
-      });
+    wrap.setProps({
+      click: null,
     });
+    await nextTick();
+    expect(rect.eventListeners.click).to.equal(undefined);
   });
 
-  it('updating props should call layer redraw', (done) => {
+  it('updating props should call layer redraw', async () => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage" :config="stage">
@@ -457,15 +404,15 @@ describe('Test props setting', function () {
 
     vm.rect.width = 50;
     vm.rect.width = 150;
-    Vue.nextTick(() => {
-      expect(layer.batchDraw.callCount).to.equal(1);
+    await nextTick();
 
-      layer.batchDraw.restore();
-      done();
-    });
+    expect(layer.batchDraw.callCount).to.equal(1);
+
+    layer.batchDraw.restore();
   });
 
-  it('changing order should redraw layer', (done) => {
+  it('changing order should redraw layer', async () => {
+    window.nodes = [];
     const { vm } = mount({
       template: `
           <v-stage ref="stage" :config="stage">
@@ -498,31 +445,29 @@ describe('Test props setting', function () {
     });
 
     const layer = vm.$refs.layer.getNode();
-
     sinon.spy(layer, 'batchDraw');
 
     const items = vm.items.concat();
     items.reverse();
     vm.items = items;
-    Vue.nextTick(() => {
-      expect(layer.batchDraw.callCount).to.equal(1);
-      layer.batchDraw.restore();
-      done();
-    });
+    await nextTick();
+
+    expect(layer.batchDraw.callCount).to.equal(1);
+    layer.batchDraw.restore();
   });
 
-  it('checking for loop order', (done) => {
+  it('checking for loop order', async () => {
     const { vm } = mount({
       template: `
-      <div>
+        <div>
           <v-stage ref="stage" :config="stage">
             <v-layer v-for="item in items" :config="item" :key="item.id">
               <v-rect />
             </v-layer>
             <v-layer :config="{ id: '3' }" />
           </v-stage>
-          </div>
-        `,
+        </div>
+      `,
       data() {
         return {
           stage: {
@@ -535,7 +480,9 @@ describe('Test props setting', function () {
     });
 
     const stage = vm.$refs.stage.getNode();
+    expect(stage.children[0].id()).to.equal('3');
 
+    await nextTick();
     vm.items = [
       {
         id: '1',
@@ -548,15 +495,13 @@ describe('Test props setting', function () {
         height: 100,
       },
     ];
-    Vue.nextTick(() => {
-      expect(stage.children[0].id()).to.equal('1');
-      expect(stage.children[1].id()).to.equal('2');
-      expect(stage.children[2].id()).to.equal('3');
-      done();
-    });
+    await nextTick();
+    expect(stage.children[0].id()).to.equal('1');
+    expect(stage.children[1].id()).to.equal('2');
+    expect(stage.children[2].id()).to.equal('3');
   });
 
-  it('unset props', (done) => {
+  it('unset props', async () => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage" :config="stage">
@@ -586,11 +531,9 @@ describe('Test props setting', function () {
 
     vm.rect.fill = null;
     vm.rect.x = null;
-    Vue.nextTick(() => {
-      expect(!!rect.fill()).to.equal(false);
-      expect(rect.x()).to.equal(0);
-      done();
-    });
+    await nextTick();
+    expect(!!rect.fill()).to.equal(false);
+    expect(rect.x()).to.equal(0);
   });
 
   it('do not overwrite properties if that changed manually', () => {
@@ -629,13 +572,20 @@ describe('Test props setting', function () {
 });
 
 describe('test lifecycle methods', () => {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
   let createdCount = 0;
   let updateCount = 0;
   let beforeCreateCount = 0;
-  Vue.component('lifecycle', {
+  const lifecycle = {
     props: ['fill'],
-    render(createElement) {
-      return createElement('v-rect', {
+    render() {
+      return h('v-rect', {
         attrs: { config: { fill: this.fill } },
       });
     },
@@ -648,7 +598,7 @@ describe('test lifecycle methods', () => {
     updated() {
       updateCount += 1;
     },
-  });
+  };
 
   beforeEach(() => {
     createdCount = 0;
@@ -657,23 +607,21 @@ describe('test lifecycle methods', () => {
 
   it('test mount', () => {
     mount({
-      render(createElement) {
-        return createElement('v-stage', { ref: 'stage' }, [
-          createElement('v-layer', [createElement('lifecycle', {})]),
-        ]);
+      render() {
+        return h('v-stage', [h('v-layer', [h(lifecycle, {})])]);
       },
     });
 
     expect(createdCount).to.equal(1);
   });
 
-  it('test update', (done) => {
+  it('test update', async () => {
     const wrap = mount({
       props: ['fill'],
-      render(createElement) {
-        return createElement('v-stage', { ref: 'stage' }, [
-          createElement('v-layer', [
-            createElement('lifecycle', {
+      render() {
+        return h('v-stage', { ref: 'stage' }, [
+          h('v-layer', [
+            h(lifecycle, {
               attrs: {
                 fill: this.fill,
               },
@@ -687,15 +635,20 @@ describe('test lifecycle methods', () => {
       fill: 'white',
     });
 
-    Vue.nextTick(() => {
-      expect(updateCount).to.equal(1);
-      done();
-    });
+    await nextTick();
+    expect(updateCount).to.equal(1);
   });
 });
 
-describe('Test Events', function (done) {
-  it('should remove events on unmount', function (done) {
+describe('Test Events', (done) => {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
+  it('should remove events on unmount', async () => {
     const onClickRect = sinon.spy();
     const onClickExternal = sinon.spy();
     const { vm } = mount(
@@ -740,18 +693,16 @@ describe('Test Events', function (done) {
 
     vm.drawLayer = false;
 
-    Vue.nextTick(() => {
-      expect(layer.getParent()).to.equal(null);
+    await nextTick();
+    expect(layer.getParent()).to.equal(null);
 
-      rect._fire('click', {});
+    rect._fire('click', {});
 
-      expect(onClickRect.callCount).to.equal(1);
-      expect(onClickExternal.callCount).to.equal(2);
-      done();
-    });
+    expect(onClickRect.callCount).to.equal(1);
+    expect(onClickExternal.callCount).to.equal(2);
   });
 
-  it('check arguments', function () {
+  it('check arguments', () => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="size">
@@ -787,7 +738,14 @@ describe('Test Events', function (done) {
 });
 
 describe('Test drawing calls', () => {
-  it('Draw layer on mount', function () {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
+  it('Draw layer on mount', () => {
     sinon.spy(Konva.Layer.prototype, 'batchDraw');
 
     const { vm } = mount({
@@ -805,7 +763,7 @@ describe('Test drawing calls', () => {
     Konva.Layer.prototype.batchDraw.restore();
   });
 
-  it('Draw layer on node add', function (done) {
+  it('Draw layer on node add', async () => {
     sinon.spy(Konva.Layer.prototype, 'batchDraw');
 
     const { vm } = mount({
@@ -827,15 +785,13 @@ describe('Test drawing calls', () => {
     expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(1);
 
     vm.showRect = true;
-    Vue.nextTick(() => {
-      expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(2);
+    await nextTick();
+    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(2);
 
-      Konva.Layer.prototype.batchDraw.restore();
-      done();
-    });
+    Konva.Layer.prototype.batchDraw.restore();
   });
 
-  it('Draw layer on node remove', function (done) {
+  it('Draw layer on node remove', async () => {
     sinon.spy(Konva.Layer.prototype, 'batchDraw');
     const { vm } = mount({
       template: `
@@ -857,40 +813,56 @@ describe('Test drawing calls', () => {
 
     vm.showRect = false;
 
-    Vue.nextTick(() => {
-      expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(3);
+    await nextTick();
+    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(3);
 
-      Konva.Layer.prototype.batchDraw.restore();
-      done();
-    });
+    Konva.Layer.prototype.batchDraw.restore();
   });
 });
 
 describe('test reconciler', () => {
-  it('add before', function (done) {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
+  it('add before', async () => {
     const { vm } = mount({
-      render(createElement) {
-        const kids = this.drawMany
-          ? [
-              createElement('v-rect', {
-                key: 'k1',
-                attrs: { config: { name: 'rect1' } },
-              }),
-              createElement('v-rect', {
-                key: 'k2',
-                attrs: { config: { name: 'rect2' } },
-              }),
-            ]
-          : [
-              createElement('v-rect', {
-                key: '2',
-                attrs: { config: { name: 'rect2' } },
-              }),
-            ];
-        return createElement('v-stage', [
-          createElement('v-layer', { ref: 'layer' }, kids),
-        ]);
-      },
+      template: `
+        <v-stage>
+          <v-layer ref="layer">
+            <template v-if="drawMany">
+              <v-rect key="k1" :config="{ name: 'rect1'}"/>
+              <v-rect key="k2" :config="{ name: 'rect2'}"/>
+            </template>
+            <v-rect v-else key="2" :config="{ name: 'rect2'}"/>
+          </v-layer>
+        </v-stage>
+      `,
+      // render() {
+      //   const kids = this.drawMany
+      //     ? [
+      //       h('v-rect', {
+      //         key: 'k1',
+      //         attrs: { config: { name: 'rect1' } },
+      //       }),
+      //       h('v-rect', {
+      //         key: 'k2',
+      //         attrs: { config: { name: 'rect2' } },
+      //       }),
+      //     ]
+      //     : [
+      //       h('v-rect', {
+      //         key: '2',
+      //         attrs: { config: { name: 'rect2' } },
+      //       }),
+      //     ];
+      //   return h('v-stage', [
+      //     h('v-layer', { ref: 'layer' }, kids),
+      //   ]);
+      // },
       data() {
         return {
           drawMany: false,
@@ -901,17 +873,15 @@ describe('test reconciler', () => {
     sinon.spy(Konva.Layer.prototype, 'batchDraw');
 
     vm.drawMany = true;
-    Vue.nextTick(() => {
-      const layer = vm.$refs.layer.getNode();
-      expect(layer.children[0].name()).to.equal('rect1');
-      expect(layer.children[1].name()).to.equal('rect2');
-      expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(3);
-      Konva.Layer.prototype.batchDraw.restore();
-      done();
-    });
+    await nextTick();
+    const layer = vm.$refs.layer.getNode();
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(3);
+    Konva.Layer.prototype.batchDraw.restore();
   });
 
-  it('add before', function (done) {
+  it('add before', async () => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage">
@@ -929,16 +899,14 @@ describe('test reconciler', () => {
     });
 
     vm.items = [1, 2, 3];
-    Vue.nextTick(() => {
-      const layer = vm.$refs.layer.getNode();
-      expect(layer.children[0].name()).to.equal('rect1');
-      expect(layer.children[1].name()).to.equal('rect2');
-      expect(layer.children[2].name()).to.equal('rect3');
-      done();
-    });
+    const layer = vm.$refs.layer.getNode();
+    await nextTick();
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect3');
   });
 
-  it('add after', function (done) {
+  it('add after', async () => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage">
@@ -957,16 +925,14 @@ describe('test reconciler', () => {
 
     vm.items = [1, 2];
 
-    Vue.nextTick(() => {
-      const layer = vm.$refs.layer.getNode();
+    await nextTick();
+    const layer = vm.$refs.layer.getNode();
 
-      expect(layer.children[0].name()).to.equal('rect1');
-      expect(layer.children[1].name()).to.equal('rect2');
-      done();
-    });
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect2');
   });
 
-  it('change order', function (done) {
+  it('change order', async () => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage">
@@ -989,48 +955,53 @@ describe('test reconciler', () => {
     expect(layer.children[2].name()).to.equal('rect3');
 
     vm.items = [3, 2, 1];
-    Vue.nextTick(() => {
-      expect(layer.children[0].name()).to.equal('rect3');
-      expect(layer.children[1].name()).to.equal('rect2');
-      expect(layer.children[2].name()).to.equal('rect1');
 
-      vm.items = [1, 3, 2];
-      Vue.nextTick(() => {
-        expect(layer.children[0].name()).to.equal('rect1');
-        expect(layer.children[1].name()).to.equal('rect3');
-        expect(layer.children[2].name()).to.equal('rect2');
-        done();
-      });
-    });
+    await nextTick();
+
+    expect(layer.children[0].name()).to.equal('rect3');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect1');
+
+    vm.items = [1, 3, 2];
+    await nextTick();
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect3');
+    expect(layer.children[2].name()).to.equal('rect2');
   });
 
-  it('change deep order', function (done) {
+  it('change deep order', async () => {
     const Deep = {
       props: ['name'],
-      render(createElement) {
-        return createElement('v-rect', {
-          attrs: { config: { name: this.name } },
+      render() {
+        return h('v-rect', {
+          config: { name: this.name },
         });
       },
     };
-    const { vm } = mount({
-      template: `
+    const { vm } = mount(
+      {
+        template: `
           <v-stage ref="stage">
             <v-layer ref="layer">
-              <deep v-for="item in items" :name="'rect' + item" :key="item">
-              </deep>
+              <v-rect v-for="item in items" :config="{ name: 'rect' + item}" :key="item">
+              </v-rect>
             </v-layer>
           </v-stage>
         `,
-      components: {
-        Deep,
+        data() {
+          return {
+            items: [1, 2, 3],
+          };
+        },
       },
-      data() {
-        return {
-          items: [1, 2, 3],
-        };
-      },
-    });
+      {
+        global: {
+          components: {
+            Deep,
+          },
+        },
+      }
+    );
     const layer = vm.$refs.layer.getNode();
 
     expect(layer.children[0].name()).to.equal('rect1');
@@ -1038,27 +1009,24 @@ describe('test reconciler', () => {
     expect(layer.children[2].name()).to.equal('rect3');
 
     vm.items = [3, 2, 1];
-    Vue.nextTick(() => {
-      expect(layer.children[0].name()).to.equal('rect3');
-      expect(layer.children[1].name()).to.equal('rect2');
-      expect(layer.children[2].name()).to.equal('rect1');
+    await nextTick();
+    expect(layer.children[0].name()).to.equal('rect3');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect1');
 
-      vm.items = [1, 3, 2];
-      Vue.nextTick(() => {
-        expect(layer.children[0].name()).to.equal('rect1');
-        expect(layer.children[1].name()).to.equal('rect3');
-        expect(layer.children[2].name()).to.equal('rect2');
-        done();
-      });
-    });
+    vm.items = [1, 3, 2];
+    await nextTick();
+    expect(layer.children[0].name()).to.equal('rect1');
+    expect(layer.children[1].name()).to.equal('rect3');
+    expect(layer.children[2].name()).to.equal('rect2');
   });
 
-  it('change deep order with detecting konva node correctly', (done) => {
+  it.only('change deep order with detecting konva node correctly', async () => {
     const Deep = {
       props: ['name'],
-      render(createElement) {
-        return createElement('v-rect', {
-          attrs: { config: { name: this.name } },
+      render() {
+        return h('v-rect', {
+          config: { name: this.name },
         });
       },
       methods: {
@@ -1067,37 +1035,47 @@ describe('test reconciler', () => {
         },
       },
     };
-    const { vm } = mount({
-      template: `
+
+    const { vm } = mount(
+      {
+        template: `
           <v-stage ref="stage">
             <v-layer ref="layer">
-              <deep v-for="item in items" :name="'rect' + item" :key="item">
-              </deep>
+              <Deep v-for="item in items" :name="'rect' + item" :key="item">
+              </Deep>
             </v-layer>
           </v-stage>
         `,
-      components: {
-        Deep,
+        data() {
+          return {
+            items: [1, 2, 3],
+          };
+        },
+        components: {
+          Deep,
+        },
       },
-      data() {
-        return {
-          items: [1, 2, 3],
-        };
-      },
-    });
+      {
+        global: {
+          components: {
+            Deep,
+          },
+        },
+      }
+    );
     const layer = vm.$refs.layer.getNode();
+
+    debugger;
 
     expect(layer.children[0].name()).to.equal('rect1');
     expect(layer.children[1].name()).to.equal('rect2');
     expect(layer.children[2].name()).to.equal('rect3');
 
     vm.items = [3, 2, 1];
-    Vue.nextTick(() => {
-      expect(layer.children[0].name()).to.equal('rect3');
-      expect(layer.children[1].name()).to.equal('rect2');
-      expect(layer.children[2].name()).to.equal('rect1');
-      done();
-    });
+    await nextTick();
+    expect(layer.children[0].name()).to.equal('rect3');
+    expect(layer.children[1].name()).to.equal('rect2');
+    expect(layer.children[2].name()).to.equal('rect1');
   });
 
   it('can draw several stages', function () {
@@ -1119,9 +1097,6 @@ describe('test reconciler', () => {
 });
 
 describe('Test plugin', function () {
-  const localVue = createLocalVue();
-  localVue.use(VueKonva, { prefix: 'Konva' });
-
   it('registers components with custom prefix', () => {
     const { vm } = mount(
       {
@@ -1142,7 +1117,9 @@ describe('Test plugin', function () {
         },
       },
       {
-        localVue,
+        global: {
+          plugins: [[VueKonva, { prefix: 'Konva' }]],
+        },
       }
     );
 
@@ -1159,7 +1136,15 @@ describe('Test plugin', function () {
 });
 
 describe('validations', function (done) {
-  it('Make sure no other DOM tags are used', (done) => {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
+
+  it('Make sure no other DOM tags are used', async () => {
     const { vm } = mount({
       data() {
         return {
@@ -1187,17 +1172,15 @@ describe('validations', function (done) {
 
     sinon.spy(console, 'error');
     vm.items = [{ id: 2 }, { id: 1 }];
-    Vue.nextTick(() => {
-      const circles = stage.find('Circle');
-      expect(circles[0].id()).to.equal(2);
-      expect(circles[1].id()).to.equal(1);
-      expect(console.error.callCount).to.equal(1);
-      console.error.restore();
-      done();
-    });
+    await nextTick();
+    const circles = stage.find('Circle');
+    expect(circles[0].id()).to.equal(2);
+    expect(circles[1].id()).to.equal(1);
+    expect(console.error.callCount).to.equal(1);
+    console.error.restore();
   });
 
-  it('Should not throw on hidden objects', (done) => {
+  it('Should not throw on hidden objects', async () => {
     const { vm } = mount({
       data() {
         return {
@@ -1208,13 +1191,10 @@ describe('validations', function (done) {
           items: [{ id: 1 }, { id: 2 }],
         };
       },
-      components: {
-        TestCounter: { template: '<v-group v-if="false"/>' },
-      },
       template: `
         <v-stage ref="stage" :config="stage">
           <v-layer>
-            <test-counter />
+            <div v-if="false"/>
             <v-rect />
             <v-circle v-for="item in items" :key="item.id" :config="item" />
           </v-layer>
@@ -1225,13 +1205,11 @@ describe('validations', function (done) {
 
     sinon.spy(console, 'error');
     vm.items = [{ id: 2 }, { id: 1 }];
-    Vue.nextTick(() => {
-      const circles = stage.find('Circle');
-      expect(circles[0].id()).to.equal(2);
-      expect(circles[1].id()).to.equal(1);
-      expect(console.error.callCount).to.equal(0);
-      console.error.restore();
-      done();
-    });
+    await nextTick();
+    const circles = stage.find('Circle');
+    expect(circles[0].id()).to.equal(2);
+    expect(circles[1].id()).to.equal(1);
+    expect(console.error.callCount).to.equal(0);
+    console.error.restore();
   });
 });

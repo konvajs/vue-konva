@@ -1,12 +1,11 @@
+import { h } from 'vue';
 import {
   applyNodeProps,
   findParentKonva,
-  createListener,
   updatePicture,
   konvaNodeMarker,
   checkOrder,
 } from '../utils';
-
 const EVENTS_NAMESPACE = '.vue-konva-event';
 
 const CONTAINERS = {
@@ -21,11 +20,11 @@ export default function (nameNode) {
     // Mark it to detect whether an Vue instance is KonvaNode or not later
     [konvaNodeMarker]: true,
 
-    render(createElement) {
+    render() {
       // containers should be able to draw children
       const isContainer = CONTAINERS[nameNode];
       if (isContainer) {
-        return createElement('template', this.$slots.default);
+        return h('template', this.$slots.default?.());
       }
       // other elements are not containers
       return null;
@@ -54,27 +53,28 @@ export default function (nameNode) {
     },
     mounted() {
       const parentVueInstance = findParentKonva(this);
-      const parentKonvaNode = parentVueInstance._konvaNode;
-      parentKonvaNode.add(this._konvaNode);
-      updatePicture(this._konvaNode);
+      const parentKonvaNode = parentVueInstance.__konvaNode;
+      parentKonvaNode.add(this.__konvaNode);
+      updatePicture(this.__konvaNode);
     },
     updated() {
       this.uploadKonva();
-      checkOrder(this.$vnode, this._konvaNode);
+      checkOrder(this.$, this.__konvaNode);
     },
-    destroyed() {
-      updatePicture(this._konvaNode);
-      this._konvaNode.destroy();
-      this._konvaNode.off(EVENTS_NAMESPACE);
+    unmounted() {
+      updatePicture(this.__konvaNode);
+      this.__konvaNode.destroy();
+      this.__konvaNode.off(EVENTS_NAMESPACE);
     },
     methods: {
       getNode() {
-        return this._konvaNode;
+        return this.__konvaNode;
       },
       getStage() {
-        return this._konvaNode;
+        return this.__konvaNode;
       },
       initKonva() {
+        debugger;
         const NodeClass = window.Konva[nameNode];
 
         if (!NodeClass) {
@@ -82,9 +82,8 @@ export default function (nameNode) {
           return;
         }
 
-        this._konvaNode = new NodeClass();
-        this._konvaNode.VueComponent = this;
-
+        this.__konvaNode = new NodeClass();
+        this.$.vnode.__konvaNode = this.__konvaNode;
         this.uploadKonva();
       },
       uploadKonva() {
@@ -92,7 +91,6 @@ export default function (nameNode) {
         const props = {
           ...this.$attrs,
           ...this.config,
-          ...createListener(this.$listeners),
         };
         applyNodeProps(this, props, oldProps, this.__useStrictMode);
         this.oldProps = props;

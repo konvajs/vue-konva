@@ -42,19 +42,15 @@ const components = [
 ];
 
 const VueKonva = {
-  install: (Vue, options) => {
+  install: (app, options) => {
     let prefixToUse = componentPrefix;
-    if(options && options.prefix){
+    if (options && options.prefix) {
       prefixToUse = options.prefix;
     }
     components.forEach(k => {
-      Vue.component(`${prefixToUse}${k.name}`, k.component);
+      app.component(`${prefixToUse}${k.name}`, k.component);
     })
   }
 };
 
 export default VueKonva;
-
-if (typeof window !== 'undefined' && window.Vue) {
-  window.Vue.use(VueKonva);
-}
