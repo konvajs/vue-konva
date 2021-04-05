@@ -239,6 +239,8 @@ function findParentKonva(instance) {
   return re(instance.$parent);
 }
 function findKonvaNode(instance) {
+  var _instance$component, _instance$component$c, _instance$component$s;
+
   if (!instance) {
     return null;
   }
@@ -251,13 +253,19 @@ function findKonvaNode(instance) {
     return null;
   }
 
-  return instance.component.ctx.__konvaNode; // if (instance.$options[konvaNodeMarker]) {
-  //   return instance.getNode();
-  // }
-  // if (instance.$children.length === 0) {
-  //   return null;
-  // }
-  // return findKonvaNode(instance.$children[0]);
+  if (instance === null || instance === void 0 ? void 0 : (_instance$component = instance.component) === null || _instance$component === void 0 ? void 0 : (_instance$component$c = _instance$component.ctx) === null || _instance$component$c === void 0 ? void 0 : _instance$component$c.__konvaNode) {
+    return instance.component.ctx.__konvaNode;
+  }
+
+  if (instance.component.subTree.__konvaNode) {
+    return instance.component.subTree.__konvaNode;
+  }
+
+  if (((_instance$component$s = instance.component.subTree.children) === null || _instance$component$s === void 0 ? void 0 : _instance$component$s.length) === 0) {
+    return null;
+  }
+
+  return findKonvaNode(instance.component.subTree);
 }
 function checkOrder($, konvaNode) {
   var needRedraw = false;
@@ -283,11 +291,11 @@ function checkOrder($, konvaNode) {
       nodes.push(konvaNode);
     }
 
-    var elm = $vnode.elm,
-        componentInstance = $vnode.componentInstance;
+    var el = $vnode.el,
+        component = $vnode.component;
 
-    if (elm && elm.tagName && componentInstance && !konvaNode) {
-      var name = elm && elm.tagName.toLowerCase();
+    if (el && el.tagName && component && !konvaNode) {
+      var name = el && el.tagName.toLowerCase();
       console.error("vue-konva error: You are trying to render \"" + name + "\" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.");
     }
   });
@@ -401,7 +409,7 @@ var CONTAINERS = {
     if (isContainer) {
       var _this$$slots$default, _this$$slots;
 
-      return Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["h"])('template', (_this$$slots$default = (_this$$slots = this.$slots).default) === null || _this$$slots$default === void 0 ? void 0 : _this$$slots$default.call(_this$$slots));
+      return Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["h"])('div', (_this$$slots$default = (_this$$slots = this.$slots).default) === null || _this$$slots$default === void 0 ? void 0 : _this$$slots$default.call(_this$$slots));
     } // other elements are not containers
 
 
@@ -447,7 +455,6 @@ var CONTAINERS = {
       return this.__konvaNode;
     },
     initKonva: function initKonva() {
-      debugger;
       var NodeClass = window.Konva[nameNode];
 
       if (!NodeClass) {

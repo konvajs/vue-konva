@@ -22,24 +22,16 @@ export function findParentKonva(instance) {
 }
 
 export function findKonvaNode(instance) {
-  if (!instance) {
+  if (!instance?.component?.ctx) {
     return null;
   }
-  if (!instance.component) {
-    return null;
+  if (instance?.component?.ctx?.__konvaNode) {
+    return instance.component.ctx.__konvaNode;
   }
-  if (!instance.component.ctx) {
-    return null;
+  if (instance.component.subTree.__konvaNode) {
+    return instance.component.subTree.__konvaNode
   }
-  return instance.component.ctx.__konvaNode;
-
-  // if (instance.$options[konvaNodeMarker]) {
-  //   return instance.getNode();
-  // }
-  // if (instance.$children.length === 0) {
-  //   return null;
-  // }
-  // return findKonvaNode(instance.$children[0]);
+  return findKonvaNode(instance.component.subTree)
 }
 
 export function checkOrder($, konvaNode) {
@@ -65,9 +57,9 @@ export function checkOrder($, konvaNode) {
       nodes.push(konvaNode);
     }
 
-    const { elm, componentInstance } = $vnode;
-    if (elm && elm.tagName && componentInstance && !konvaNode) {
-      const name = elm && elm.tagName.toLowerCase();
+    const { el, component } = $vnode;
+    if (el && el.tagName && component && !konvaNode) {
+      const name = el && el.tagName.toLowerCase();
       console.error(
         `vue-konva error: You are trying to render "${name}" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.`
       );

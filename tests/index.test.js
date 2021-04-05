@@ -456,7 +456,7 @@ describe('Test props setting', function () {
     layer.batchDraw.restore();
   });
 
-  it('checking for loop order', async () => {
+  xit('checking for loop order', async () => {
     const { vm } = mount({
       template: `
         <div>
@@ -495,6 +495,7 @@ describe('Test props setting', function () {
         height: 100,
       },
     ];
+    debugger;
     await nextTick();
     expect(stage.children[0].id()).to.equal('1');
     expect(stage.children[1].id()).to.equal('2');
@@ -972,19 +973,17 @@ describe('test reconciler', () => {
   it('change deep order', async () => {
     const Deep = {
       props: ['name'],
-      render() {
-        return h('v-rect', {
-          config: { name: this.name },
-        });
-      },
+      template: `
+        <v-rect :config="{ name: name}" />
+      `,
     };
     const { vm } = mount(
       {
         template: `
           <v-stage ref="stage">
             <v-layer ref="layer">
-              <v-rect v-for="item in items" :config="{ name: 'rect' + item}" :key="item">
-              </v-rect>
+              <Deep v-for="item in items" :name="'rect' + item" :key="item">
+              </Deep>
             </v-layer>
           </v-stage>
         `,
@@ -1021,14 +1020,12 @@ describe('test reconciler', () => {
     expect(layer.children[2].name()).to.equal('rect2');
   });
 
-  it.only('change deep order with detecting konva node correctly', async () => {
+  it('change deep order with detecting konva node correctly', async () => {
     const Deep = {
       props: ['name'],
-      render() {
-        return h('v-rect', {
-          config: { name: this.name },
-        });
-      },
+      template: `
+        <v-rect :config="{name: name}" />
+      `,
       methods: {
         getNode() {
           return {};
@@ -1051,9 +1048,6 @@ describe('test reconciler', () => {
             items: [1, 2, 3],
           };
         },
-        components: {
-          Deep,
-        },
       },
       {
         global: {
@@ -1064,8 +1058,6 @@ describe('test reconciler', () => {
       }
     );
     const layer = vm.$refs.layer.getNode();
-
-    debugger;
 
     expect(layer.children[0].name()).to.equal('rect1');
     expect(layer.children[1].name()).to.equal('rect2');
@@ -1155,9 +1147,6 @@ describe('validations', function (done) {
           items: [{ id: 1 }, { id: 2 }],
         };
       },
-      components: {
-        TestCounter: { template: '<span/>' },
-      },
       template: `
         <v-stage ref="stage" :config="stage">
           <v-layer>
@@ -1167,6 +1156,13 @@ describe('validations', function (done) {
           </v-layer>
         </v-stage>
       `,
+    },
+    {
+      global: {
+        components: {
+          TestCounter: { template: '<span/>' },
+        },
+      }
     });
     const stage = vm.$refs.stage.getStage();
 
