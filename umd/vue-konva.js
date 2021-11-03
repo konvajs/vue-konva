@@ -127,7 +127,6 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: external {"root":"Vue","commonjs2":"vue","commonjs":"vue","amd":"vue"}
 var external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_ = __webpack_require__(0);
-var external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_default = /*#__PURE__*/__webpack_require__.n(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_);
 
 // CONCATENATED MODULE: ./src/utils/updatePicture.js
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
@@ -154,7 +153,7 @@ function applyNodeProps(vueComponent, props, oldProps, useStrict) {
     oldProps = {};
   }
 
-  var instance = vueComponent._konvaNode;
+  var instance = vueComponent.__konvaNode;
   var updatedProps = {};
   var hasUpdates = false;
 
@@ -220,71 +219,78 @@ function applyNodeProps(vueComponent, props, oldProps, useStrict) {
 
 
 var componentPrefix = 'v';
-var konvaNodeMarker = '_konvaNode';
 function copy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-function createListener(obj) {
-  var output = {};
-  Object.keys(obj).forEach(function (eventName) {
-    output['on' + eventName] = obj[eventName];
-  });
-  return output;
-}
 function findParentKonva(instance) {
   function re(instance) {
-    if (instance._konvaNode) {
+    if (instance.__konvaNode) {
       return instance;
     }
 
-    if (instance.$parent) {
-      return re(instance.$parent);
+    if (instance.parent) {
+      return re(instance.parent);
     }
 
+    console.error('vue-konva error: Can not find parent node');
     return {};
   }
 
-  return re(instance.$parent);
+  return re(instance.parent);
 }
 function findKonvaNode(instance) {
-  if (!instance) {
+  var _instance$component;
+
+  if (!(instance === null || instance === void 0 ? void 0 : instance.component)) {
     return null;
   }
 
-  if (instance.$options[konvaNodeMarker]) {
-    return instance.getNode();
-  }
-
-  if (instance.$children.length === 0) {
-    return null;
-  }
-
-  return findKonvaNode(instance.$children[0]);
+  return (instance === null || instance === void 0 ? void 0 : (_instance$component = instance.component) === null || _instance$component === void 0 ? void 0 : _instance$component.__konvaNode) || findKonvaNode(instance.component.subTree);
 }
-function checkOrder($vnode, konvaNode) {
-  var needRedraw = false; // check indexes
-  // somehow this.$children are not ordered correctly
-  // so we have to dive-in into componentOptions of vnode
-  // also componentOptions.children may have empty nodes, and other non Konva elements so we need to filter them first
 
-  var children = $vnode.componentOptions.children || [];
-  var nodes = [];
-  children.forEach(function ($vnode) {
-    var konvaNode = findKonvaNode($vnode.componentInstance);
+function checkTags(_ref) {
+  var el = _ref.el,
+      component = _ref.component;
 
-    if (konvaNode) {
-      nodes.push(konvaNode);
+  if (el && el.tagName && component) {
+    var name = el && el.tagName.toLowerCase();
+    console.error("vue-konva error: You are trying to render \"" + name + "\" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.");
+    return false;
+  }
+
+  return true;
+}
+
+function checkOrder(subTree, konvaNode) {
+  var children = [];
+
+  function getChildren(instance) {
+    if (instance.children) {
+      instance.children.forEach(function (child) {
+        var validTags = checkTags(child);
+
+        if (validTags && !child.component && Array.isArray(child.children)) {
+          children.push.apply(children, child.children.map(function (subChild) {
+            return findKonvaNode(subChild);
+          }));
+        }
+
+        if (validTags && child.component) {
+          var _child$component;
+
+          children.push((_child$component = child.component) === null || _child$component === void 0 ? void 0 : _child$component.__konvaNode);
+        }
+      });
     }
 
-    var elm = $vnode.elm,
-        componentInstance = $vnode.componentInstance;
-
-    if (elm && elm.tagName && componentInstance && !konvaNode) {
-      var name = elm && elm.tagName.toLowerCase();
-      console.error("vue-konva error: You are trying to render \"" + name + "\" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.");
+    if (instance.__konvaNode) {
+      children.push(instance.__konvaNode);
     }
-  });
-  nodes.forEach(function (konvaNode, index) {
+  }
+
+  getChildren(subTree);
+  var needRedraw = false;
+  children.forEach(function (konvaNode, index) {
     if (konvaNode.getZIndex() !== index) {
       konvaNode.setZIndex(index);
       needRedraw = true;
@@ -301,18 +307,7 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
 
 
 
-/* harmony default export */ var Stage = (external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_default.a.component('v-stage', {
-  render: function render(createElement) {
-    return createElement('div', this.$slots.default);
-  },
-  watch: {
-    config: {
-      handler: function handler(val) {
-        this.uploadKonva();
-      },
-      deep: true
-    }
-  },
+/* harmony default export */ var Stage = ({
   props: {
     config: {
       type: Object,
@@ -324,54 +319,85 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       type: Boolean
     }
   },
-  created: function created() {
-    this._konvaNode = new window.Konva.Stage({
-      width: this.config.width,
-      height: this.config.height,
-      // create fake container, later it will be replaced with real div on the page
-      container: document.createElement('div')
+  setup: function setup(props, _ref) {
+    var attrs = _ref.attrs,
+        slots = _ref.slots,
+        expose = _ref.expose;
+    var instance = Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["getCurrentInstance"])();
+    var oldProps = Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["reactive"])({});
+    var container = Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["ref"])(null);
+
+    var __konvaNode = new window.Konva.Stage({
+      width: props.config.width,
+      height: props.config.height,
+      container: document.createElement('div') // Fake container. Will be replaced
+
     });
-  },
-  mounted: function mounted() {
-    this.$el.innerHTML = '';
 
-    this._konvaNode.container(this.$el);
+    instance.__konvaNode = __konvaNode; // Save on component instance
 
-    this.uploadKonva();
-    this.validateChildren();
-  },
-  updated: function updated() {
-    this.uploadKonva();
-    this.uploadKonva();
-    checkOrder(this.$vnode, this._konvaNode);
-  },
-  beforeDestroy: function beforeDestroy() {
-    this._konvaNode.destroy();
-  },
-  methods: {
-    getNode: function getNode() {
-      return this._konvaNode;
-    },
-    getStage: function getStage() {
-      return this._konvaNode;
-    },
-    uploadKonva: function uploadKonva() {
-      var oldProps = this.oldProps || {};
+    uploadKonva();
 
-      var props = _extends({}, this.$attrs, this.config, createListener(this.$listeners));
-
-      applyNodeProps(this, props, oldProps, this.__useStrictMode);
-      this.oldProps = props;
-    },
-    validateChildren: function validateChildren() {// TODO: add a waring if we see non-Konva element here
-      // this.$vnode.componentOptions.children.forEach(child => {
-      //   console.log(child);
-      // })
+    function getNode() {
+      return instance.__konvaNode;
     }
+
+    function getStage() {
+      return instance.__konvaNode;
+    }
+
+    function uploadKonva() {
+      var existingProps = oldProps || {};
+
+      var newProps = _extends({}, attrs, props.config);
+
+      applyNodeProps(instance, newProps, existingProps, props.__useStrictMode);
+      Object.assign(oldProps, newProps);
+    }
+
+    function validateChildren() {
+      return null;
+    }
+
+    Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["onMounted"])(function () {
+      container.value.innerHTML = '';
+
+      __konvaNode.container(container.value);
+
+      uploadKonva();
+      validateChildren();
+    });
+    Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["onUpdated"])(function () {
+      uploadKonva();
+      checkOrder(instance.subTree, __konvaNode);
+    });
+    Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["onBeforeUnmount"])(function () {
+      __konvaNode.destroy();
+    });
+    Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["watch"])(function () {
+      return props.config;
+    }, uploadKonva, {
+      deep: true
+    });
+    expose({
+      getStage: getStage,
+      getNode: getNode
+    }); // Loop order test appears to be problem with an empty v-for on layer objects
+    //     - When the second item is added to the list we get a Vue internals bug.
+    //     - Possibly related to https://github.com/vuejs/vue-next/issues/2715
+
+    return function () {
+      var _slots$default;
+
+      return Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["h"])('div', {
+        ref: container
+      }, (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots));
+    };
   }
-}));
+});
 // CONCATENATED MODULE: ./src/components/KonvaNode.js
 function KonvaNode_extends() { KonvaNode_extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return KonvaNode_extends.apply(this, arguments); }
+
 
 
 var KonvaNode_EVENTS_NAMESPACE = '.vue-konva-event';
@@ -382,59 +408,24 @@ var CONTAINERS = {
   Label: true
 };
 /* harmony default export */ var KonvaNode = (function (nameNode) {
-  var _ref;
-
-  return _ref = {}, _ref[konvaNodeMarker] = true, _ref.render = function render(createElement) {
-    // containers should be able to draw children
-    var isContainer = CONTAINERS[nameNode];
-
-    if (isContainer) {
-      return createElement('template', this.$slots.default);
-    } // other elements are not containers
-
-
-    return null;
-  }, _ref.watch = {
-    config: {
-      handler: function handler(val) {
-        this.uploadKonva();
+  return {
+    props: {
+      config: {
+        type: Object,
+        default: function _default() {
+          return {};
+        }
       },
-      deep: true
-    }
-  }, _ref.props = {
-    config: {
-      type: Object,
-      default: function _default() {
-        return {};
+      __useStrictMode: {
+        type: Boolean
       }
     },
-    __useStrictMode: {
-      type: Boolean
-    }
-  }, _ref.created = function created() {
-    this.initKonva();
-  }, _ref.mounted = function mounted() {
-    var parentVueInstance = findParentKonva(this);
-    var parentKonvaNode = parentVueInstance._konvaNode;
-    parentKonvaNode.add(this._konvaNode);
-    updatePicture(this._konvaNode);
-  }, _ref.updated = function updated() {
-    this.uploadKonva();
-    checkOrder(this.$vnode, this._konvaNode);
-  }, _ref.destroyed = function destroyed() {
-    updatePicture(this._konvaNode);
-
-    this._konvaNode.destroy();
-
-    this._konvaNode.off(KonvaNode_EVENTS_NAMESPACE);
-  }, _ref.methods = {
-    getNode: function getNode() {
-      return this._konvaNode;
-    },
-    getStage: function getStage() {
-      return this._konvaNode;
-    },
-    initKonva: function initKonva() {
+    setup: function setup(props, _ref) {
+      var attrs = _ref.attrs,
+          slots = _ref.slots,
+          expose = _ref.expose;
+      var instance = Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["getCurrentInstance"])();
+      var oldProps = Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["reactive"])({});
       var NodeClass = window.Konva[nameNode];
 
       if (!NodeClass) {
@@ -442,19 +433,73 @@ var CONTAINERS = {
         return;
       }
 
-      this._konvaNode = new NodeClass();
-      this._konvaNode.VueComponent = this;
-      this.uploadKonva();
-    },
-    uploadKonva: function uploadKonva() {
-      var oldProps = this.oldProps || {};
+      var __konvaNode = new NodeClass();
 
-      var props = KonvaNode_extends({}, this.$attrs, this.config, createListener(this.$listeners));
+      instance.__konvaNode = __konvaNode;
+      instance.vnode.__konvaNode = __konvaNode;
+      uploadKonva();
 
-      applyNodeProps(this, props, oldProps, this.__useStrictMode);
-      this.oldProps = props;
+      function getNode() {
+        return instance.__konvaNode;
+      }
+
+      function getStage() {
+        return instance.__konvaNode;
+      }
+
+      function uploadKonva() {
+        var events = {};
+
+        for (var key in instance.vnode.props) {
+          if (key.slice(0, 2) === 'on') {
+            events[key] = instance.vnode.props[key];
+          }
+        }
+
+        var existingProps = oldProps || {};
+
+        var newProps = KonvaNode_extends({}, attrs, props.config, events);
+
+        applyNodeProps(instance, newProps, existingProps, props.__useStrictMode);
+        Object.assign(oldProps, newProps);
+      }
+
+      Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["onMounted"])(function () {
+        var parentKonvaNode = findParentKonva(instance).__konvaNode;
+
+        parentKonvaNode.add(__konvaNode);
+        updatePicture(__konvaNode);
+      });
+      Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["onUnmounted"])(function () {
+        updatePicture(__konvaNode);
+
+        __konvaNode.destroy();
+
+        __konvaNode.off(KonvaNode_EVENTS_NAMESPACE);
+      });
+      Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["onUpdated"])(function () {
+        uploadKonva();
+        checkOrder(instance.subTree, __konvaNode);
+      });
+      Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["watch"])(function () {
+        return props.config;
+      }, uploadKonva, {
+        deep: true
+      });
+      expose({
+        getStage: getStage,
+        getNode: getNode
+      });
+      var isContainer = CONTAINERS[nameNode];
+      return isContainer ? function () {
+        var _slots$default;
+
+        return Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["h"])('template', {}, (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots));
+      } : function () {
+        return null;
+      };
     }
-  }, _ref;
+  };
 });
 // CONCATENATED MODULE: ./src/index.js
 
@@ -476,7 +521,7 @@ var components = [{
   };
 }));
 var VueKonva = {
-  install: function install(Vue, options) {
+  install: function install(app, options) {
     var prefixToUse = componentPrefix;
 
     if (options && options.prefix) {
@@ -484,15 +529,11 @@ var VueKonva = {
     }
 
     components.forEach(function (k) {
-      Vue.component("" + prefixToUse + k.name, k.component);
+      app.component("" + prefixToUse + k.name, k.component);
     });
   }
 };
 /* harmony default export */ var src = __webpack_exports__["default"] = (VueKonva);
-
-if (typeof window !== 'undefined' && window.Vue) {
-  window.Vue.use(VueKonva);
-}
 
 /***/ })
 /******/ ])["default"];

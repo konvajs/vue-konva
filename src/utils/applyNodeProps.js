@@ -11,7 +11,7 @@ export default function applyNodeProps(
   oldProps = {},
   useStrict
 ) {
-  const instance = vueComponent._konvaNode;
+  const instance = vueComponent.__konvaNode;
   var updatedProps = {};
   var hasUpdates = false;
   for (let key in oldProps) {

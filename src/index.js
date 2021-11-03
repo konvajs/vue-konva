@@ -28,33 +28,29 @@ const KONVA_NODES = [
   'RegularPolygon',
   'Arrow',
   'Shape',
-  'Transformer'
+  'Transformer',
 ];
 const components = [
   {
     name: 'Stage',
-    component: Stage
+    component: Stage,
   },
-  ...KONVA_NODES.map(name => ({
+  ...KONVA_NODES.map((name) => ({
     name,
-    component: KonvaNode(name)
-  }))
+    component: KonvaNode(name),
+  })),
 ];
 
 const VueKonva = {
-  install: (Vue, options) => {
+  install: (app, options) => {
     let prefixToUse = componentPrefix;
-    if(options && options.prefix){
+    if (options && options.prefix) {
       prefixToUse = options.prefix;
     }
-    components.forEach(k => {
-      Vue.component(`${prefixToUse}${k.name}`, k.component);
-    })
-  }
+    components.forEach((k) => {
+      app.component(`${prefixToUse}${k.name}`, k.component);
+    });
+  },
 };
 
 export default VueKonva;
-
-if (typeof window !== 'undefined' && window.Vue) {
-  window.Vue.use(VueKonva);
-}
