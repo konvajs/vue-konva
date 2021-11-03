@@ -1,0 +1,85 @@
+{
+    "root": true,
+    "env":
+    {
+        "node": true
+    },
+    "extends": [
+        "plugin:vue/vue3-essential",
+        "eslint:recommended",
+    ],
+    "rules":
+    {
+        "indent": ["error", 2,
+        {
+            "MemberExpression": 1,
+            "FunctionDeclaration":
+            {
+                "parameters": 1
+            },
+            "CallExpression":
+            {
+                "arguments": 1
+            }
+        }],
+        "no-unused-vars": 1,
+        "no-mixed-spaces-and-tabs": "error",
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+        "arrow-parens": ["error", "always"],
+        "prefer-arrow-callback": "error",
+        "comma-dangle": ["error",
+        {
+            "arrays": "always-multiline",
+            "objects": "always-multiline",
+            "imports": "never",
+            "exports": "never",
+            "functions": "never"
+        }],
+        "object-curly-spacing": ["error", "always",
+        {
+            "arraysInObjects": false
+        }],
+        "block-spacing": ["error", "always"],
+        "space-before-blocks": ["error", "always"],
+        "space-before-function-paren": ["error", "never"],
+        "array-bracket-spacing": ["error", "never"],
+        "spaced-comment": ["error", "always"],
+        "vue/max-attributes-per-line": ["error",
+        {
+            "singleline":
+            {
+                "max": 1
+            },
+            "multiline":
+            {
+                "max": 1
+            }
+        }],
+        "vue/html-indent": ["error", 4,
+        {
+            "attribute": 1,
+            "baseIndent": 1,
+            "closeBracket": 0,
+            "alignAttributesVertically": true,
+            "ignores": []
+        }],
+        "vue/attributes-order": ["error",
+        {
+            "order": [
+                "DEFINITION",
+                "LIST_RENDERING",
+                "CONDITIONALS",
+                "RENDER_MODIFIERS",
+                "GLOBAL",
+                ["UNIQUE", "SLOT"],
+                "TWO_WAY_BINDING",
+                "OTHER_DIRECTIVES",
+                "OTHER_ATTR",
+                "EVENTS",
+                "CONTENT"
+            ],
+            "alphabetical": false
+        }]
+    }
+}
