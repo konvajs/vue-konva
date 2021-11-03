@@ -1,18 +1,16 @@
-import Vue from 'vue';
-import { applyNodeProps, createListener, checkOrder } from '../utils';
+import {
+  h,
+  ref,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  onUpdated,
+  getCurrentInstance,
+  reactive,
+} from 'vue';
+import { applyNodeProps, checkOrder } from '../utils';
 
-export default Vue.component('v-stage', {
-  render: function (createElement) {
-    return createElement('div', this.$slots.default);
-  },
-  watch: {
-    config: {
-      handler(val) {
-        this.uploadKonva();
-      },
-      deep: true,
-    },
-  },
+export default {
   props: {
     config: {
       type: Object,
@@ -25,50 +23,68 @@ export default Vue.component('v-stage', {
     },
   },
 
-  created() {
-    this._konvaNode = new window.Konva.Stage({
-      width: this.config.width,
-      height: this.config.height,
-      // create fake container, later it will be replaced with real div on the page
-      container: document.createElement('div'),
+  setup(props, { attrs, slots, expose }) {
+    const instance = getCurrentInstance();
+    const oldProps = reactive({});
+
+    const container = ref(null);
+
+    const __konvaNode = new window.Konva.Stage({
+      width: props.config.width,
+      height: props.config.height,
+      container: document.createElement('div'), // Fake container. Will be replaced
     });
-  },
-  mounted() {
-    this.$el.innerHTML = '';
-    this._konvaNode.container(this.$el);
-    this.uploadKonva();
-    this.validateChildren();
-  },
-  updated() {
-    this.uploadKonva();
-    this.uploadKonva();
-    checkOrder(this.$vnode, this._konvaNode);
-  },
-  beforeDestroy() {
-    this._konvaNode.destroy();
-  },
-  methods: {
-    getNode() {
-      return this._konvaNode;
-    },
-    getStage() {
-      return this._konvaNode;
-    },
-    uploadKonva() {
-      const oldProps = this.oldProps || {};
-      const props = {
-        ...this.$attrs,
-        ...this.config,
-        ...createListener(this.$listeners),
+
+    instance.__konvaNode = __konvaNode; // Save on component instance
+    uploadKonva();
+
+    function getNode() {
+      return instance.__konvaNode;
+    }
+    function getStage() {
+      return instance.__konvaNode;
+    }
+
+    function uploadKonva() {
+      const existingProps = oldProps || {};
+      const newProps = {
+        ...attrs,
+        ...props.config,
       };
-      applyNodeProps(this, props, oldProps, this.__useStrictMode);
-      this.oldProps = props;
-    },
-    validateChildren() {
-      // TODO: add a waring if we see non-Konva element here
-      // this.$vnode.componentOptions.children.forEach(child => {
-      //   console.log(child);
-      // })
-    },
+      applyNodeProps(instance, newProps, existingProps, props.__useStrictMode);
+      Object.assign(oldProps, newProps);
+    }
+
+    function validateChildren() {
+      return null;
+    }
+
+    onMounted(() => {
+      container.value.innerHTML = '';
+      __konvaNode.container(container.value);
+      uploadKonva();
+      validateChildren();
+    });
+
+    onUpdated(() => {
+      uploadKonva();
+      checkOrder(instance.subTree, __konvaNode);
+    });
+
+    onBeforeUnmount(() => {
+      __konvaNode.destroy();
+    });
+
+    watch(() => props.config, uploadKonva, { deep: true });
+
+    expose({
+      getStage,
+      getNode,
+    });
+
+    // Loop order test appears to be problem with an empty v-for on layer objects
+    //     - When the second item is added to the list we get a Vue internals bug.
+    //     - Possibly related to https://github.com/vuejs/vue-next/issues/2715
+    return () => h('div', { ref: container }, slots.default?.());
   },
-});
+};
