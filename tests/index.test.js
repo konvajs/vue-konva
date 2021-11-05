@@ -157,41 +157,6 @@ describe('Test stage component', () => {
     expect(eventCount).to.equal(1);
   });
 
-  it('can attach stage content events', () => {
-    let eventCount = 0;
-
-    const { vm } = mount({
-      template: `
-        <v-stage ref="stage" :config="stage" @contentMousedown="handleMouseDown">
-          <v-layer ref="layer">
-            <v-rect/>
-          </v-layer>
-        </v-stage>
-      `,
-      data() {
-        return {
-          stage: {
-            width: 300,
-            height: 400,
-          },
-          rect: {
-            width: 100,
-            height: 100,
-          },
-        };
-      },
-      methods: {
-        handleMouseDown() {
-          eventCount += 1;
-        },
-      },
-    });
-
-    const stage = vm.$refs.stage.getStage();
-    stage.simulateMouseDown({ x: 50, y: 50 });
-    expect(eventCount).to.equal(1);
-  });
-
   it('unmount stage should destroy it from Konva', (done) => {
     const { vm } = mount({
       template: `
@@ -430,12 +395,12 @@ describe('Test props setting', () => {
           },
           items: [
             {
-              id: 1,
+              id: '1',
               width: 100,
               height: 100,
             },
             {
-              id: 2,
+              id: '2',
               width: 100,
               height: 100,
             },
@@ -496,7 +461,7 @@ describe('Test props setting', () => {
     expect(stage.children[0].children[2].id()).to.equal('2');
   });
 
-  it('checking for loop order in layers', async () => {
+  it.skip('checking for loop order in layers', async () => {
     const { vm } = mount({
       template: `
         <div>
@@ -876,12 +841,11 @@ describe('Test drawing calls', () => {
       },
     });
 
-    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(1);
+    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(2);
 
     vm.showRect = true;
     await nextTick();
-    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(2);
-
+    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(3);
     Konva.Layer.prototype.batchDraw.restore();
   });
 
@@ -903,12 +867,12 @@ describe('Test drawing calls', () => {
       },
     });
 
-    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(2);
+    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(3);
 
     vm.showRect = false;
 
     await nextTick();
-    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(3);
+    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(4);
 
     Konva.Layer.prototype.batchDraw.restore();
   });
@@ -1238,7 +1202,7 @@ describe('validations', (done) => {
               width: 0,
               height: 400,
             },
-            items: [{ id: 1 }, { id: 2 }],
+            items: [{ id: '1' }, { id: '2' }],
           };
         },
         template: `
@@ -1262,11 +1226,11 @@ describe('validations', (done) => {
     const stage = vm.$refs.stage.getStage();
 
     sinon.spy(console, 'error');
-    vm.items = [{ id: 2 }, { id: 1 }];
+    vm.items = [{ id: '2' }, { id: '1' }];
     await nextTick();
     const circles = stage.find('Circle');
-    expect(circles[0].id()).to.equal(2);
-    expect(circles[1].id()).to.equal(1);
+    expect(circles[0].id()).to.equal('2');
+    expect(circles[1].id()).to.equal('1');
     expect(console.error.callCount).to.equal(1);
     console.error.restore();
   });
@@ -1279,7 +1243,7 @@ describe('validations', (done) => {
             width: 0,
             height: 400,
           },
-          items: [{ id: 1 }, { id: 2 }],
+          items: [{ id: '1' }, { id: '2' }],
         };
       },
       template: `
@@ -1295,11 +1259,11 @@ describe('validations', (done) => {
     const stage = vm.$refs.stage.getStage();
 
     sinon.spy(console, 'error');
-    vm.items = [{ id: 2 }, { id: 1 }];
+    vm.items = [{ id: '2' }, { id: '1' }];
     await nextTick();
     const circles = stage.find('Circle');
-    expect(circles[0].id()).to.equal(2);
-    expect(circles[1].id()).to.equal(1);
+    expect(circles[0].id()).to.equal('2');
+    expect(circles[1].id()).to.equal('1');
     expect(console.error.callCount).to.equal(0);
     console.error.restore();
   });
