@@ -5,7 +5,7 @@ import sinon from 'sinon/pkg/sinon';
 import { nextTick, h, ref } from 'vue/dist/vue.esm-bundler.js';
 import {
   mount,
-  config,
+  config
 } from '@vue/test-utils/dist/vue-test-utils.esm-bundler.js';
 import VueKonva from '../src/index';
 
@@ -226,7 +226,7 @@ describe('Test props setting', () => {
   afterEach(() => {
     config.global.plugins = [];
   });
-  it('can update component props', async () => {
+  it('can update component props', async() => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="stage">
@@ -266,7 +266,7 @@ describe('Test props setting', () => {
     expect(rect.width()).to.equal(200);
   });
 
-  it('can use v-if', async () => {
+  it('can use v-if', async() => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="stage">
@@ -311,7 +311,7 @@ describe('Test props setting', () => {
     Konva.Util.warn.restore();
   });
 
-  it('can set stage props', async () => {
+  it('can set stage props', async() => {
     const { vm } = mount({
       template: `
         <v-stage ref="stage" :config="stage">
@@ -336,7 +336,7 @@ describe('Test props setting', () => {
     expect(stage.width()).to.equal(300);
   });
 
-  it('can update component events', async () => {
+  it('can update component events', async() => {
     const wrap = mount({
       template: `
         <v-stage :config="stage">
@@ -374,7 +374,7 @@ describe('Test props setting', () => {
     expect(rect.eventListeners.click).to.equal(undefined);
   });
 
-  it('updating props should call layer redraw', async () => {
+  it('updating props should call layer redraw', async() => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage" :config="stage">
@@ -411,7 +411,7 @@ describe('Test props setting', () => {
     layer.batchDraw.restore();
   });
 
-  it('changing order should redraw layer', async () => {
+  it('changing order should redraw layer', async() => {
     window.nodes = [];
     const { vm } = mount({
       template: `
@@ -456,7 +456,7 @@ describe('Test props setting', () => {
     layer.batchDraw.restore();
   });
 
-  it('checking for loop order on non-containers', async () => {
+  it('checking for loop order on non-containers', async() => {
     const { vm } = mount({
       template: `
         <div>
@@ -496,7 +496,7 @@ describe('Test props setting', () => {
     expect(stage.children[0].children[2].id()).to.equal('2');
   });
 
-  it('checking for loop order in layers', async () => {
+  it('checking for loop order in layers', async() => {
     const { vm } = mount({
       template: `
         <div>
@@ -546,7 +546,7 @@ describe('Test props setting', () => {
     expect(stage.children[2].id()).to.equal('3');
   });
 
-  it('checking for loop order on internal nodes', async () => {
+  it('checking for loop order on internal nodes', async() => {
     const { vm } = mount({
       template: `
         <div>
@@ -595,7 +595,7 @@ describe('Test props setting', () => {
     expect(layer.children[2].id()).to.equal('3');
   });
 
-  it('unset props', async () => {
+  it('unset props', async() => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage" :config="stage">
@@ -709,7 +709,7 @@ describe('test lifecycle methods', () => {
     expect(createdCount).to.equal(1);
   });
 
-  it('test update', async () => {
+  it('test update', async() => {
     const wrap = mount({
       props: ['fill'],
       render() {
@@ -742,7 +742,7 @@ describe('Test Events', (done) => {
   afterEach(() => {
     config.global.plugins = [];
   });
-  it('should remove events on unmount', async () => {
+  it('should remove events on unmount', async() => {
     const onClickRect = sinon.spy();
     const onClickExternal = sinon.spy();
     const { vm } = mount(
@@ -857,7 +857,7 @@ describe('Test drawing calls', () => {
     Konva.Layer.prototype.batchDraw.restore();
   });
 
-  it('Draw layer on node add', async () => {
+  it('Draw layer on node add', async() => {
     sinon.spy(Konva.Layer.prototype, 'batchDraw');
 
     const { vm } = mount({
@@ -885,7 +885,7 @@ describe('Test drawing calls', () => {
     Konva.Layer.prototype.batchDraw.restore();
   });
 
-  it('Draw layer on node remove', async () => {
+  it('Draw layer on node remove', async() => {
     sinon.spy(Konva.Layer.prototype, 'batchDraw');
     const { vm } = mount({
       template: `
@@ -922,7 +922,7 @@ describe('test reconciler', () => {
   afterEach(() => {
     config.global.plugins = [];
   });
-  it('add before', async () => {
+  it('add before', async() => {
     const { vm } = mount({
       template: `
         <v-stage>
@@ -975,7 +975,7 @@ describe('test reconciler', () => {
     Konva.Layer.prototype.batchDraw.restore();
   });
 
-  it('add before', async () => {
+  it('add before', async() => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage">
@@ -1000,7 +1000,7 @@ describe('test reconciler', () => {
     expect(layer.children[2].name()).to.equal('rect3');
   });
 
-  it('add after', async () => {
+  it('add after', async() => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage">
@@ -1026,7 +1026,7 @@ describe('test reconciler', () => {
     expect(layer.children[1].name()).to.equal('rect2');
   });
 
-  it('change order', async () => {
+  it('change order', async() => {
     const { vm } = mount({
       template: `
           <v-stage ref="stage">
@@ -1063,7 +1063,7 @@ describe('test reconciler', () => {
     expect(layer.children[2].name()).to.equal('rect2');
   });
 
-  it('change deep order', async () => {
+  it('change deep order', async() => {
     const Deep = {
       props: ['name'],
       template: `
@@ -1113,7 +1113,7 @@ describe('test reconciler', () => {
     expect(layer.children[2].name()).to.equal('rect2');
   });
 
-  it('change deep order with detecting konva node correctly', async () => {
+  it('change deep order with detecting konva node correctly', async() => {
     const Deep = {
       props: ['name'],
       template: `
@@ -1229,7 +1229,7 @@ describe('validations', (done) => {
     config.global.plugins = [];
   });
 
-  it('Make sure no other DOM tags are used', async () => {
+  it('Make sure no other DOM tags are used', async() => {
     const { vm } = mount(
       {
         data() {
@@ -1271,7 +1271,7 @@ describe('validations', (done) => {
     console.error.restore();
   });
 
-  it('Should not throw on hidden objects', async () => {
+  it('Should not throw on hidden objects', async() => {
     const { vm } = mount({
       data() {
         return {
@@ -1303,4 +1303,48 @@ describe('validations', (done) => {
     expect(console.error.callCount).to.equal(0);
     console.error.restore();
   });
+
+  it('Accept template tag in Konva Groups', async() => {
+    const { vm } = mount(
+      {
+        data() {
+          return {
+            stage: {
+              width: 0,
+              height: 400,
+            },
+            items: [{ id: 1 }, { id: 2 }],
+          };
+        },
+        template: `
+        <v-stage ref="stage" :config="stage">
+          <v-layer>
+            <test-counter />
+            <v-rect />
+            <v-circle v-for="item in items" :key="item.id" :config="item" />
+          </v-layer>
+        </v-stage>
+      `,
+      },
+      {
+        global: {
+          components: {
+            TestCounter: { template: '<v-group><v-group></v-group></v-group>' },
+          },
+        },
+      }
+    );
+    const stage = vm.$refs.stage.getStage();
+
+    sinon.spy(console, 'error');
+    vm.items = [{ id: 2 }, { id: 1 }];
+    await nextTick();
+    const circles = stage.find('Circle');
+    expect(circles[0].id()).to.equal(2);
+    expect(circles[1].id()).to.equal(1);
+    expect(console.error.callCount).to.equal(0);
+    console.error.restore();
+  });
 });
+
+
