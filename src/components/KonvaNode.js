@@ -109,7 +109,7 @@ export default function (nameNode) {
 
       const isContainer = CONTAINERS[nameNode];
       return isContainer
-        ? () => h('template', {}, slots.default?.())
+        ? () => h('v-container', {}, slots.default?.())
         : () => null;
     },
   };
