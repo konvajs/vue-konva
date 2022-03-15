@@ -29,6 +29,7 @@ const KONVA_NODES = [
   'Arrow',
   'Shape',
   'Transformer',
+  'Container',
 ];
 const components = [
   {
@@ -47,6 +48,7 @@ const VueKonva = {
     if (options && options.prefix) {
       prefixToUse = options.prefix;
     }
+    app.provide('prefix', prefixToUse);
     components.forEach((k) => {
       app.component(`${prefixToUse}${k.name}`, k.component);
     });

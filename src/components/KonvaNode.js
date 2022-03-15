@@ -1,5 +1,6 @@
 import {
   h,
+  inject,
   ref,
   reactive,
   watch,
@@ -39,6 +40,7 @@ export default function (nameNode) {
     },
 
     setup(props, { attrs, slots, expose }) {
+      const prefix = inject('prefix');
       const instance = getCurrentInstance();
       const oldProps = reactive({});
 
@@ -109,7 +111,7 @@ export default function (nameNode) {
 
       const isContainer = CONTAINERS[nameNode];
       return isContainer
-        ? () => h('v-container', {}, slots.default?.())
+        ? () => h(`${prefix}Container`, {}, slots.default?.())
         : () => null;
     },
   };
