@@ -1167,7 +1167,7 @@ describe('Test plugin', () => {
       },
       {
         global: {
-          plugins: [[VueKonva, { prefix: 'Konva' }]],
+          plugins: [[VueKonva, { prefix: 'konva' }]],
         },
       }
     );

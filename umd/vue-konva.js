@@ -1,5 +1,5 @@
 /*!
- * vue-konva v2.1.7 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v3.0.0-0 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -11,7 +11,7 @@
 		exports["VueKonva"] = factory(require("vue"), require("konva"));
 	else
 		root["VueKonva"] = factory(root["Vue"], root["Konva"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE__0__, __WEBPACK_EXTERNAL_MODULE__2__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE__0__, __WEBPACK_EXTERNAL_MODULE__1__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -95,7 +95,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -106,16 +106,16 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__0__;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE__1__;
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(3);
 
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE__2__;
 
 /***/ }),
 /* 3 */
@@ -128,11 +128,18 @@ __webpack_require__.r(__webpack_exports__);
 // EXTERNAL MODULE: external {"root":"Vue","commonjs2":"vue","commonjs":"vue","amd":"vue"}
 var external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_ = __webpack_require__(0);
 
+// EXTERNAL MODULE: external {"root":"Konva","commonjs2":"konva","commonjs":"konva","amd":"konva"}
+var external_root_Konva_commonjs2_konva_commonjs_konva_amd_konva_ = __webpack_require__(1);
+var external_root_Konva_commonjs2_konva_commonjs_konva_amd_konva_default = /*#__PURE__*/__webpack_require__.n(external_root_Konva_commonjs2_konva_commonjs_konva_amd_konva_);
+
 // CONCATENATED MODULE: ./src/utils/updatePicture.js
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
+
 function updatePicture(node) {
-  var drawingNode = node.getLayer() || node.getStage();
-  drawingNode && drawingNode.batchDraw();
+  if (!external_root_Konva_commonjs2_konva_commonjs_konva_amd_konva_default.a.autoDrawEnabled) {
+    var drawingNode = node.getLayer() || node.getStage();
+    drawingNode && drawingNode.batchDraw();
+  }
 }
 // CONCATENATED MODULE: ./src/utils/applyNodeProps.js
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
@@ -507,7 +514,7 @@ var CONTAINERS = {
 
 
 if (typeof window !== 'undefined' && !window.Konva) {
-  __webpack_require__(2);
+  __webpack_require__(1);
 }
 
 var KONVA_NODES = ['Layer', 'FastLayer', 'Group', 'Label', 'Rect', 'Circle', 'Ellipse', 'Wedge', 'Line', 'Sprite', 'Image', 'Text', 'TextPath', 'Star', 'Ring', 'Arc', 'Tag', 'Path', 'RegularPolygon', 'Arrow', 'Shape', 'Transformer'];
