@@ -1,5 +1,5 @@
 /*!
- * vue-konva v3.0.0-0 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v3.0.0 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -255,49 +255,51 @@ function findKonvaNode(instance) {
   return (instance === null || instance === void 0 ? void 0 : (_instance$component = instance.component) === null || _instance$component === void 0 ? void 0 : _instance$component.__konvaNode) || findKonvaNode(instance.component.subTree);
 }
 
-function checkTags(_ref) {
-  var el = _ref.el,
-      component = _ref.component;
+function checkTagAndGetNode(instance) {
+  var el = instance.el,
+      component = instance.component;
 
-  if (el && el.tagName && component) {
+  var __konvaNode = findKonvaNode(instance);
+
+  if ((el === null || el === void 0 ? void 0 : el.tagName) && component && !__konvaNode) {
     var name = el && el.tagName.toLowerCase();
     console.error("vue-konva error: You are trying to render \"" + name + "\" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.");
-    return false;
+    return null;
   }
 
-  return true;
+  return __konvaNode;
+}
+
+function getChildren(instance) {
+  var collection = [];
+
+  if (instance.children) {
+    instance.children.forEach(function (child) {
+      if (!child.component && Array.isArray(child.children)) {
+        collection.push.apply(collection, child.children);
+      }
+
+      if (child.component) {
+        collection.push(child);
+      }
+    });
+  }
+
+  return collection;
 }
 
 function checkOrder(subTree, konvaNode) {
-  var children = [];
+  var children = getChildren(subTree);
+  var nodes = [];
+  children.forEach(function (child) {
+    var konvaNode = checkTagAndGetNode(child);
 
-  function getChildren(instance) {
-    if (instance.children) {
-      instance.children.forEach(function (child) {
-        var validTags = checkTags(child);
-
-        if (validTags && !child.component && Array.isArray(child.children)) {
-          children.push.apply(children, child.children.map(function (subChild) {
-            return findKonvaNode(subChild);
-          }));
-        }
-
-        if (validTags && child.component) {
-          var _child$component;
-
-          children.push((_child$component = child.component) === null || _child$component === void 0 ? void 0 : _child$component.__konvaNode);
-        }
-      });
+    if (konvaNode) {
+      nodes.push(konvaNode);
     }
-
-    if (instance.__konvaNode) {
-      children.push(instance.__konvaNode);
-    }
-  }
-
-  getChildren(subTree);
+  });
   var needRedraw = false;
-  children.forEach(function (konvaNode, index) {
+  nodes.forEach(function (konvaNode, index) {
     if (konvaNode.getZIndex() !== index) {
       konvaNode.setZIndex(index);
       needRedraw = true;

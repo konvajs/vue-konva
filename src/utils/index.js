@@ -28,48 +28,50 @@ export function findKonvaNode(instance) {
     findKonvaNode(instance.component.subTree);
 }
 
-function checkTags({ el , component }) {
-  if (el && el.tagName && component) {
+function checkTagAndGetNode(instance) {
+  const { el , component } = instance;
+  const __konvaNode = findKonvaNode(instance);
+
+  if (el?.tagName && component && !__konvaNode) {
     const name = el && el.tagName.toLowerCase();
     console.error(
       `vue-konva error: You are trying to render "${name}" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.`
     );
-    return false;
+    return null;
   }
-  return true;
+
+  return __konvaNode;
+}
+
+function getChildren(instance) {
+  const collection = [];
+  if (instance.children) {
+    instance.children.forEach((child) => {
+      if (!child.component && Array.isArray(child.children)) { collection.push(...child.children); }
+      if (child.component) { collection.push(child); }
+    });
+  } 
+  return collection;
 }
 
 export function checkOrder(subTree, konvaNode) {
-  let children = [];
+  const children = getChildren(subTree);
 
-  function getChildren(instance) {
-    if (instance.children) {
-      instance.children.forEach((child) => {
-        const validTags = checkTags(child);
-        if (validTags && !child.component && Array.isArray(child.children)) {
-          children.push(...child.children.map((subChild) => findKonvaNode(subChild)));
-        }
-        if (validTags && child.component) {
-          children.push(child.component?.__konvaNode);
-        }
-      });
-    }
-    if(instance.__konvaNode) { children.push(instance.__konvaNode); }
-  }
-
-  getChildren(subTree);
+  const nodes = [];
+  children.forEach((child) => {
+    const konvaNode = checkTagAndGetNode(child);
+    if(konvaNode) { nodes.push(konvaNode); }
+  });
 
   let needRedraw = false;
-  children.forEach((konvaNode, index) => {
+  nodes.forEach((konvaNode, index) => {
     if (konvaNode.getZIndex() !== index) {
       konvaNode.setZIndex(index);
       needRedraw = true;
     }
   });
 
-  if (needRedraw) {
-    updatePicture(konvaNode);
-  }
+  if (needRedraw) { updatePicture(konvaNode); }
 }
 
 

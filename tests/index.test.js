@@ -424,7 +424,6 @@ describe('Test props setting', () => {
   it('checking for loop order on non-containers', async () => {
     const { vm } = mount({
       template: `
-        <div>
           <v-stage ref="stage" :config="stage">
             <v-layer :config="{ name: 'Layer 0'}">
               <v-rect v-for="item in items" :config="item" :key="item.id">
@@ -432,7 +431,6 @@ describe('Test props setting', () => {
             </v-layer>
             <v-layer v-if="show" :config="{ id: '3', name: 'Layer 1' }" />
           </v-stage>
-        </div>
       `,
       data() {
         return {
@@ -1264,6 +1262,48 @@ describe('validations', (done) => {
     const circles = stage.find('Circle');
     expect(circles[0].id()).to.equal('2');
     expect(circles[1].id()).to.equal('1');
+    expect(console.error.callCount).to.equal(0);
+    console.error.restore();
+  });
+
+  it('Accept template tag in Konva Groups', async () => {
+    const { vm } = mount(
+      {
+        data() {
+          return {
+            stage: {
+              width: 0,
+              height: 400,
+            },
+            items: [{ id: 1 }, { id: 2 }],
+          };
+        },
+        template: `
+        <v-stage ref="stage" :config="stage">
+          <v-layer>
+            <test-counter />
+            <v-rect />
+            <v-circle v-for="item in items" :key="item.id" :config="item" />
+          </v-layer>
+        </v-stage>
+      `,
+      },
+      {
+        global: {
+          components: {
+            TestCounter: { template: '<v-group><v-group></v-group></v-group>' },
+          },
+        },
+      }
+    );
+    const stage = vm.$refs.stage.getStage();
+
+    sinon.spy(console, 'error');
+    vm.items = [{ id: 2 }, { id: 1 }];
+    await nextTick();
+    const circles = stage.find('Circle');
+    expect(circles[0].id()).to.equal(2);
+    expect(circles[1].id()).to.equal(1);
     expect(console.error.callCount).to.equal(0);
     console.error.restore();
   });
