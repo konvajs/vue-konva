@@ -157,6 +157,42 @@ describe('Test stage component', () => {
     expect(eventCount).to.equal(1);
   });
 
+  it('no DOM events', () => {
+    let eventCount = 0;
+
+    const { vm } = mount({
+      template: `
+        <v-stage ref="stage" :config="stage" @mousedown="handleMouseDown">
+          <v-layer ref="layer">
+            <v-rect/>
+          </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400,
+          },
+          rect: {
+            width: 100,
+            height: 100,
+          },
+        };
+      },
+      methods: {
+        handleMouseDown() {
+          eventCount += 1;
+        },
+      },
+    });
+
+    const stage = vm.$refs.stage.getStage();
+    // trigger DOM event. it should not fire!
+    stage.container().dispatchEvent(new Event('mousedown'));
+    expect(eventCount).to.equal(0);
+  });
+
   it('unmount stage should destroy it from Konva', (done) => {
     const { vm } = mount({
       template: `

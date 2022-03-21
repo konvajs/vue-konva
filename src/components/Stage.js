@@ -1,5 +1,6 @@
 import {
   h,
+  withDirectives,
   ref,
   watch,
   onMounted,
@@ -23,7 +24,7 @@ export default {
     },
   },
 
-  setup(props, { attrs, slots, expose }) {
+  setup(props, { attrs, slots, expose, emits }) {
     const instance = getCurrentInstance();
     const oldProps = reactive({});
 
@@ -85,6 +86,6 @@ export default {
     // Loop order test appears to be problem with an empty v-for on layer objects
     //     - When the second item is added to the list we get a Vue internals bug.
     //     - Possibly related to https://github.com/vuejs/vue-next/issues/2715
-    return () => h('div', { ref: container }, slots.default?.());
+    return () => h('template', { ref: container }, slots.default?.());
   },
 };
