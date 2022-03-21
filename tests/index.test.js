@@ -495,7 +495,7 @@ describe('Test props setting', () => {
     expect(stage.children[0].children[2].id()).to.equal('2');
   });
 
-  it.skip('checking for loop order in layers', async () => {
+  it('checking for loop order in layers', async () => {
     const { vm } = mount({
       template: `
         <div>
