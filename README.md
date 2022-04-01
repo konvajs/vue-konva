@@ -22,7 +22,6 @@ Also you can create custom shape.
 
 To get more info about `Konva` you can read [Konva Overview](https://konvajs.org/docs/overview.html).
 
-
 ## Documentation / live edit
 
 See [Tutorials page](https://konvajs.org/docs/vue/)
@@ -32,20 +31,44 @@ See [Tutorials page](https://konvajs.org/docs/vue/)
 [Vue.js](https://vuejs.org) version 2.4+ is required.
 
 ### 1 Install via npm
+
+`vue@3`:
+
 ```npm
 npm install vue-konva konva --save
 ```
 
+`vue@2`:
+
+```npm
+npm install vue-konva@2 konva --save
+```
+
 ### 2 Import and use VueKonva
+
+`vue@3`:
+
+```js
+import { createApp } from 'vue';
+import App from './App.vue';
+import VueKonva from 'vue-konva';
+
+const app = createApp(App);
+app.use(VueKonva);
+app.mount('#app');
+```
+
+`vue@2`:
 
 ```javascript
 import Vue from 'vue';
-import VueKonva from 'vue-konva'
+import VueKonva from 'vue-konva';
 
-Vue.use(VueKonva)
+Vue.use(VueKonva);
 ```
 
 ### 3 Reference in your component templates
+
 ```html
 <template>
   <v-stage :config="configKonva">
@@ -55,6 +78,7 @@ Vue.use(VueKonva)
   </v-stage>
 </template>
 ```
+
 ```javascript
 <script>
 export default {
@@ -80,15 +104,19 @@ export default {
 ```
 
 ### Or use a CDN
+
 ```html
 <html>
   <head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
-    <meta http-equiv='x-ua-compatible' content='ie=edge'>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
   </head>
   <body>
-    <div id='app'>
+    <div id="app">
       <v-stage ref="stage" :config="configKonva">
         <v-layer ref="layer">
           <v-circle :config="configCircle"></v-circle>
@@ -96,10 +124,10 @@ export default {
       </v-stage>
     </div>
     <!--1. Link Vue Javascript & Konva-->
-    <script src='https://unpkg.com/vue/dist/vue.js'></script>
-    <script src='https://unpkg.com/konva/konva.js'></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/konva/konva.js"></script>
     <!--2. Link VueKonva Javascript -->
-    <script src='https://unpkg.com/vue-konva/umd/vue-konva.min.js'></script>
+    <script src="https://unpkg.com/vue-konva/umd/vue-konva.min.js"></script>
     <script>
       // 3. Create the Vue instance
       new Vue({
@@ -107,7 +135,7 @@ export default {
         data: {
           configKonva: {
             width: 200,
-            height: 200
+            height: 200,
           },
           configCircle: {
             x: 100,
@@ -115,10 +143,10 @@ export default {
             radius: 70,
             fill: 'red',
             stroke: 'black',
-            strokeWidth: 4
-          }
-        }
-      })
+            strokeWidth: 4,
+          },
+        },
+      });
     </script>
   </body>
 </html>
@@ -132,26 +160,24 @@ You can use `ref` feature from `vue`.
 
 ```html
 <template>
-<v-stage ref="stage">
-  <v-layer ref="layer">
-    <v-rect
-      ref="rect"
-    />
-  </v-layer>
-</v-stage>
+  <v-stage ref="stage">
+    <v-layer ref="layer">
+      <v-rect ref="rect" />
+    </v-layer>
+  </v-stage>
 </template>
 
 <script>
-const width = window.innerWidth;
-const height = window.innerHeight;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
 
-export default {
-  mounted() {
-    const stage = this.$refs.stage.getNode();
-    const layer = this.$refs.layer.getNode();
-    const rect = this.$refs.rect.getNode();
-  }
-};
+  export default {
+    mounted() {
+      const stage = this.$refs.stage.getNode();
+      const layer = this.$refs.layer.getNode();
+      const rect = this.$refs.rect.getNode();
+    },
+  };
 </script>
 ```
 
@@ -163,12 +189,11 @@ In strict mode `vue-konva` will update all properties of the nodes to the values
 
 You should decide what mode is better in your actual use case.
 
-To enable strict mode pass __useStrictMode attribute:
+To enable strict mode pass \_\_useStrictMode attribute:
 
 ```html
-<v-rect :config="{}" __useStrictMode >
+<v-rect :config="{}" __useStrictMode></v-rect>
 ```
-
 
 ## Configurable prefix
 
@@ -189,4 +214,3 @@ Vue.use(VueKonva, { prefix: 'Konva'});
 ## Change log
 
 The change log can be found on the [Releases page](https://github.com/konvajs/vue-konva/releases).
-
