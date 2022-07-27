@@ -24,6 +24,8 @@ export default {
     },
   },
 
+  inheritAttrs: false,
+
   setup(props, { attrs, slots, expose, emits }) {
     const instance = getCurrentInstance();
     const oldProps = reactive({});
