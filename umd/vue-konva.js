@@ -328,10 +328,12 @@ function _extends() { _extends = Object.assign || function (target) { for (var i
       type: Boolean
     }
   },
+  inheritAttrs: false,
   setup: function setup(props, _ref) {
     var attrs = _ref.attrs,
         slots = _ref.slots,
-        expose = _ref.expose;
+        expose = _ref.expose,
+        emits = _ref.emits;
     var instance = Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["getCurrentInstance"])();
     var oldProps = Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["reactive"])({});
     var container = Object(external_root_Vue_commonjs2_vue_commonjs_vue_amd_vue_["ref"])(null);
