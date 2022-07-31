@@ -528,14 +528,10 @@ describe('Test props setting', () => {
       {
         id: '1',
         name: 'Layer 1',
-        width: 100,
-        height: 100,
       },
       {
         id: '2',
         name: 'Layer 2',
-        width: 100,
-        height: 100,
       },
     ];
     // debugger;
@@ -1311,7 +1307,7 @@ describe('validations', (done) => {
               width: 0,
               height: 400,
             },
-            items: [{ id: 1 }, { id: 2 }],
+            items: [{ id: '1' }, { id: '2' }],
           };
         },
         template: `
@@ -1335,11 +1331,11 @@ describe('validations', (done) => {
     const stage = vm.$refs.stage.getStage();
 
     sinon.spy(console, 'error');
-    vm.items = [{ id: 2 }, { id: 1 }];
+    vm.items = [{ id: '2' }, { id: '1' }];
     await nextTick();
     const circles = stage.find('Circle');
-    expect(circles[0].id()).to.equal(2);
-    expect(circles[1].id()).to.equal(1);
+    expect(circles[0].id()).to.equal('2');
+    expect(circles[1].id()).to.equal('1');
     expect(console.error.callCount).to.equal(0);
     console.error.restore();
   });
