@@ -22,14 +22,16 @@ export function findParentKonva(instance) {
 }
 
 export function findKonvaNode(instance) {
-  if (!instance?.component) { return null; }
-
-  return instance?.component?.__konvaNode ||
-    findKonvaNode(instance.component.subTree);
+  if (instance?.component) {
+    return (
+      instance.component.__konvaNode ||
+      findKonvaNode(instance.component.subTree)
+    );
+  }
 }
 
 function checkTagAndGetNode(instance) {
-  const { el , component } = instance;
+  const { el, component } = instance;
   const __konvaNode = findKonvaNode(instance);
 
   if (el?.tagName && component && !__konvaNode) {
@@ -47,10 +49,21 @@ function getChildren(instance) {
   const collection = [];
   if (instance.children) {
     instance.children.forEach((child) => {
-      if (!child.component && Array.isArray(child.children)) { collection.push(...child.children); }
-      if (child.component) { collection.push(child); }
+      // TODO: simplify deep nesting with recursion
+      if (!child.component && Array.isArray(child.children)) {
+        child.children.forEach((subChild) => {
+          if (!subChild.component && Array.isArray(subChild.children)) {
+            collection.push(...subChild.children);
+          } else {
+            collection.push(subChild);
+          }
+        });
+      }
+      if (child.component) {
+        collection.push(child);
+      }
     });
-  } 
+  }
   return collection;
 }
 
@@ -60,7 +73,9 @@ export function checkOrder(subTree, konvaNode) {
   const nodes = [];
   children.forEach((child) => {
     const konvaNode = checkTagAndGetNode(child);
-    if(konvaNode) { nodes.push(konvaNode); }
+    if (konvaNode) {
+      nodes.push(konvaNode);
+    }
   });
 
   let needRedraw = false;
@@ -71,8 +86,9 @@ export function checkOrder(subTree, konvaNode) {
     }
   });
 
-  if (needRedraw) { updatePicture(konvaNode); }
+  if (needRedraw) {
+    updatePicture(konvaNode);
+  }
 }
-
 
 export { updatePicture, applyNodeProps };

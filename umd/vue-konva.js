@@ -1,5 +1,5 @@
 /*!
- * vue-konva v3.0.0 - https://github.com/konvajs/vue-konva#readme
+ * vue-konva v3.0.1 - https://github.com/konvajs/vue-konva#readme
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -246,13 +246,9 @@ function findParentKonva(instance) {
   return re(instance.parent);
 }
 function findKonvaNode(instance) {
-  var _instance$component;
-
-  if (!(instance === null || instance === void 0 ? void 0 : instance.component)) {
-    return null;
+  if (instance === null || instance === void 0 ? void 0 : instance.component) {
+    return instance.component.__konvaNode || findKonvaNode(instance.component.subTree);
   }
-
-  return (instance === null || instance === void 0 ? void 0 : (_instance$component = instance.component) === null || _instance$component === void 0 ? void 0 : _instance$component.__konvaNode) || findKonvaNode(instance.component.subTree);
 }
 
 function checkTagAndGetNode(instance) {
@@ -275,8 +271,15 @@ function getChildren(instance) {
 
   if (instance.children) {
     instance.children.forEach(function (child) {
+      // TODO: simplify deep nesting with recursion
       if (!child.component && Array.isArray(child.children)) {
-        collection.push.apply(collection, child.children);
+        child.children.forEach(function (subChild) {
+          if (!subChild.component && Array.isArray(subChild.children)) {
+            collection.push.apply(collection, subChild.children);
+          } else {
+            collection.push(subChild);
+          }
+        });
       }
 
       if (child.component) {

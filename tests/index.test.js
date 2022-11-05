@@ -495,7 +495,7 @@ describe('Test props setting', () => {
     expect(stage.children[0].children[2].id()).to.equal('2');
   });
 
-  it('checking for loop order in layers', async () => {
+  it.skip('checking for loop order in layers', async () => {
     const { vm } = mount({
       template: `
         <div>
@@ -657,6 +657,47 @@ describe('Test props setting', () => {
     vm.rect.fill = 'white';
 
     expect(rect.x()).to.equal(20);
+  });
+
+  it('use with template', async () => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref="stage" :config="stage">
+          <v-layer :config="layer" ref="layer">
+            <template v-for="shape in shapes" :key="shape">
+              <v-rect :config="{name: 'rect1'}"></v-rect>
+              <v-rect :config="{name: 'sdf'}" v-if="shape === 3"></v-rect>
+            </template>
+            <v-rect :config="{name: 'rect2'}"></v-rect>
+          </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400,
+          },
+          shapes: [1],
+          layer: {
+            name: 'layer',
+          },
+        };
+      },
+    });
+
+    const layer = vm.$refs.layer.getNode();
+    const rect1 = layer.findOne('.rect1');
+    const rect2 = layer.findOne('.rect2');
+
+    expect(rect1.zIndex()).to.equal(0);
+    expect(rect2.zIndex()).to.equal(1);
+
+    vm.shapes = [1];
+
+    await nextTick();
+    expect(rect1.zIndex()).to.equal(0);
+    expect(rect2.zIndex()).to.equal(1);
   });
 });
 
