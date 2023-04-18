@@ -22,7 +22,6 @@ describe('Test references', () => {
         <v-stage ref='stage'></v-stage>
       `,
     });
-    console.log(wrapper.vm.$refs.stage)
     const stage = (wrapper.vm.$refs.stage as any).getStage();
     expect(stage).to.not.equal(undefined);
   });
