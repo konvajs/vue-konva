@@ -1,43 +1,46 @@
+import { ComponentInternalInstance, VNode, VNodeArrayChildren } from 'vue';
+import type Konva from 'konva';
 import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
 
 export const componentPrefix = 'v';
 
-export function copy(obj) {
+export function copy(obj: object) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export function findParentKonva(instance) {
-  function re(instance) {
-    if (instance.__konvaNode) {
+export function findParentKonva(instance: ComponentInternalInstance) {
+  function re(instance: ComponentInternalInstance | null): ComponentInternalInstance | null {
+    if (instance?.__konvaNode) {
       return instance;
     }
-    if (instance.parent) {
+    if (instance?.parent) {
       return re(instance.parent);
     }
     console.error('vue-konva error: Can not find parent node');
-    return {};
+    return null;
   }
+
   return re(instance.parent);
 }
 
-export function findKonvaNode(instance) {
-  if (instance?.component) {
-    return (
-      instance.component.__konvaNode ||
-      findKonvaNode(instance.component.subTree)
-    );
-  }
+export function findKonvaNode(instance: VNode): null | Konva.Node {
+  if (!instance.component) return null;
+
+  return (
+    instance.component.__konvaNode ||
+    findKonvaNode(instance.component.subTree)
+  );
 }
 
-function checkTagAndGetNode(instance) {
+function checkTagAndGetNode(instance: VNode): Konva.Node | null {
   const { el, component } = instance;
   const __konvaNode = findKonvaNode(instance);
 
   if (el?.tagName && component && !__konvaNode) {
     const name = el && el.tagName.toLowerCase();
     console.error(
-      `vue-konva error: You are trying to render "${name}" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.`
+      `vue-konva error: You are trying to render "${name}" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.`,
     );
     return null;
   }
@@ -45,8 +48,23 @@ function checkTagAndGetNode(instance) {
   return __konvaNode;
 }
 
-function getChildren(instance) {
-  const collection = [];
+// const isVNode = (checkMe: VNode | any): checkMe is VNode => checkMe.hasOwnProperty('component');
+// const hasChildren = (checkMe: { children: VNodeArrayChildren } | any): checkMe is {
+//   children: VNodeArrayChildren
+// } => checkMe.hasOwnProperty('children') && Array.isArray(checkMe.children);
+
+
+function getChildren(instance: VNode) {
+  const collection: VNode[] = [];
+
+  // const stack: any[] = [instance];
+  //
+  // while (stack.length) {
+  //   const node = stack.pop();
+  //   if (isVNode(node)) collection.push(node);
+  //   if (hasChildren(node)) stack.push(...node.children);
+  // }
+
   if (instance.children) {
     instance.children.forEach((child) => {
       // TODO: simplify deep nesting with recursion
@@ -67,10 +85,10 @@ function getChildren(instance) {
   return collection;
 }
 
-export function checkOrder(subTree, konvaNode) {
+export function checkOrder(subTree: VNode, konvaNode: Konva.Node) {
   const children = getChildren(subTree);
 
-  const nodes = [];
+  const nodes: Konva.Node[] = [];
   children.forEach((child) => {
     const konvaNode = checkTagAndGetNode(child);
     if (konvaNode) {
