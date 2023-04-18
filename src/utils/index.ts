@@ -1,4 +1,4 @@
-import { ComponentInternalInstance, VNode, VNodeArrayChildren } from 'vue';
+import { ComponentInternalInstance, VNode } from 'vue';
 import type Konva from 'konva';
 import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
@@ -57,18 +57,12 @@ function checkTagAndGetNode(instance: VNode): Konva.Node | null {
 function getChildren(instance: VNode) {
   const collection: VNode[] = [];
 
-  // const stack: any[] = [instance];
-  //
-  // while (stack.length) {
-  //   const node = stack.pop();
-  //   if (isVNode(node)) collection.push(node);
-  //   if (hasChildren(node)) stack.push(...node.children);
-  // }
-
   if (instance.children) {
+    // @ts-ignore
     instance.children.forEach((child) => {
       // TODO: simplify deep nesting with recursion
       if (!child.component && Array.isArray(child.children)) {
+        // @ts-ignore
         child.children.forEach((subChild) => {
           if (!subChild.component && Array.isArray(subChild.children)) {
             collection.push(...subChild.children);
