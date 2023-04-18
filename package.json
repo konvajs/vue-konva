@@ -45,22 +45,28 @@
   "scripts": {
     "build": "nwb build",
     "clean": "nwb clean-module && nwb clean-demo",
-    "test": "nwb test-react",
-    "test:coverage": "nwb test-react --coverage",
-    "test:watch": "nwb test-react --server"
+    "test": "vitest",
+    "test:coverage": "vitest --coverage"
   },
   "peerDependencies": {
     "konva": ">7"
   },
   "devDependencies": {
+    "@types/sinon": "^10.0.14",
+    "@vitest/coverage-c8": "^0.30.1",
     "@vue/compiler-sfc": "^3.2.31",
-    "@vue/test-utils": "^2.0.0-rc.17",
-    "chai": "^4.3.6",
+    "@vue/test-utils": "^2.3.2",
+    "canvas": "^2.11.2",
     "eslint": "^8.11.0",
     "eslint-plugin-vue": "^8.5.0",
+    "jsdom": "^21.1.1",
     "konva": ">7",
     "nwb": "^0.25.2",
-    "sinon": "^13.0.1",
+    "sinon": "^13.0.2",
+    "typescript": "^5.0.4",
+    "vite": "^4.2.2",
+    "vitest": "^0.30.1",
+    "vitest-canvas-mock": "^0.2.2",
     "vue": "3.2"
   },
   "engines": {

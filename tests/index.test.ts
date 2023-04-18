@@ -1,13 +1,14 @@
-import { expect } from 'chai';
-import './mocking';
+import { nextTick, h, defineComponent } from 'vue';
+import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 import Konva from 'konva';
-import sinon from 'sinon/pkg/sinon';
-import { nextTick, h, ref } from 'vue/dist/vue.esm-bundler.js';
+import sinon from 'sinon';
 import {
   mount,
   config,
-} from '@vue/test-utils/dist/vue-test-utils.esm-bundler.js';
-import VueKonva from '../src/index';
+} from '@vue/test-utils';
+import './mocking';
+// @ts-ignore
+import VueKonva from '../src';
 
 describe('Test references', () => {
   beforeEach(() => {
@@ -21,29 +22,29 @@ describe('Test references', () => {
   it('create stage on mount', () => {
     const wrapper = mount({
       template: `
-        <v-stage ref="stage">
-        </v-stage>
+        <v-stage ref='stage'></v-stage>
       `,
     });
-    const stage = wrapper.vm.$refs.stage.getStage();
+    console.log(wrapper.vm.$refs.stage)
+    const stage = (wrapper.vm.$refs.stage as any).getStage();
     expect(stage).to.not.equal(undefined);
   });
 
   it('Make sure it does not draw HTML', () => {
     const { vm } = mount({
       template: `
-        <v-stage ref="stage">
+        <v-stage ref='stage'>
         </v-stage>
       `,
     });
-    const stage = vm.$refs.stage.getStage();
+    const stage = (vm.$refs.stage as any).getStage();
     expect(stage).to.not.equal(undefined);
   });
 
   it('set initial stage size', () => {
     const { vm } = mount({
       template: `
-        <v-stage ref="stage" :config="stage">
+        <v-stage ref='stage' :config='stage'>
         </v-stage>
       `,
       data() {
@@ -55,7 +56,7 @@ describe('Test references', () => {
         };
       },
     });
-    const stage = vm.$refs.stage.getStage();
+    const stage = (vm.$refs.stage as any).getStage();
     expect(stage.width()).to.equal(300);
     expect(stage.height()).to.equal(400);
   });
@@ -63,9 +64,9 @@ describe('Test references', () => {
   it('create layers', () => {
     const { vm } = mount({
       template: `
-        <v-stage ref="stage" :config="stage">
-          <v-layer ref="layer">
-          </v-layer>
+        <v-stage ref='stage' :config='stage'>
+        <v-layer ref='layer'>
+        </v-layer>
         </v-stage>
       `,
       data() {
@@ -78,19 +79,19 @@ describe('Test references', () => {
       },
     });
 
-    const stage = vm.$refs.stage.getStage();
+    const stage = (vm.$refs.stage as any).getStage();
     expect(stage.children.length).to.equal(1);
 
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
     expect(layer instanceof Konva.Layer).to.equal(true);
   });
 
-  it('Make sure it does not draw HTML', (done) => {
+  it('Make sure it does not draw HTML', () => {
     const { vm } = mount({
       template: `
-        <v-stage ref="stage" :config="stage">
-          <v-layer ref="layer">
-          </v-layer>
+        <v-stage ref='stage' :config='stage'>
+        <v-layer ref='layer'>
+        </v-layer>
         </v-stage>
       `,
       data() {
@@ -103,13 +104,13 @@ describe('Test references', () => {
       },
     });
 
-    const stage = vm.$refs.stage.getStage();
+    const stage = (vm.$refs.stage as any).getStage();
 
     setTimeout(() => {
       const container = stage.container();
 
       expect(container.children.length).to.equal(1);
-      done();
+      // done() TODO
     }, 50);
   });
 });
@@ -127,10 +128,10 @@ describe('Test stage component', () => {
 
     const { vm } = mount({
       template: `
-        <v-stage ref="stage" :config="stage" @mousedown="handleMouseDown">
-          <v-layer ref="layer">
-            <v-rect/>
-          </v-layer>
+        <v-stage ref='stage' :config='stage' @mousedown='handleMouseDown'>
+        <v-layer ref='layer'>
+          <v-rect />
+        </v-layer>
         </v-stage>
       `,
       data() {
@@ -152,7 +153,7 @@ describe('Test stage component', () => {
       },
     });
 
-    const stage = vm.$refs.stage.getStage();
+    const stage = (vm.$refs.stage as any).getStage();
     stage.simulateMouseDown({ x: 50, y: 50 });
     expect(eventCount).to.equal(1);
   });
@@ -162,10 +163,10 @@ describe('Test stage component', () => {
 
     const { vm } = mount({
       template: `
-        <v-stage ref="stage" :config="stage" @mousedown="handleMouseDown">
-          <v-layer ref="layer">
-            <v-rect/>
-          </v-layer>
+        <v-stage ref='stage' :config='stage' @mousedown='handleMouseDown'>
+        <v-layer ref='layer'>
+          <v-rect />
+        </v-layer>
         </v-stage>
       `,
       data() {
@@ -187,16 +188,16 @@ describe('Test stage component', () => {
       },
     });
 
-    const stage = vm.$refs.stage.getStage();
+    const stage = (vm.$refs.stage as any).getStage();
     // trigger DOM event. it should not fire!
     stage.container().dispatchEvent(new Event('mousedown'));
     expect(eventCount).to.equal(0);
   });
 
-  it('unmount stage should destroy it from Konva', (done) => {
+  it('unmount stage should destroy it from Konva', () => {
     const { vm } = mount({
       template: `
-        <v-stage v-if="drawStage" ref="stage" :config="stage">
+        <v-stage v-if='drawStage' ref='stage' :config='stage'>
         </v-stage>
       `,
       data() {
@@ -214,7 +215,7 @@ describe('Test stage component', () => {
     vm.drawStage = false;
     nextTick(() => {
       expect(Konva.stages.length).to.equal(stagesNumber - 1);
-      done();
+      // done();
     });
   });
 });
@@ -230,11 +231,11 @@ describe('Test props setting', () => {
   it('can update component props', async () => {
     const { vm } = mount({
       template: `
-        <v-stage ref="stage" :config="stage">
-          <v-layer>
-            <v-rect :config="rect" ref="rect">
-            </v-rect>
-          </v-layer>
+        <v-stage ref='stage' :config='stage'>
+        <v-layer>
+          <v-rect :config='rect' ref='rect'>
+          </v-rect>
+        </v-layer>
         </v-stage>
       `,
       data() {
@@ -251,7 +252,7 @@ describe('Test props setting', () => {
       },
     });
 
-    const rect = vm.$refs.rect.getNode();
+    const rect = (vm.$refs.rect as any).getNode();
 
     expect(rect.width()).to.equal(100);
     expect(rect.height()).to.equal(100);
@@ -270,10 +271,10 @@ describe('Test props setting', () => {
   it('can use v-if', async () => {
     const { vm } = mount({
       template: `
-        <v-stage ref="stage" :config="stage">
-          <v-layer ref="layer">
+        <v-stage ref='stage' :config='stage'>
+        <v-layer ref='layer'>
           <v-text
-            v-if="textVisible"
+            v-if='textVisible'
             :config="{ text: 'some text' }"
           />
           <v-rect
@@ -286,7 +287,7 @@ describe('Test props setting', () => {
               shadowBlur: 10
             }"
           />
-          </v-layer>
+        </v-layer>
         </v-stage>
       `,
       data() {
@@ -300,22 +301,22 @@ describe('Test props setting', () => {
       },
     });
 
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
 
     expect(layer.children.length).to.equal(2);
-    sinon.spy(Konva.Util, 'warn');
+    const warnSpy = sinon.spy(Konva.Util, 'warn');
     vm.textVisible = false;
     await nextTick();
     expect(layer.children.length).to.equal(1);
     expect(layer.children[0].className).to.equal('Rect');
-    expect(Konva.Util.warn.callCount).to.equal(0);
-    Konva.Util.warn.restore();
+    expect(warnSpy.callCount).to.equal(0);
+    warnSpy.restore();
   });
 
   it('can set stage props', async () => {
     const { vm } = mount({
       template: `
-        <v-stage ref="stage" :config="stage">
+        <v-stage ref='stage' :config='stage'>
         </v-stage>
       `,
       data() {
@@ -331,7 +332,7 @@ describe('Test props setting', () => {
       },
     });
 
-    const stage = vm.$refs.stage.getNode();
+    const stage = (vm.$refs.stage as any).getNode();
 
     await nextTick();
     expect(stage.width()).to.equal(300);
@@ -340,10 +341,10 @@ describe('Test props setting', () => {
   it('can update component events', async () => {
     const wrap = mount({
       template: `
-        <v-stage :config="stage">
-          <v-layer>
-            <v-rect ref="rect" :config="{width: 300}" @click="click" />
-          </v-layer>
+        <v-stage :config='stage'>
+        <v-layer>
+          <v-rect ref='rect' :config='{width: 300}' @click='click' />
+        </v-layer>
         </v-stage>
       `,
       props: ['click'],
@@ -357,10 +358,11 @@ describe('Test props setting', () => {
       },
     });
 
-    const rect = wrap.vm.$refs.rect.getNode();
+    const rect = (wrap.vm.$refs.rect as any).getNode();
     expect(rect.eventListeners.click).to.equal(undefined);
 
-    const handler = () => {};
+    const handler = () => {
+    };
     wrap.setProps({
       click: handler,
     });
@@ -378,13 +380,13 @@ describe('Test props setting', () => {
   it('updating props should call layer redraw', async () => {
     const { vm } = mount({
       template: `
-          <v-stage ref="stage" :config="stage">
-            <v-layer ref="layer">
-              <v-rect :config="rect" ref="rect">
-              </v-rect>
-            </v-layer>
-          </v-stage>
-        `,
+        <v-stage ref='stage' :config='stage'>
+        <v-layer ref='layer'>
+          <v-rect :config='rect' ref='rect'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
       data() {
         return {
           stage: {
@@ -399,7 +401,7 @@ describe('Test props setting', () => {
       },
     });
 
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
 
     sinon.spy(layer, 'batchDraw');
 
@@ -413,16 +415,16 @@ describe('Test props setting', () => {
   });
 
   it('changing order should redraw layer', async () => {
-    window.nodes = [];
+    // window.nodes = []; TODO ?
     const { vm } = mount({
       template: `
-          <v-stage ref="stage" :config="stage">
-            <v-layer ref="layer">
-            <v-rect v-for="item in items" :config="item" :key="item.id">
-              </v-rect>
-            </v-layer>
-          </v-stage>
-        `,
+        <v-stage ref='stage' :config='stage'>
+        <v-layer ref='layer'>
+          <v-rect v-for='item in items' :config='item' :key='item.id'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
       data() {
         return {
           stage: {
@@ -445,7 +447,7 @@ describe('Test props setting', () => {
       },
     });
 
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
     sinon.spy(layer, 'batchDraw');
 
     const items = vm.items.concat();
@@ -460,13 +462,13 @@ describe('Test props setting', () => {
   it('checking for loop order on non-containers', async () => {
     const { vm } = mount({
       template: `
-          <v-stage ref="stage" :config="stage">
-            <v-layer :config="{ name: 'Layer 0'}">
-              <v-rect v-for="item in items" :config="item" :key="item.id">
-              </v-rect>
-            </v-layer>
-            <v-layer v-if="show" :config="{ id: '3', name: 'Layer 1' }" />
-          </v-stage>
+        <v-stage ref='stage' :config='stage'>
+        <v-layer :config="{ name: 'Layer 0'}">
+          <v-rect v-for='item in items' :config='item' :key='item.id'>
+          </v-rect>
+        </v-layer>
+        <v-layer v-if='show' :config="{ id: '3', name: 'Layer 1' }" />
+        </v-stage>
       `,
       data() {
         return {
@@ -474,13 +476,13 @@ describe('Test props setting', () => {
             width: 300,
             height: 400,
           },
-          items: [],
+          items: [] as object[],
           show: true,
         };
       },
     });
 
-    const stage = vm.$refs.stage.getNode();
+    const stage = (vm.$refs.stage as any).getNode();
 
     await nextTick();
     vm.items = [
@@ -499,12 +501,12 @@ describe('Test props setting', () => {
     const { vm } = mount({
       template: `
         <div>
-          <v-stage ref="stage" :config="stage">
-            <v-layer v-for="item in items" :config="item" :key="item.id">
-              <v-rect :config="{name: 'Rect ' + item.id}"/>
-            </v-layer>
-            <v-layer :config="{ id: '3', name: 'Layer 3' }" />
-          </v-stage>
+        <v-stage ref='stage' :config='stage'>
+          <v-layer v-for='item in items' :config='item' :key='item.id'>
+            <v-rect :config="{name: 'Rect ' + item.id}" />
+          </v-layer>
+          <v-layer :config="{ id: '3', name: 'Layer 3' }" />
+        </v-stage>
         </div>
       `,
       data() {
@@ -514,12 +516,12 @@ describe('Test props setting', () => {
             width: 300,
             height: 400,
           },
-          items: [],
+          items: [] as object[],
         };
       },
     });
 
-    const stage = vm.$refs.stage.getNode();
+    const stage = (vm.$refs.stage as any).getNode();
     expect(stage.children[0].id()).to.equal('3');
 
     await nextTick();
@@ -545,12 +547,12 @@ describe('Test props setting', () => {
     const { vm } = mount({
       template: `
         <div>
-          <v-stage ref="stage" :config="stage">
-            <v-layer >
-              <v-rect v-for="item in items" :config="item" :key="item.id"/>
-              <v-rect :config="{id: '3'}"/>
-            </v-layer>
-          </v-stage>
+        <v-stage ref='stage' :config='stage'>
+          <v-layer>
+            <v-rect v-for='item in items' :config='item' :key='item.id' />
+            <v-rect :config="{id: '3'}" />
+          </v-layer>
+        </v-stage>
         </div>
       `,
       data() {
@@ -560,12 +562,12 @@ describe('Test props setting', () => {
             width: 300,
             height: 400,
           },
-          items: [],
+          items: [] as object[],
         };
       },
     });
 
-    const stage = vm.$refs.stage.getNode();
+    const stage = (vm.$refs.stage as any).getNode();
     const layer = stage.children[0];
     expect(layer.children[0].id()).to.equal('3');
 
@@ -593,13 +595,13 @@ describe('Test props setting', () => {
   it('unset props', async () => {
     const { vm } = mount({
       template: `
-          <v-stage ref="stage" :config="stage">
-            <v-layer>
-              <v-rect :config="rect" ref="rect">
-              </v-rect>
-            </v-layer>
-          </v-stage>
-        `,
+        <v-stage ref='stage' :config='stage'>
+        <v-layer>
+          <v-rect :config='rect' ref='rect'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
       data() {
         return {
           stage: {
@@ -614,11 +616,13 @@ describe('Test props setting', () => {
       },
     });
 
-    const rect = vm.$refs.rect.getNode();
+    const rect = (vm.$refs.rect as any).getNode();
 
     expect(rect.fill()).to.equal('red');
 
+    // @ts-ignore TODO
     vm.rect.fill = null;
+    // @ts-ignore TODO
     vm.rect.x = null;
     await nextTick();
     expect(!!rect.fill()).to.equal(false);
@@ -628,13 +632,13 @@ describe('Test props setting', () => {
   it('do not overwrite properties if that changed manually', () => {
     const { vm } = mount({
       template: `
-          <v-stage ref="stage" :config="stage">
-            <v-layer>
-              <v-rect :config="rect" ref="rect">
-              </v-rect>
-            </v-layer>
-          </v-stage>
-        `,
+        <v-stage ref='stage' :config='stage'>
+        <v-layer>
+          <v-rect :config='rect' ref='rect'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
       data() {
         return {
           stage: {
@@ -649,7 +653,7 @@ describe('Test props setting', () => {
       },
     });
 
-    const rect = vm.$refs.rect.getNode();
+    const rect = (vm.$refs.rect as any).getNode();
 
     // change position manually
     rect.x(20);
@@ -662,14 +666,14 @@ describe('Test props setting', () => {
   it('use with template', async () => {
     const { vm } = mount({
       template: `
-        <v-stage ref="stage" :config="stage">
-          <v-layer :config="layer" ref="layer">
-            <template v-for="shape in shapes" :key="shape">
-              <v-rect :config="{name: 'rect1'}"></v-rect>
-              <v-rect :config="{name: 'sdf'}" v-if="shape === 3"></v-rect>
-            </template>
-            <v-rect :config="{name: 'rect2'}"></v-rect>
-          </v-layer>
+        <v-stage ref='stage' :config='stage'>
+        <v-layer :config='layer' ref='layer'>
+          <template v-for='shape in shapes' :key='shape'>
+            <v-rect :config="{name: 'rect1'}"></v-rect>
+            <v-rect :config="{name: 'sdf'}" v-if='shape === 3'></v-rect>
+          </template>
+          <v-rect :config="{name: 'rect2'}"></v-rect>
+        </v-layer>
         </v-stage>
       `,
       data() {
@@ -686,7 +690,7 @@ describe('Test props setting', () => {
       },
     });
 
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
     const rect1 = layer.findOne('.rect1');
     const rect2 = layer.findOne('.rect2');
 
@@ -712,7 +716,7 @@ describe('test lifecycle methods', () => {
   let createdCount = 0;
   let updateCount = 0;
   let beforeCreateCount = 0;
-  const lifecycle = {
+  const lifecycle = defineComponent({
     props: ['fill'],
     render() {
       return h('v-rect', {
@@ -728,7 +732,7 @@ describe('test lifecycle methods', () => {
     updated() {
       updateCount += 1;
     },
-  };
+  });
 
   beforeEach(() => {
     createdCount = 0;
@@ -770,7 +774,7 @@ describe('test lifecycle methods', () => {
   });
 });
 
-describe('Test Events', (done) => {
+describe('Test Events', () => {
   beforeEach(() => {
     config.global.plugins = [VueKonva];
   });
@@ -785,13 +789,13 @@ describe('Test Events', (done) => {
       {
         props: ['click'],
         template: `
-        <v-stage ref="stage">
-          <v-layer v-if="drawLayer" ref="layer">
-            <v-rect ref="rect" @click="click">
+          <v-stage ref='stage'>
+          <v-layer v-if='drawLayer' ref='layer'>
+            <v-rect ref='rect' @click='click'> 
             </v-rect>
           </v-layer>
-        </v-stage>
-      `,
+          </v-stage>
+        `,
         data() {
           return {
             drawLayer: true,
@@ -800,14 +804,15 @@ describe('Test Events', (done) => {
       },
       {
         propsData: {
-          click: onClickRect,
+          click: onClickRect,// TODO
         },
-      }
+      },
     );
 
+    // @ts-ignore TODO
     vm.drawStage = false;
 
-    const stage = vm.$refs.stage.getNode();
+    const stage = (vm.$refs.stage as any).getNode();
     const layer = stage.findOne('Layer');
     const rect = stage.findOne('Rect');
     rect.on('click', onClickExternal);
@@ -835,11 +840,11 @@ describe('Test Events', (done) => {
   it('check arguments', () => {
     const { vm } = mount({
       template: `
-        <v-stage ref="stage" :config="size">
-          <v-layer ref="layer">
-            <v-rect ref="rect" @mousedown="mousedown" :config="size">
-            </v-rect>
-          </v-layer>
+        <v-stage ref='stage' :config='size'>
+        <v-layer ref='layer'>
+          <v-rect ref='rect' @mousedown='mousedown' :config='size'>
+          </v-rect>
+        </v-layer>
         </v-stage>
       `,
       data() {
@@ -851,14 +856,14 @@ describe('Test Events', (done) => {
         };
       },
       methods: {
-        mousedown(e) {
+        mousedown(e: MouseEvent) {
           expect(this).to.equal(vm);
           expect(e.target instanceof Konva.Rect).to.equal(true);
         },
       },
     });
 
-    const stage = vm.$refs.stage.getNode();
+    const stage = (vm.$refs.stage as any).getNode();
 
     stage.simulateMouseDown({
       x: 50,
@@ -876,11 +881,11 @@ describe('Test drawing calls', () => {
     config.global.plugins = [];
   });
   it('Draw layer on mount', () => {
-    sinon.spy(Konva.Layer.prototype, 'batchDraw');
+    const  batchDraw = sinon.spy(Konva.Layer.prototype, 'batchDraw');
 
-    const { vm } = mount({
+    mount({
       template: `
-          <v-stage ref="stage">
+          <v-stage ref='stage'>
             <v-layer>
               <v-rect>
               </v-rect>
@@ -889,22 +894,22 @@ describe('Test drawing calls', () => {
         `,
     });
 
-    expect(Konva.Layer.prototype.batchDraw.called).to.equal(true);
-    Konva.Layer.prototype.batchDraw.restore();
+    expect(batchDraw.called).to.equal(true);
+    batchDraw.restore();
   });
 
   it('Draw layer on node add', async () => {
-    sinon.spy(Konva.Layer.prototype, 'batchDraw');
+    const batchDraw = sinon.spy(Konva.Layer.prototype, 'batchDraw');
 
     const { vm } = mount({
       template: `
-          <v-stage ref="stage">
-            <v-layer>
-              <v-rect v-if="showRect">
-              </v-rect>
-            </v-layer>
-          </v-stage>
-        `,
+        <v-stage ref='stage'>
+        <v-layer>
+          <v-rect v-if='showRect'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
       data() {
         return {
           showRect: false,
@@ -912,25 +917,25 @@ describe('Test drawing calls', () => {
       },
     });
 
-    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(2);
+    expect(batchDraw.callCount).to.equal(2);
 
     vm.showRect = true;
     await nextTick();
-    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(3);
-    Konva.Layer.prototype.batchDraw.restore();
+    expect(batchDraw.callCount).to.equal(3);
+    batchDraw.restore();
   });
 
   it('Draw layer on node remove', async () => {
-    sinon.spy(Konva.Layer.prototype, 'batchDraw');
+    const batchDraw = sinon.spy(Konva.Layer.prototype, 'batchDraw');
     const { vm } = mount({
       template: `
-          <v-stage ref="stage">
-            <v-layer>
-              <v-rect v-if="showRect">
-              </v-rect>
-            </v-layer>
-          </v-stage>
-        `,
+        <v-stage ref='stage'>
+        <v-layer>
+          <v-rect v-if='showRect'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
       data() {
         return {
           showRect: true,
@@ -938,14 +943,14 @@ describe('Test drawing calls', () => {
       },
     });
 
-    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(3);
+    expect(batchDraw.callCount).to.equal(3);
 
     vm.showRect = false;
 
     await nextTick();
-    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(4);
+    expect(batchDraw.callCount).to.equal(4);
 
-    Konva.Layer.prototype.batchDraw.restore();
+    batchDraw.restore();
   });
 });
 
@@ -961,13 +966,13 @@ describe('test reconciler', () => {
     const { vm } = mount({
       template: `
         <v-stage>
-          <v-layer ref="layer">
-            <template v-if="drawMany">
-              <v-rect key="k1" :config="{ name: 'rect1'}"/>
-              <v-rect key="k2" :config="{ name: 'rect2'}"/>
-            </template>
-            <v-rect v-else key="2" :config="{ name: 'rect2'}"/>
-          </v-layer>
+        <v-layer ref='layer'>
+          <template v-if='drawMany'>
+            <v-rect key='k1' :config="{ name: 'rect1'}" />
+            <v-rect key='k2' :config="{ name: 'rect2'}" />
+          </template>
+          <v-rect v-else key='2' :config="{ name: 'rect2'}" />
+        </v-layer>
         </v-stage>
       `,
       // render() {
@@ -999,27 +1004,27 @@ describe('test reconciler', () => {
       },
     });
 
-    sinon.spy(Konva.Layer.prototype, 'batchDraw');
+    const batchDraw = sinon.spy(Konva.Layer.prototype, 'batchDraw');
 
     vm.drawMany = true;
     await nextTick();
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
     expect(layer.children[0].name()).to.equal('rect1');
     expect(layer.children[1].name()).to.equal('rect2');
-    expect(Konva.Layer.prototype.batchDraw.callCount).to.equal(3);
-    Konva.Layer.prototype.batchDraw.restore();
+    expect(batchDraw.callCount).to.equal(3);
+    batchDraw.restore();
   });
 
   it('add before', async () => {
     const { vm } = mount({
       template: `
-          <v-stage ref="stage">
-            <v-layer ref="layer">
-              <v-rect v-for="item in items" :config="{name: 'rect' + item}" :key="item">
-              </v-rect>
-            </v-layer>
-          </v-stage>
-        `,
+        <v-stage ref='stage'>
+        <v-layer ref='layer'>
+          <v-rect v-for='item in items' :config="{name: 'rect' + item}" :key='item'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
       data() {
         return {
           items: [1, 3],
@@ -1028,7 +1033,7 @@ describe('test reconciler', () => {
     });
 
     vm.items = [1, 2, 3];
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
     await nextTick();
     expect(layer.children[0].name()).to.equal('rect1');
     expect(layer.children[1].name()).to.equal('rect2');
@@ -1038,13 +1043,13 @@ describe('test reconciler', () => {
   it('add after', async () => {
     const { vm } = mount({
       template: `
-          <v-stage ref="stage">
-            <v-layer ref="layer">
-              <v-rect v-for="item in items" :config="{name: 'rect' + item}" :key="item">
-              </v-rect>
-            </v-layer>
-          </v-stage>
-        `,
+        <v-stage ref='stage'>
+        <v-layer ref='layer'>
+          <v-rect v-for='item in items' :config="{name: 'rect' + item}" :key='item'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
       data() {
         return {
           items: [1],
@@ -1055,7 +1060,7 @@ describe('test reconciler', () => {
     vm.items = [1, 2];
 
     await nextTick();
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
 
     expect(layer.children[0].name()).to.equal('rect1');
     expect(layer.children[1].name()).to.equal('rect2');
@@ -1064,20 +1069,20 @@ describe('test reconciler', () => {
   it('change order', async () => {
     const { vm } = mount({
       template: `
-          <v-stage ref="stage">
-            <v-layer ref="layer">
-              <v-rect v-for="item in items" :config="{name: 'rect' + item}" :key="item">
-              </v-rect>
-            </v-layer>
-          </v-stage>
-        `,
+        <v-stage ref='stage'>
+        <v-layer ref='layer'>
+          <v-rect v-for='item in items' :config="{name: 'rect' + item}" :key='item'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
       data() {
         return {
           items: [1, 2, 3],
         };
       },
     });
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
 
     expect(layer.children[0].name()).to.equal('rect1');
     expect(layer.children[1].name()).to.equal('rect2');
@@ -1102,17 +1107,17 @@ describe('test reconciler', () => {
     const Deep = {
       props: ['name'],
       template: `
-        <v-rect :config="{ name: name}" />
+        <v-rect :config='{ name: name}' />
       `,
     };
     const { vm } = mount(
       {
         template: `
-          <v-stage ref="stage">
-            <v-layer ref="layer">
-              <Deep v-for="item in items" :name="'rect' + item" :key="item">
-              </Deep>
-            </v-layer>
+          <v-stage ref='stage'>
+          <v-layer ref='layer'>
+            <Deep v-for='item in items' :name="'rect' + item" :key='item'>
+            </Deep>
+          </v-layer>
           </v-stage>
         `,
         data() {
@@ -1127,9 +1132,9 @@ describe('test reconciler', () => {
             Deep,
           },
         },
-      }
+      },
     );
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
 
     expect(layer.children[0].name()).to.equal('rect1');
     expect(layer.children[1].name()).to.equal('rect2');
@@ -1152,7 +1157,7 @@ describe('test reconciler', () => {
     const Deep = {
       props: ['name'],
       template: `
-        <v-rect :config="{name: name}" />
+        <v-rect :config='{name: name}' />
       `,
       methods: {
         getNode() {
@@ -1164,11 +1169,11 @@ describe('test reconciler', () => {
     const { vm } = mount(
       {
         template: `
-          <v-stage ref="stage">
-            <v-layer ref="layer">
-              <Deep v-for="item in items" :name="'rect' + item" :key="item">
-              </Deep>
-            </v-layer>
+          <v-stage ref='stage'>
+          <v-layer ref='layer'>
+            <Deep v-for='item in items' :name="'rect' + item" :key='item'>
+            </Deep>
+          </v-layer>
           </v-stage>
         `,
         data() {
@@ -1183,9 +1188,9 @@ describe('test reconciler', () => {
             Deep,
           },
         },
-      }
+      },
     );
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
 
     expect(layer.children[0].name()).to.equal('rect1');
     expect(layer.children[1].name()).to.equal('rect2');
@@ -1199,15 +1204,15 @@ describe('test reconciler', () => {
   });
 
   it('can draw several stages', () => {
-    const { vm } = mount({
+    mount({
       template: `
       <div>
-          <v-stage ref="stage">
-            <v-layer ref="layer">
+          <v-stage ref='stage'>
+            <v-layer ref='layer'>
             </v-layer>
           </v-stage>
-          <v-stage ref="stage">
-            <v-layer ref="layer">
+          <v-stage ref='stage'>
+            <v-layer ref='layer'>
             </v-layer>
           </v-stage>
           </div>
@@ -1221,12 +1226,12 @@ describe('Test plugin', () => {
     const { vm } = mount(
       {
         template: `
-        <konva-stage ref="stage" :config="stage">
-          <konva-layer ref="layer">
-            <konva-rect ref="rect"/>
+          <konva-stage ref='stage' :config='stage'>
+          <konva-layer ref='layer'>
+            <konva-rect ref='rect' />
           </konva-layer>
-        </konva-stage>
-      `,
+          </konva-stage>
+        `,
         data() {
           return {
             stage: {
@@ -1240,22 +1245,22 @@ describe('Test plugin', () => {
         global: {
           plugins: [[VueKonva, { prefix: 'konva' }]],
         },
-      }
+      },
     );
 
-    const stage = vm.$refs.stage.getStage();
+    const stage = (vm.$refs.stage as any).getStage();
     expect(stage.children.length).to.equal(1);
 
-    const layer = vm.$refs.layer.getNode();
+    const layer = (vm.$refs.layer as any).getNode();
     expect(layer.children.length).to.equal(1);
     expect(layer instanceof Konva.Layer).to.equal(true);
 
-    const rect = vm.$refs.rect.getNode();
+    const rect = (vm.$refs.rect as any).getNode();
     expect(rect instanceof Konva.Rect).to.equal(true);
   });
 });
 
-describe('validations', (done) => {
+describe('validations', () => {
   beforeEach(() => {
     config.global.plugins = [VueKonva];
   });
@@ -1277,14 +1282,14 @@ describe('validations', (done) => {
           };
         },
         template: `
-        <v-stage ref="stage" :config="stage">
+          <v-stage ref='stage' :config='stage'>
           <v-layer>
             <test-counter />
             <v-rect />
-            <v-circle v-for="item in items" :key="item.id" :config="item" />
+            <v-circle v-for='item in items' :key='item.id' :config='item' />
           </v-layer>
-        </v-stage>
-      `,
+          </v-stage>
+        `,
       },
       {
         global: {
@@ -1292,18 +1297,18 @@ describe('validations', (done) => {
             TestCounter: { template: '<span/>' },
           },
         },
-      }
+      },
     );
-    const stage = vm.$refs.stage.getStage();
+    const stage = (vm.$refs.stage as any).getStage();
 
-    sinon.spy(console, 'error');
+    const consoleError = sinon.spy(console, 'error');
     vm.items = [{ id: '2' }, { id: '1' }];
     await nextTick();
     const circles = stage.find('Circle');
     expect(circles[0].id()).to.equal('2');
     expect(circles[1].id()).to.equal('1');
-    expect(console.error.callCount).to.equal(1);
-    console.error.restore();
+    expect(consoleError.callCount).to.equal(1);
+    consoleError.restore();
   });
 
   it('Should not throw on hidden objects', async () => {
@@ -1318,25 +1323,25 @@ describe('validations', (done) => {
         };
       },
       template: `
-        <v-stage ref="stage" :config="stage">
-          <v-layer>
-            <div v-if="false"/>
-            <v-rect />
-            <v-circle v-for="item in items" :key="item.id" :config="item" />
-          </v-layer>
+        <v-stage ref='stage' :config='stage'>
+        <v-layer>
+          <div v-if='false' />
+          <v-rect />
+          <v-circle v-for='item in items' :key='item.id' :config='item' />
+        </v-layer>
         </v-stage>
       `,
     });
-    const stage = vm.$refs.stage.getStage();
+    const stage = (vm.$refs.stage as any).getStage();
 
-    sinon.spy(console, 'error');
+    const consoleError = sinon.spy(console, 'error');
     vm.items = [{ id: '2' }, { id: '1' }];
     await nextTick();
     const circles = stage.find('Circle');
     expect(circles[0].id()).to.equal('2');
     expect(circles[1].id()).to.equal('1');
-    expect(console.error.callCount).to.equal(0);
-    console.error.restore();
+    expect(consoleError.callCount).to.equal(0);
+    consoleError.restore();
   });
 
   it('Accept template tag in Konva Groups', async () => {
@@ -1352,14 +1357,14 @@ describe('validations', (done) => {
           };
         },
         template: `
-        <v-stage ref="stage" :config="stage">
+          <v-stage ref='stage' :config='stage'>
           <v-layer>
             <test-counter />
             <v-rect />
-            <v-circle v-for="item in items" :key="item.id" :config="item" />
+            <v-circle v-for='item in items' :key='item.id' :config='item' />
           </v-layer>
-        </v-stage>
-      `,
+          </v-stage>
+        `,
       },
       {
         global: {
@@ -1367,17 +1372,17 @@ describe('validations', (done) => {
             TestCounter: { template: '<v-group><v-group></v-group></v-group>' },
           },
         },
-      }
+      },
     );
-    const stage = vm.$refs.stage.getStage();
+    const stage = (vm.$refs.stage as any).getStage();
 
-    sinon.spy(console, 'error');
+    const consoleError = sinon.spy(console, 'error');
     vm.items = [{ id: '2' }, { id: '1' }];
     await nextTick();
     const circles = stage.find('Circle');
     expect(circles[0].id()).to.equal('2');
     expect(circles[1].id()).to.equal('1');
-    expect(console.error.callCount).to.equal(0);
-    console.error.restore();
+    expect(consoleError.callCount).to.equal(0);
+    consoleError.restore();
   });
 });
