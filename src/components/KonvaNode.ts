@@ -1,20 +1,22 @@
 import {
   h,
-  ref,
   reactive,
   watch,
   onMounted,
   onUnmounted,
   onUpdated,
   getCurrentInstance,
+  defineComponent,
+  VNode,
 } from 'vue';
 import {
   applyNodeProps,
   findParentKonva,
   updatePicture,
-  konvaNodeMarker,
   checkOrder,
 } from '../utils';
+import { KONVA_NODES } from '../types';
+
 const EVENTS_NAMESPACE = '.vue-konva-event';
 
 const CONTAINERS = {
@@ -24,12 +26,13 @@ const CONTAINERS = {
   Label: true,
 };
 
-export default function (nameNode) {
-  return {
+export default function <T extends typeof KONVA_NODES[number]>(nameNode: T) {
+  return defineComponent({
+    name: nameNode,
     props: {
       config: {
         type: Object,
-        default: function () {
+        default: function() {
           return {};
         },
       },
@@ -40,6 +43,7 @@ export default function (nameNode) {
 
     setup(props, { attrs, slots, expose }) {
       const instance = getCurrentInstance();
+      if (!instance) return;
       const oldProps = reactive({});
 
       const NodeClass = window.Konva[nameNode];
@@ -49,21 +53,24 @@ export default function (nameNode) {
         return;
       }
 
+      // @ts-ignore
       const __konvaNode = new NodeClass();
       instance.__konvaNode = __konvaNode;
       instance.vnode.__konvaNode = __konvaNode;
       uploadKonva();
 
       function getNode() {
-        return instance.__konvaNode;
+        return instance?.__konvaNode;
       }
+
       function getStage() {
-        return instance.__konvaNode;
+        return instance?.__konvaNode;
       }
 
       function uploadKonva() {
-        const events = {};
-        for (var key in instance.vnode.props) {
+        if (!instance) return;
+        const events: VNode['props'] = {};
+        for (const key in instance?.vnode.props) {
           if (key.slice(0, 2) === 'on') {
             events[key] = instance.vnode.props[key];
           }
@@ -78,14 +85,14 @@ export default function (nameNode) {
           instance,
           newProps,
           existingProps,
-          props.__useStrictMode
+          props.__useStrictMode,
         );
         Object.assign(oldProps, newProps);
       }
 
       onMounted(() => {
-        const parentKonvaNode = findParentKonva(instance).__konvaNode;
-        parentKonvaNode.add(__konvaNode);
+        const parentKonvaNode = findParentKonva(instance)?.__konvaNode;
+        if (parentKonvaNode && 'add' in parentKonvaNode) parentKonvaNode.add(__konvaNode);
         updatePicture(__konvaNode);
       });
 
@@ -107,10 +114,10 @@ export default function (nameNode) {
         getNode,
       });
 
-      const isContainer = CONTAINERS[nameNode];
-      return isContainer
-        ? () => h('template', {}, slots.default?.())
-        : () => null;
+      const isContainer = CONTAINERS.hasOwnProperty(nameNode);
+      return () => isContainer
+        ? h('template', {}, slots.default?.())
+        : null;
     },
-  };
+  });
 }

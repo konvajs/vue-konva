@@ -2,12 +2,9 @@ import { nextTick, h, defineComponent } from 'vue';
 import { expect, describe, it, beforeEach, afterEach } from 'vitest';
 import Konva from 'konva';
 import sinon from 'sinon';
-import {
-  mount,
-  config,
-} from '@vue/test-utils';
+import { mount, config } from '@vue/test-utils';
+
 import './mocking';
-// @ts-ignore
 import VueKonva from '../src';
 
 describe('Test references', () => {
