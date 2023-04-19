@@ -1,7 +1,6 @@
 import { nextTick, h, defineComponent } from 'vue';
-import { expect, describe, it, beforeEach, afterEach } from 'vitest';
+import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import Konva from 'konva';
-import sinon from 'sinon';
 import { mount, config } from '@vue/test-utils';
 
 import './mocking';
@@ -300,13 +299,13 @@ describe('Test props setting', () => {
     const layer = (vm.$refs.layer as any).getNode();
 
     expect(layer.children.length).to.equal(2);
-    const warnSpy = sinon.spy(Konva.Util, 'warn');
+    const warnSpy = vi.spyOn(Konva.Util, 'warn');
     vm.textVisible = false;
     await nextTick();
     expect(layer.children.length).to.equal(1);
     expect(layer.children[0].className).to.equal('Rect');
-    expect(warnSpy.callCount).to.equal(0);
-    warnSpy.restore();
+    expect(warnSpy).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
   });
 
   it('can set stage props', async () => {
@@ -399,15 +398,15 @@ describe('Test props setting', () => {
 
     const layer = (vm.$refs.layer as any).getNode();
 
-    sinon.spy(layer, 'batchDraw');
+    const spyBatchDraw =  vi.spyOn(layer, 'batchDraw');
 
     vm.rect.width = 50;
     vm.rect.width = 150;
     await nextTick();
 
-    expect(layer.batchDraw.callCount).to.equal(1);
+    expect(spyBatchDraw).toHaveBeenCalledOnce();
 
-    layer.batchDraw.restore();
+    spyBatchDraw.mockRestore();
   });
 
   it('changing order should redraw layer', async () => {
@@ -444,15 +443,15 @@ describe('Test props setting', () => {
     });
 
     const layer = (vm.$refs.layer as any).getNode();
-    sinon.spy(layer, 'batchDraw');
+    const spyBatchDraw = vi.spyOn(layer, 'batchDraw');
 
     const items = vm.items.concat();
     items.reverse();
     vm.items = items;
     await nextTick();
 
-    expect(layer.batchDraw.callCount).to.equal(1);
-    layer.batchDraw.restore();
+    expect(spyBatchDraw).toHaveBeenCalledOnce();
+    spyBatchDraw.mockRestore();
   });
 
   it('checking for loop order on non-containers', async () => {
@@ -779,8 +778,8 @@ describe('Test Events', () => {
     config.global.plugins = [];
   });
   it('should remove events on unmount', async () => {
-    const onClickRect = sinon.spy();
-    const onClickExternal = sinon.spy();
+    const onClickRect = vi.fn();
+    const onClickExternal = vi.fn();
     const { vm } = mount(
       {
         props: ['click'],
@@ -813,12 +812,12 @@ describe('Test Events', () => {
     const rect = stage.findOne('Rect');
     rect.on('click', onClickExternal);
 
-    expect(onClickRect.callCount).to.equal(0);
-    expect(onClickExternal.callCount).to.equal(0);
+    expect(onClickRect).not.toHaveBeenCalled();
+    expect(onClickExternal).not.toHaveBeenCalled();
 
     rect._fire('click', {});
-    expect(onClickRect.callCount).to.equal(1);
-    expect(onClickExternal.callCount).to.equal(1);
+    expect(onClickRect).toHaveBeenCalledOnce();
+    expect(onClickExternal).toHaveBeenCalledOnce();
 
     // remove layer
 
@@ -829,8 +828,8 @@ describe('Test Events', () => {
 
     rect._fire('click', {});
 
-    expect(onClickRect.callCount).to.equal(1);
-    expect(onClickExternal.callCount).to.equal(2);
+    expect(onClickRect).toHaveBeenCalledOnce();
+    expect(onClickExternal).toHaveBeenCalledTimes(2);
   });
 
   it('check arguments', () => {
@@ -877,7 +876,7 @@ describe('Test drawing calls', () => {
     config.global.plugins = [];
   });
   it('Draw layer on mount', () => {
-    const  batchDraw = sinon.spy(Konva.Layer.prototype, 'batchDraw');
+    const  batchDraw = vi.spyOn(Konva.Layer.prototype, 'batchDraw');
 
     mount({
       template: `
@@ -890,12 +889,12 @@ describe('Test drawing calls', () => {
         `,
     });
 
-    expect(batchDraw.called).to.equal(true);
-    batchDraw.restore();
+    expect(batchDraw).toHaveBeenCalled();
+    batchDraw.mockRestore();
   });
 
   it('Draw layer on node add', async () => {
-    const batchDraw = sinon.spy(Konva.Layer.prototype, 'batchDraw');
+    const batchDraw = vi.spyOn(Konva.Layer.prototype, 'batchDraw');
 
     const { vm } = mount({
       template: `
@@ -913,16 +912,16 @@ describe('Test drawing calls', () => {
       },
     });
 
-    expect(batchDraw.callCount).to.equal(2);
+    expect(batchDraw).toHaveBeenCalledTimes(2);
 
     vm.showRect = true;
     await nextTick();
-    expect(batchDraw.callCount).to.equal(3);
-    batchDraw.restore();
+    expect(batchDraw).toHaveBeenCalledTimes(3);
+    batchDraw.mockRestore();
   });
 
   it('Draw layer on node remove', async () => {
-    const batchDraw = sinon.spy(Konva.Layer.prototype, 'batchDraw');
+    const batchDraw = vi.spyOn(Konva.Layer.prototype, 'batchDraw');
     const { vm } = mount({
       template: `
         <v-stage ref='stage'>
@@ -939,14 +938,14 @@ describe('Test drawing calls', () => {
       },
     });
 
-    expect(batchDraw.callCount).to.equal(3);
+    expect(batchDraw).toHaveBeenCalledTimes(3);
 
     vm.showRect = false;
 
     await nextTick();
-    expect(batchDraw.callCount).to.equal(4);
+    expect(batchDraw).toHaveBeenCalledTimes(4);
 
-    batchDraw.restore();
+    batchDraw.mockRestore();
   });
 });
 
@@ -1000,15 +999,15 @@ describe('test reconciler', () => {
       },
     });
 
-    const batchDraw = sinon.spy(Konva.Layer.prototype, 'batchDraw');
+    const batchDraw = vi.spyOn(Konva.Layer.prototype, 'batchDraw');
 
     vm.drawMany = true;
     await nextTick();
     const layer = (vm.$refs.layer as any).getNode();
     expect(layer.children[0].name()).to.equal('rect1');
     expect(layer.children[1].name()).to.equal('rect2');
-    expect(batchDraw.callCount).to.equal(3);
-    batchDraw.restore();
+    expect(batchDraw).toHaveBeenCalledTimes(3);
+    batchDraw.mockRestore();
   });
 
   it('add before', async () => {
@@ -1297,14 +1296,14 @@ describe('validations', () => {
     );
     const stage = (vm.$refs.stage as any).getStage();
 
-    const consoleError = sinon.spy(console, 'error');
+    const consoleError = vi.spyOn(console, 'error');
     vm.items = [{ id: '2' }, { id: '1' }];
     await nextTick();
     const circles = stage.find('Circle');
     expect(circles[0].id()).to.equal('2');
     expect(circles[1].id()).to.equal('1');
-    expect(consoleError.callCount).to.equal(1);
-    consoleError.restore();
+    expect(consoleError).toHaveBeenCalledTimes(1);
+    consoleError.mockRestore();
   });
 
   it('Should not throw on hidden objects', async () => {
@@ -1330,14 +1329,14 @@ describe('validations', () => {
     });
     const stage = (vm.$refs.stage as any).getStage();
 
-    const consoleError = sinon.spy(console, 'error');
+    const consoleError = vi.spyOn(console, 'error');
     vm.items = [{ id: '2' }, { id: '1' }];
     await nextTick();
     const circles = stage.find('Circle');
     expect(circles[0].id()).to.equal('2');
     expect(circles[1].id()).to.equal('1');
-    expect(consoleError.callCount).to.equal(0);
-    consoleError.restore();
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 
   it('Accept template tag in Konva Groups', async () => {
@@ -1372,13 +1371,13 @@ describe('validations', () => {
     );
     const stage = (vm.$refs.stage as any).getStage();
 
-    const consoleError = sinon.spy(console, 'error');
+    const consoleError = vi.spyOn(console, 'error');
     vm.items = [{ id: '2' }, { id: '1' }];
     await nextTick();
     const circles = stage.find('Circle');
     expect(circles[0].id()).to.equal('2');
     expect(circles[1].id()).to.equal('1');
-    expect(consoleError.callCount).to.equal(0);
-    consoleError.restore();
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 });

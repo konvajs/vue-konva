@@ -47,7 +47,8 @@
     "test:coverage": "vitest --coverage"
   },
   "peerDependencies": {
-    "konva": ">7"
+    "konva": ">7",
+    "vue": ">3"
   },
   "devDependencies": {
     "@types/sinon": "^10.0.14",
@@ -59,7 +60,6 @@
     "eslint-plugin-vue": "^8.5.0",
     "jsdom": "^21.1.1",
     "konva": ">7",
-    "sinon": "^13.0.2",
     "typescript": "^5.0.4",
     "vite": "^4.2.2",
     "vite-plugin-dts": "^2.3.0",
