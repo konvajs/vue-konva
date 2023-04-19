@@ -1,49 +1,49 @@
 import Konva from 'konva';
 
 export const KONVA_NODES = [
-  'Layer',
-  'FastLayer',
-  'Group',
-  'Label',
-  'Rect',
+  'Arc',
+  'Arrow',
   'Circle',
   'Ellipse',
-  'Wedge',
-  'Line',
-  'Sprite',
+  'FastLayer',
+  'Group',
   'Image',
+  'Label',
+  'Layer',
+  'Line',
+  'Path',
+  'Rect',
+  'RegularPolygon',
+  'Ring',
+  'Shape',
+  'Sprite',
+  'Star',
+  'Tag',
   'Text',
   'TextPath',
-  'Star',
-  'Ring',
-  'Arc',
-  'Tag',
-  'Path',
-  'RegularPolygon',
-  'Arrow',
-  'Shape',
   'Transformer',
+  'Wedge',
 ] as const;
 
 export type KonvaNodes =
-  Konva.Stage |
-  Konva.Label |
-  Konva.Rect |
+  Konva.Arrow |
+  Konva.Arc |
   Konva.Circle |
   Konva.Ellipse |
-  Konva.Wedge |
+  Konva.FastLayer |
+  Konva.Image |
+  Konva.Label |
   Konva.Line |
+  Konva.Path |
+  Konva.Rect |
+  Konva.RegularPolygon |
+  Konva.Ring |
+  Konva.Shape |
+  Konva.Sprite |
+  Konva.Stage |
+  Konva.Star |
+  Konva.Tag |
   Konva.Text |
   Konva.TextPath |
-  Konva.Star |
-  Konva.Ring |
-  Konva.Arc |
-  Konva.Tag |
-  Konva.Path |
-  Konva.RegularPolygon |
-  Konva.Arrow |
   Konva.Transformer |
-  Konva.Sprite |
-  Konva.Image |
-  Konva.Shape |
-  Konva.FastLayer
+  Konva.Wedge

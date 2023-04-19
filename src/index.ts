@@ -11,10 +11,8 @@ if (typeof window !== 'undefined' && !window.Konva) {
 const VueKonva = {
   install: (app: App, options?: { prefix?: string }) => {
     let prefixToUse = options?.prefix || componentPrefix;
-    // app.component(`${prefixToUse}${Stage.name}`, Stage);
-    const components = [Stage, ...KONVA_NODES.map(KonvaNode)];
-    // const components = [Stage];
-    components.map((k) => {
+
+    [Stage, ...KONVA_NODES.map(KonvaNode)].map((k) => {
       app.component(`${prefixToUse}${k.name}`, k);
     });
   },

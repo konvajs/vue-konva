@@ -1,13 +1,9 @@
-import { ComponentInternalInstance, VNode } from 'vue';
+import type { ComponentInternalInstance, VNode } from 'vue';
 import type Konva from 'konva';
 import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
 
 export const componentPrefix = 'v';
-
-export function copy(obj: object) {
-  return JSON.parse(JSON.stringify(obj));
-}
 
 export function findParentKonva(instance: ComponentInternalInstance) {
   function re(instance: ComponentInternalInstance | null): ComponentInternalInstance | null {
@@ -24,7 +20,7 @@ export function findParentKonva(instance: ComponentInternalInstance) {
   return re(instance.parent);
 }
 
-export function findKonvaNode(instance: VNode): null | Konva.Node {
+export function findKonvaNode(instance: VNode): Konva.Node | null {
   if (!instance.component) return null;
 
   return (
@@ -47,12 +43,6 @@ function checkTagAndGetNode(instance: VNode): Konva.Node | null {
 
   return __konvaNode;
 }
-
-// const isVNode = (checkMe: VNode | any): checkMe is VNode => checkMe.hasOwnProperty('component');
-// const hasChildren = (checkMe: { children: VNodeArrayChildren } | any): checkMe is {
-//   children: VNodeArrayChildren
-// } => checkMe.hasOwnProperty('children') && Array.isArray(checkMe.children);
-
 
 function getChildren(instance: VNode) {
   const collection: VNode[] = [];

@@ -8,17 +8,17 @@ import {
   getCurrentInstance,
   reactive,
   defineComponent,
-  PropType
+  PropType,
 } from 'vue';
+import type Konva from 'konva';
 import { applyNodeProps, checkOrder } from '../utils';
-import Konva from "konva";
 
 export default defineComponent({
   name: 'Stage',
   props: {
     config: {
       type: Object as PropType<Konva.StageConfig>,
-      default: function () {
+      default: function() {
         return {};
       },
     },
@@ -31,7 +31,7 @@ export default defineComponent({
 
   setup(props, { attrs, slots, expose }) {
     const instance = getCurrentInstance();
-    if(!instance) return
+    if (!instance) return;
     const oldProps = reactive({});
 
     const container = ref<HTMLDivElement | null>(null);
@@ -48,12 +48,13 @@ export default defineComponent({
     function getNode() {
       return instance?.__konvaNode;
     }
+
     function getStage() {
       return instance?.__konvaNode;
     }
 
     function uploadKonva() {
-      if(!instance) return
+      if (!instance) return;
       const existingProps = oldProps || {};
       const newProps = {
         ...attrs,
@@ -68,7 +69,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      if(container.value) {
+      if (container.value) {
         container.value.innerHTML = '';
         __konvaNode.container(container.value);
       }

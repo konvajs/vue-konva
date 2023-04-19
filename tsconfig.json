@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "include": [
-      "src/*.d.ts"
-    ],
     "target": "ESNext",
     "module": "commonjs",
     "esModuleInterop": true,
