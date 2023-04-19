@@ -1,5 +1,5 @@
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
-import { ComponentInternalInstance } from 'vue';
+import type { ComponentInternalInstance } from 'vue';
 import updatePicture from './updatePicture';
 
 const propsToSkip = { key: true, style: true, elm: true, isRootInsert: true };

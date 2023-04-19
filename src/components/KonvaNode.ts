@@ -26,7 +26,7 @@ const CONTAINERS = {
   Label: true,
 };
 
-export default function <T extends typeof KONVA_NODES[number]>(nameNode: T) {
+export default function(nameNode: typeof KONVA_NODES[number]) {
   return defineComponent({
     name: nameNode,
     props: {
