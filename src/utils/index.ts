@@ -1,5 +1,12 @@
-import type { ComponentInternalInstance, VNode } from 'vue';
+import type {
+  VNode,
+  VNodeChild,
+  VNodeArrayChildren,
+  VNodeNormalizedChildren,
+  ComponentInternalInstance,
+} from 'vue';
 import type Konva from 'konva';
+
 import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
 
@@ -34,7 +41,7 @@ function checkTagAndGetNode(instance: VNode): Konva.Node | null {
   const __konvaNode = findKonvaNode(instance);
 
   if (el?.tagName && component && !__konvaNode) {
-    const name = el && el.tagName.toLowerCase();
+    const name = el.tagName.toLowerCase();
     console.error(
       `vue-konva error: You are trying to render "${name}" inside your component tree. Looks like it is not a Konva node. You can render only Konva components inside the Stage.`,
     );
@@ -45,28 +52,17 @@ function checkTagAndGetNode(instance: VNode): Konva.Node | null {
 }
 
 function getChildren(instance: VNode) {
-  const collection: VNode[] = [];
+  const isVNode = (value: VNodeChild | VNodeNormalizedChildren): value is VNode =>
+    !!value?.hasOwnProperty('component');
+  const isVNodeArrayChildren = (value: VNodeChild | VNodeNormalizedChildren): value is VNodeArrayChildren =>
+    Array.isArray(value);
 
-  if (instance.children) {
-    // @ts-ignore
-    instance.children.forEach((child) => {
-      // TODO: simplify deep nesting with recursion
-      if (!child.component && Array.isArray(child.children)) {
-        // @ts-ignore
-        child.children.forEach((subChild) => {
-          if (!subChild.component && Array.isArray(subChild.children)) {
-            collection.push(...subChild.children);
-          } else {
-            collection.push(subChild);
-          }
-        });
-      }
-      if (child.component) {
-        collection.push(child);
-      }
-    });
-  }
-  return collection;
+  const recursivelyFindChildren = (item: VNodeChild | VNodeNormalizedChildren): VNode[] => {
+    if (isVNode(item)) return [item, ...recursivelyFindChildren(item.children)];
+    if (isVNodeArrayChildren(item)) return item.flatMap(recursivelyFindChildren);
+    return [];
+  };
+  return recursivelyFindChildren(instance.children);
 }
 
 export function checkOrder(subTree: VNode, konvaNode: Konva.Node) {

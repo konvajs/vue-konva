@@ -22,12 +22,12 @@ export default function applyNodeProps(
     const isEvent = key.slice(0, 2) === 'on';
     const propChanged = oldProps[key] !== props[key];
     if (isEvent && propChanged) {
-      let eventName = key.substr(2).toLowerCase();
-      if (eventName.substr(0, 7) === 'content') {
+      let eventName = key.slice(2).toLowerCase();
+      if (eventName.slice(0, 7) === 'content') {
         eventName =
           'content' +
-          eventName.substr(7, 1).toUpperCase() +
-          eventName.substr(8);
+          eventName.slice(7, 1).toUpperCase() +
+          eventName.slice(8);
       }
       instance?.off(eventName + EVENTS_NAMESPACE, oldProps[key]);
     }
@@ -44,12 +44,12 @@ export default function applyNodeProps(
     let isEvent = key.slice(0, 2) === 'on';
     const toAdd = oldProps[key] !== props[key];
     if (isEvent && toAdd) {
-      let eventName = key.substr(2).toLowerCase();
-      if (eventName.substr(0, 7) === 'content') {
+      let eventName = key.slice(2).toLowerCase();
+      if (eventName.slice(0, 7) === 'content') {
         eventName =
           'content' +
-          eventName.substr(7, 1).toUpperCase() +
-          eventName.substr(8);
+          eventName.slice(7, 1).toUpperCase() +
+          eventName.slice(8);
       }
       if (props[key]) {
         instance?.off(eventName + EVENTS_NAMESPACE);

@@ -1,6 +1,6 @@
 {
   "name": "vue-konva",
-  "version": "3.1.0",
+  "version": "3.0.3",
   "description": "Vue binding to canvas element via Konva framework",
   "keywords": [
     "vue",
@@ -44,7 +44,8 @@
   "scripts": {
     "build": "vite build",
     "test": "vitest",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "format": "prettier --write ."
   },
   "peerDependencies": {
     "konva": ">7",
@@ -59,6 +60,7 @@
     "eslint-plugin-vue": "^8.7.1",
     "jsdom": "^21.1.1",
     "konva": ">7",
+    "prettier": "^3.0.0-alpha.7-for-vscode",
     "typescript": "^5.0.4",
     "vite": "^4.2.2",
     "vite-plugin-dts": "^2.3.0",

@@ -5,7 +5,7 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   plugins: [dts({
     entryRoot: './src',
-    include: ['./src/index.ts', './src/*.d.ts'],
+    include: ['./src/index.ts', './*.d.ts'],
   })],
   build: {
     lib: {
@@ -18,7 +18,7 @@ export default defineConfig({
       output: {
         globals: {
           vue: 'Vue',
-          Konva: 'Konva',
+          konva: 'Konva',
         },
       },
     },
