@@ -1,6 +1,5 @@
 import {
   h,
-  withDirectives,
   ref,
   watch,
   onMounted,
@@ -8,14 +7,18 @@ import {
   onUpdated,
   getCurrentInstance,
   reactive,
+  defineComponent,
+  PropType,
 } from 'vue';
+import type Konva from 'konva';
 import { applyNodeProps, checkOrder } from '../utils';
 
-export default {
+export default defineComponent({
+  name: 'Stage',
   props: {
     config: {
-      type: Object,
-      default: function () {
+      type: Object as PropType<Konva.StageConfig>,
+      default: function() {
         return {};
       },
     },
@@ -26,11 +29,12 @@ export default {
 
   inheritAttrs: false,
 
-  setup(props, { attrs, slots, expose, emits }) {
+  setup(props, { attrs, slots, expose }) {
     const instance = getCurrentInstance();
+    if (!instance) return;
     const oldProps = reactive({});
 
-    const container = ref(null);
+    const container = ref<HTMLDivElement | null>(null);
 
     const __konvaNode = new window.Konva.Stage({
       width: props.config.width,
@@ -42,13 +46,15 @@ export default {
     uploadKonva();
 
     function getNode() {
-      return instance.__konvaNode;
+      return instance?.__konvaNode;
     }
+
     function getStage() {
-      return instance.__konvaNode;
+      return instance?.__konvaNode;
     }
 
     function uploadKonva() {
+      if (!instance) return;
       const existingProps = oldProps || {};
       const newProps = {
         ...attrs,
@@ -63,8 +69,10 @@ export default {
     }
 
     onMounted(() => {
-      container.value.innerHTML = '';
-      __konvaNode.container(container.value);
+      if (container.value) {
+        container.value.innerHTML = '';
+        __konvaNode.container(container.value);
+      }
       uploadKonva();
       validateChildren();
     });
@@ -90,4 +98,4 @@ export default {
     //     - Possibly related to https://github.com/vuejs/vue-next/issues/2715
     return () => h('div', { ref: container }, slots.default?.());
   },
-};
+});

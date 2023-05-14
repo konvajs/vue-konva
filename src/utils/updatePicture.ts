@@ -1,9 +1,9 @@
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
 import Konva from 'konva';
 
-export default function updatePicture(node) {
+export default function updatePicture(node: Konva.Node) {
   if (!Konva.autoDrawEnabled) {
-    var drawingNode = node.getLayer() || node.getStage();
+    const drawingNode = node.getLayer() || node.getStage();
     drawingNode && drawingNode.batchDraw();
   }
 }
