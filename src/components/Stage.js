@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue from 'vue2';
 import { applyNodeProps, createListener, checkOrder } from '../utils';
 
 export default Vue.component('v-stage', {

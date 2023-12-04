@@ -1,4 +1,4 @@
-# Vue Konva
+# Vue Konva Migration
 
 <span class="badge-npmdownloads">
   <a href="https://www.npmjs.com/package/vue-konva">

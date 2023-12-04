@@ -1,7 +1,7 @@
 {
-  "name": "vue-konva",
-  "version": "2.1.7",
-  "description": "Vue binding to canvas element via Konva framework",
+  "name": "vue-konva-migration",
+  "version": "0.1.0",
+  "description": "Vue Konva Migration Vue2 to Vue3",
   "keywords": [
     "vue",
     "konva",
@@ -58,8 +58,8 @@
     "konva": ">3.2.5",
     "nwb": "^0.25.2",
     "sinon": "^7.3.0",
-    "vue": "^2.6.11",
-    "vue-template-compiler": "^2.6.11"
+    "vue2": "npm:vue@2.7.14",
+    "vue-template-compiler": "^2.7.14"
   },
   "engines": {
     "node": ">= 4.0.0",
