@@ -12,7 +12,7 @@ if (typeof window !== 'undefined' && !window.Konva) {
 const VueKonva = {
   install: (
     app: App,
-    options?: { prefix?: string; customNodes?: Record<string, KonvaNodeConstructor[]> },
+    options?: { prefix?: string; customNodes?: Record<string, KonvaNodeConstructor> },
   ) => {
     const prefixToUse = options?.prefix || componentPrefix;
 
