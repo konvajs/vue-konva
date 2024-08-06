@@ -9,8 +9,13 @@
   ],
   "homepage": "https://github.com/konvajs/vue-konva#readme",
   "author": "Rafael Escala <rafaesc92@gmail.com>",
-  "main": "dist/vue-konva.umd.js",
   "types": "dist/index.d.ts",
+  "main": "dist/vue-konva.umd.js",
+  "module": "dist/vue-konva.mjs",
+  "exports": {
+    "import": "./dist/vue-konva.mjs",
+    "require": "./dist/vue-konva.umd.js"
+  },
   "vetur": {
     "tags": "vetur/tags.json",
     "attributes": "vetur/attributes.json"
