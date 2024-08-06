@@ -18,7 +18,7 @@ export default defineComponent({
   props: {
     config: {
       type: Object as PropType<Konva.StageConfig>,
-      default: function() {
+      default: function () {
         return {};
       },
     },

@@ -9,13 +9,9 @@ import {
   defineComponent,
   VNode,
 } from 'vue';
-import {
-  applyNodeProps,
-  findParentKonva,
-  updatePicture,
-  checkOrder,
-} from '../utils';
-import { KONVA_NODES } from '../types';
+import { applyNodeProps, findParentKonva, updatePicture, checkOrder } from '../utils';
+import Konva from 'konva';
+import { KonvaNodeConstructor } from '../utils/types';
 
 const EVENTS_NAMESPACE = '.vue-konva-event';
 
@@ -26,13 +22,13 @@ const CONTAINERS = {
   Label: true,
 };
 
-export default function(nameNode: typeof KONVA_NODES[number]) {
+export default function (componentName: string, NodeConstructor: KonvaNodeConstructor) {
   return defineComponent({
-    name: nameNode,
+    name: componentName,
     props: {
       config: {
         type: Object,
-        default: function() {
+        default: function () {
           return {};
         },
       },
@@ -46,15 +42,7 @@ export default function(nameNode: typeof KONVA_NODES[number]) {
       if (!instance) return;
       const oldProps = reactive({});
 
-      const NodeClass = window.Konva[nameNode];
-
-      if (!NodeClass) {
-        console.error('vue-konva error: Can not find node ' + nameNode);
-        return;
-      }
-
-      // @ts-ignore
-      const __konvaNode = new NodeClass();
+      const __konvaNode = new NodeConstructor();
       instance.__konvaNode = __konvaNode;
       instance.vnode.__konvaNode = __konvaNode;
       uploadKonva();
@@ -81,18 +69,14 @@ export default function(nameNode: typeof KONVA_NODES[number]) {
           ...props.config,
           ...events,
         };
-        applyNodeProps(
-          instance,
-          newProps,
-          existingProps,
-          props.__useStrictMode,
-        );
+        applyNodeProps(instance, newProps, existingProps, props.__useStrictMode);
         Object.assign(oldProps, newProps);
       }
 
       onMounted(() => {
         const parentKonvaNode = findParentKonva(instance)?.__konvaNode;
-        if (parentKonvaNode && 'add' in parentKonvaNode) parentKonvaNode.add(__konvaNode);
+        if (parentKonvaNode && 'add' in parentKonvaNode)
+          (parentKonvaNode as { add: (node: Konva.Node) => void }).add(__konvaNode);
         updatePicture(__konvaNode);
       });
 
@@ -114,10 +98,8 @@ export default function(nameNode: typeof KONVA_NODES[number]) {
         getNode,
       });
 
-      const isContainer = CONTAINERS.hasOwnProperty(nameNode);
-      return () => isContainer
-        ? h('template', {}, slots.default?.())
-        : null;
+      const isContainer = CONTAINERS.hasOwnProperty(componentName);
+      return () => (isContainer ? h('template', {}, slots.default?.()) : null);
     },
   });
 }

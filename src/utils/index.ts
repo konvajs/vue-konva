@@ -30,10 +30,7 @@ export function findParentKonva(instance: ComponentInternalInstance) {
 export function findKonvaNode(instance: VNode): Konva.Node | null {
   if (!instance.component) return null;
 
-  return (
-    instance.component.__konvaNode ||
-    findKonvaNode(instance.component.subTree)
-  );
+  return instance.component.__konvaNode || findKonvaNode(instance.component.subTree);
 }
 
 function checkTagAndGetNode(instance: VNode): Konva.Node | null {
@@ -54,8 +51,9 @@ function checkTagAndGetNode(instance: VNode): Konva.Node | null {
 function getChildren(instance: VNode) {
   const isVNode = (value: VNodeChild | VNodeNormalizedChildren): value is VNode =>
     !!value?.hasOwnProperty('component');
-  const isVNodeArrayChildren = (value: VNodeChild | VNodeNormalizedChildren): value is VNodeArrayChildren =>
-    Array.isArray(value);
+  const isVNodeArrayChildren = (
+    value: VNodeChild | VNodeNormalizedChildren,
+  ): value is VNodeArrayChildren => Array.isArray(value);
 
   const recursivelyFindChildren = (item: VNodeChild | VNodeNormalizedChildren): VNode[] => {
     if (isVNode(item)) return [item, ...recursivelyFindChildren(item.children)];
