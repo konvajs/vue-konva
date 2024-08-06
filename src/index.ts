@@ -9,40 +9,43 @@ if (typeof window !== 'undefined' && !window.Konva) {
   require('konva');
 }
 
-
 const VueKonva = {
-  install: (app: App, options?: { prefix?: string; customNodes?: KonvaNodeConstructor[] }) => {
+  install: (
+    app: App,
+    options?: { prefix?: string; customNodes?: Record<string, KonvaNodeConstructor[]> },
+  ) => {
     const prefixToUse = options?.prefix || componentPrefix;
 
-    const konvaNodeConstructors: KonvaNodeConstructor[] = [
-      Konva.Arrow,
-      Konva.Arc,
-      Konva.Circle,
-      Konva.Ellipse,
-      Konva.FastLayer,
-      Konva.Image,
-      Konva.Label,
-      Konva.Line,
-      Konva.Path,
-      Konva.Rect,
-      Konva.RegularPolygon,
-      Konva.Ring,
-      Konva.Shape,
-      Konva.Sprite,
-      Konva.Stage,
-      Konva.Star,
-      Konva.Tag,
-      Konva.Text,
-      Konva.TextPath,
-      Konva.Transformer,
-      Konva.Wedge,
-      ...(options?.customNodes || []),
-    ];
+    const konvaNodeConstructors: Record<string, KonvaNodeConstructor> = {
+      Arc: Konva.Arc,
+      Arrow: Konva.Arrow,
+      Circle: Konva.Circle,
+      Ellipse: Konva.Ellipse,
+      FastLayer: Konva.FastLayer,
+      Group: Konva.Group,
+      Image: Konva.Image,
+      Label: Konva.Label,
+      Layer: Konva.Layer,
+      Line: Konva.Line,
+      Path: Konva.Path,
+      Rect: Konva.Rect,
+      RegularPolygon: Konva.RegularPolygon,
+      Ring: Konva.Ring,
+      Shape: Konva.Shape,
+      Sprite: Konva.Sprite,
+      Star: Konva.Star,
+      Tag: Konva.Tag,
+      Text: Konva.Text,
+      TextPath: Konva.TextPath,
+      Transformer: Konva.Transformer,
+      Wedge: Konva.Wedge,
+      ...options?.customNodes,
+    };
 
     const components: Component[] = [
       Stage,
-      ...konvaNodeConstructors.map((konvaNodeConstructor) =>
-        KonvaNode(konvaNodeConstructor.name, konvaNodeConstructor),
+      ...Object.entries(konvaNodeConstructors).map(([name, constructor]) =>
+        KonvaNode(name, constructor),
       ),
     ];
     components.forEach((component) => {

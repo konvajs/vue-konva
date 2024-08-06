@@ -10,7 +10,7 @@ import {
   defineComponent,
   PropType,
 } from 'vue';
-import type Konva from 'konva';
+import Konva from 'konva';
 import { applyNodeProps, checkOrder } from '../utils';
 
 export default defineComponent({
@@ -36,7 +36,7 @@ export default defineComponent({
 
     const container = ref<HTMLDivElement | null>(null);
 
-    const __konvaNode = new window.Konva.Stage({
+    const __konvaNode = new Konva.Stage({
       width: props.config.width,
       height: props.config.height,
       container: document.createElement('div'), // Fake container. Will be replaced
