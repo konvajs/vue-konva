@@ -2,9 +2,8 @@ import type { App, Component } from 'vue';
 import Stage from './components/Stage';
 import { componentPrefix } from './utils';
 import Konva from 'konva';
-import { Node } from 'konva/lib/Node';
 import KonvaNode from './components/KonvaNode';
-import { KonvaNodeConstructor } from './utils/types';
+import { KonvaNodeConstructor } from './types';
 
 if (typeof window !== 'undefined' && !window.Konva) {
   require('konva');

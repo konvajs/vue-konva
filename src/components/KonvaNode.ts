@@ -11,7 +11,7 @@ import {
 } from 'vue';
 import { applyNodeProps, findParentKonva, updatePicture, checkOrder } from '../utils';
 import Konva from 'konva';
-import { KonvaNodeConstructor } from '../utils/types';
+import { KonvaNodeConstructor } from '../types';
 
 const EVENTS_NAMESPACE = '.vue-konva-event';
 
