@@ -14,7 +14,8 @@
   "module": "dist/vue-konva.mjs",
   "exports": {
     "import": "./dist/vue-konva.mjs",
-    "require": "./dist/vue-konva.umd.js"
+    "require": "./dist/vue-konva.umd.js",
+    "types": "./dist/index.d.ts"
   },
   "vetur": {
     "tags": "vetur/tags.json",

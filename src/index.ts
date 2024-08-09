@@ -1,4 +1,4 @@
-import type { App, Component } from 'vue';
+import type { Component } from 'vue';
 import Stage from './components/Stage';
 import { componentPrefix } from './utils';
 import Konva from 'konva';
@@ -11,7 +11,9 @@ if (typeof window !== 'undefined' && !window.Konva) {
 
 const VueKonva = {
   install: (
-    app: App,
+    app: any,
+    // We use any here as it seems TypeScript will complain
+    // if the user uses a different version of Vue.
     options?: { prefix?: string; customNodes?: Record<string, KonvaNodeConstructor> },
   ) => {
     const prefixToUse = options?.prefix || componentPrefix;
