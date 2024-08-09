@@ -24,10 +24,7 @@ export default function applyNodeProps(
     if (isEvent && propChanged) {
       let eventName = key.slice(2).toLowerCase();
       if (eventName.slice(0, 7) === 'content') {
-        eventName =
-          'content' +
-          eventName.slice(7, 1).toUpperCase() +
-          eventName.slice(8);
+        eventName = 'content' + eventName.slice(7, 1).toUpperCase() + eventName.slice(8);
       }
       instance?.off(eventName + EVENTS_NAMESPACE, oldProps[key]);
     }
@@ -46,10 +43,7 @@ export default function applyNodeProps(
     if (isEvent && toAdd) {
       let eventName = key.slice(2).toLowerCase();
       if (eventName.slice(0, 7) === 'content') {
-        eventName =
-          'content' +
-          eventName.slice(7, 1).toUpperCase() +
-          eventName.slice(8);
+        eventName = 'content' + eventName.slice(7, 1).toUpperCase() + eventName.slice(8);
       }
       if (props[key]) {
         instance?.off(eventName + EVENTS_NAMESPACE);
@@ -58,8 +52,7 @@ export default function applyNodeProps(
     }
     if (
       !isEvent &&
-      (props[key] !== oldProps[key] ||
-        (useStrict && props[key] !== instance?.getAttr(key)))
+      (props[key] !== oldProps[key] || (useStrict && props[key] !== instance?.getAttr(key)))
     ) {
       hasUpdates = true;
       updatedProps[key] = props[key];
