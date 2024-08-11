@@ -211,6 +211,30 @@ Vue.use(VueKonva, { prefix: 'Konva'});
 <konva-stage ref="stage" :config="stage">
 ```
 
+## Custom Konva Nodes
+
+By passing a `Record<string, new (...args: any) => Node<any>>` object to `customNodes` in options, you can use your own konva node classes in Vue Konva.
+
+```js
+import Vue from 'vue';
+import VueKonva from 'vue-konva'
+
+class MyRect extends Konva.Rect {
+  constructor() {
+    super()
+    console.log('MyRect')
+  }
+}
+
+Vue.use(VueKonva, {
+    // The keys are used as component names.
+    customNodes: { MyRect }
+})
+
+// in template:
+<v-my-rect />
+```
+
 ## Change log
 
 The change log can be found on the [Releases page](https://github.com/konvajs/vue-konva/releases).
