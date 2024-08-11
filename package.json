@@ -48,7 +48,7 @@
     "url": "https://github.com/konvajs/vue-konva/issues"
   },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && cp ./index.d.ts ./dist/index.d.ts",
     "test": "vitest"
   },
   "peerDependencies": {
