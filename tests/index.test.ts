@@ -356,8 +356,7 @@ describe('Test props setting', () => {
     const rect = (wrap.vm.$refs.rect as any).getNode();
     expect(rect.eventListeners.click).to.equal(undefined);
 
-    const handler = () => {
-    };
+    const handler = () => {};
     wrap.setProps({
       click: handler,
     });
@@ -398,7 +397,7 @@ describe('Test props setting', () => {
 
     const layer = (vm.$refs.layer as any).getNode();
 
-    const spyBatchDraw =  vi.spyOn(layer, 'batchDraw');
+    const spyBatchDraw = vi.spyOn(layer, 'batchDraw');
 
     vm.rect.width = 50;
     vm.rect.width = 150;
@@ -799,7 +798,7 @@ describe('Test Events', () => {
       },
       {
         propsData: {
-          click: onClickRect,// TODO
+          click: onClickRect, // TODO
         },
       },
     );
@@ -876,7 +875,7 @@ describe('Test drawing calls', () => {
     config.global.plugins = [];
   });
   it('Draw layer on mount', () => {
-    const  batchDraw = vi.spyOn(Konva.Layer.prototype, 'batchDraw');
+    const batchDraw = vi.spyOn(Konva.Layer.prototype, 'batchDraw');
 
     mount({
       template: `
