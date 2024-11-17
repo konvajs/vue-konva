@@ -1,4 +1,5 @@
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
+import '../../index.d.ts';
 import type { ComponentInternalInstance } from 'vue';
 import updatePicture from './updatePicture';
 

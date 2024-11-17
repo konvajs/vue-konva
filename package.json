@@ -50,13 +50,14 @@
   "scripts": {
     "build": "vite build && npm run tsc",
     "test": "vitest",
-    "tsc": "tsc src/index.ts --declaration --emitDeclarationOnly --outDir ./dist --declarationDir ./dist"
+    "tsc": "tsc --project tsconfig.json"
   },
   "peerDependencies": {
     "konva": ">7",
     "vue": "^3"
   },
   "devDependencies": {
+    "@types/node": "^22.9.0",
     "@vue/test-utils": "^2.4.6",
     "canvas": "^2.11.2",
     "jsdom": "^25.0.1",
