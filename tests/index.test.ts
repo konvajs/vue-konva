@@ -437,7 +437,6 @@ describe('Test props setting', () => {
   });
 
   it('changing order should redraw layer', async () => {
-    // window.nodes = []; TODO ?
     const { vm } = mount({
       template: `
         <v-stage ref='stage' :config='stage'>
