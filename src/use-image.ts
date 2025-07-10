@@ -10,8 +10,8 @@ export function useImage(
 
   const load = (
     newUrl: string,
-    newCrossorigin: string | undefined,
-    newReferrerPolicy: string | undefined,
+    newCrossorigin?: string,
+    newReferrerPolicy?: string,
   ) => {
     status.value = "loading";
     const img = new Image();
