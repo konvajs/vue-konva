@@ -1,9 +1,9 @@
-import { ref, watch, Ref } from "vue";
+import { ref, computed, watch, toValue, type MaybeRefOrGetter } from "vue";
 
 export function useImage(
-  url: string | Ref<string>,
-  crossorigin?: string | Ref<string>,
-  referrerPolicy?: string | Ref<string>
+  url: MaybeRefOrGetter<string>,
+  crossorigin?: MaybeRefOrGetter<string>,
+  referrerPolicy?: MaybeRefOrGetter<string>
 ) {
   const image = ref<HTMLImageElement | null>(null);
   const status = ref<"loading" | "loaded" | "error">("loading");
@@ -11,7 +11,7 @@ export function useImage(
   const load = (
     newUrl: string,
     newCrossorigin?: string,
-    newReferrerPolicy?: string
+    newReferrerPolicy?: string,
   ) => {
     status.value = "loading";
     const img = new Image();
@@ -36,20 +36,18 @@ export function useImage(
     img.src = newUrl;
   };
 
+  const toWatchable = computed(() => ({
+    url: toValue(url),
+    crossorigin: toValue(crossorigin),
+    referrerPolicy: toValue(referrerPolicy),
+  }))
+
   // Watch for changes in url, crossorigin, and referrerPolicy
   watch(
-    [
-      typeof url === 'string' ? ref(url) : url,
-      crossorigin ? (typeof crossorigin === 'string' ? ref(crossorigin) : crossorigin) : ref(undefined),
-      referrerPolicy ? (typeof referrerPolicy === 'string' ? ref(referrerPolicy) : referrerPolicy) : ref(undefined)
-    ],
-    ([newUrl, newCrossorigin, newReferrerPolicy]) => {
-      if (newUrl) {
-        load(
-          newUrl,
-          newCrossorigin,
-          newReferrerPolicy
-        );
+    toWatchable,
+    ({ url, crossorigin, referrerPolicy }) => {
+      if (url) {
+        load(url, crossorigin, referrerPolicy);
       }
     },
     { immediate: true }
