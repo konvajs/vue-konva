@@ -57,16 +57,16 @@
     "vue": "^3"
   },
   "devDependencies": {
-    "@types/node": "^22.9.0",
+    "@types/node": "^24.0.13",
     "@vue/test-utils": "^2.4.6",
-    "canvas": "^2.11.2",
-    "jsdom": "^25.0.1",
+    "canvas": "^3.1.2",
+    "jsdom": "^26.1.0",
     "konva": ">7",
-    "typescript": "^5.6.3",
-    "vite": "^5.4.11",
-    "vite-plugin-dts": "^4.3.0",
-    "vitest": "^2.1.5",
-    "vue": "^3.5.13"
+    "typescript": "^5.8.3",
+    "vite": "^7.0.4",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^3.2.4",
+    "vue": "^3.5.17"
   },
   "engines": {
     "node": ">= 4.0.0",
