@@ -6,10 +6,6 @@ import KonvaNode from './components/KonvaNode';
 import { KonvaNodeConstructor } from './types';
 import { useImage } from './use-image';
 
-if (typeof window !== 'undefined' && !window.Konva) {
-  require('konva');
-}
-
 export { useImage };
 
 const VueKonva = {

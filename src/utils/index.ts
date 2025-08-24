@@ -5,7 +5,6 @@ import type {
   VNodeNormalizedChildren,
   ComponentInternalInstance,
 } from 'vue';
-import type Konva from 'konva';
 
 import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
