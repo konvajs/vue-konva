@@ -1,7 +1,7 @@
 import type { Component } from 'vue';
 import Stage from './components/Stage';
 import { componentPrefix } from './utils';
-import Konva from 'konva';
+import KonvaModule from 'konva';
 import KonvaNode from './components/KonvaNode';
 import { KonvaNodeConstructor } from './types';
 import { useImage } from './use-image';
@@ -16,6 +16,9 @@ const VueKonva = {
     options?: { prefix?: string; customNodes?: Record<string, KonvaNodeConstructor> },
   ) => {
     const prefixToUse = options?.prefix || componentPrefix;
+
+    // hack for umd build
+    const Konva = KonvaModule.default || KonvaModule;
 
     const konvaNodeConstructors: Record<string, KonvaNodeConstructor> = {
       Arc: Konva.Arc,
