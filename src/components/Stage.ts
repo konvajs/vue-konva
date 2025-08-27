@@ -11,15 +11,16 @@ import {
   PropType,
 } from 'vue';
 import KonvaModule from 'konva';
+import type { StageConfig } from 'konva/lib/Stage';
 import { applyNodeProps, checkOrder } from '../utils';
 
-const Stage = KonvaModule.default?.Stage || KonvaModule.Stage;
+const Stage = (KonvaModule as any).default?.Stage || KonvaModule.Stage;
 
 export default defineComponent({
   name: 'Stage',
   props: {
     config: {
-      type: Object as PropType<Konva.StageConfig>,
+      type: Object as PropType<StageConfig>,
       default: function () {
         return {};
       },

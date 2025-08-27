@@ -1,17 +1,15 @@
 import type Konva from 'konva';
-import type { KonvaNodes } from './src/types';
+// import type { KonvaNodes } from './src/types';
 import { Node } from 'konva/lib/Node';
+import { ComponentInternalInstance, VNode } from 'vue';
 
 declare global {
   interface Window {
-    Konva: typeof Konva,
+    Konva: typeof Konva;
   }
 }
 
-
 declare module 'vue' {
-  import { ComponentInternalInstance, VNode } from 'vue';
-
   export interface ComponentInternalInstance {
     __konvaNode?: Node<any>;
   }

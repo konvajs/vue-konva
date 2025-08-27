@@ -5,6 +5,7 @@ import type {
   VNodeNormalizedChildren,
   ComponentInternalInstance,
 } from 'vue';
+import type { Node } from 'konva/lib/Node';
 
 import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
@@ -26,13 +27,13 @@ export function findParentKonva(instance: ComponentInternalInstance) {
   return re(instance.parent);
 }
 
-export function findKonvaNode(instance: VNode): Konva.Node | null {
+export function findKonvaNode(instance: VNode): Node | null {
   if (!instance.component) return null;
 
   return instance.component.__konvaNode || findKonvaNode(instance.component.subTree);
 }
 
-function checkTagAndGetNode(instance: VNode): Konva.Node | null {
+function checkTagAndGetNode(instance: VNode): Node | null {
   const { el, component } = instance;
   const __konvaNode = findKonvaNode(instance);
 
@@ -49,7 +50,7 @@ function checkTagAndGetNode(instance: VNode): Konva.Node | null {
 
 function getChildren(instance: VNode) {
   const isVNode = (value: VNodeChild | VNodeNormalizedChildren): value is VNode =>
-    !!value?.hasOwnProperty('component');
+    !!value && typeof value === 'object' && 'component' in value;
   const isVNodeArrayChildren = (
     value: VNodeChild | VNodeNormalizedChildren,
   ): value is VNodeArrayChildren => Array.isArray(value);
@@ -62,10 +63,10 @@ function getChildren(instance: VNode) {
   return recursivelyFindChildren(instance.children);
 }
 
-export function checkOrder(subTree: VNode, konvaNode: Konva.Node) {
+export function checkOrder(subTree: VNode, konvaNode: Node) {
   const children = getChildren(subTree);
 
-  const nodes: Konva.Node[] = [];
+  const nodes: Node[] = [];
   children.forEach((child) => {
     const konvaNode = checkTagAndGetNode(child);
     if (konvaNode) {

@@ -1,17 +1,11 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vitest/config';
-import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [
-    dts({
-      entryRoot: './src',
-      include: ['./src/index.ts', './*.d.ts'],
-    }),
-  ],
+  plugins: [],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src'),
+      entry: resolve(__dirname, 'src/index.ts'),
       name: 'vue-konva',
       fileName: 'vue-konva',
     },

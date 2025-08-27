@@ -9,6 +9,7 @@ import {
   defineComponent,
   VNode,
 } from 'vue';
+import type { Node } from 'konva/lib/Node';
 import { applyNodeProps, findParentKonva, updatePicture, checkOrder } from '../utils';
 import { KonvaNodeConstructor } from '../types';
 
@@ -75,7 +76,7 @@ export default function (componentName: string, NodeConstructor: KonvaNodeConstr
       onMounted(() => {
         const parentKonvaNode = findParentKonva(instance)?.__konvaNode;
         if (parentKonvaNode && 'add' in parentKonvaNode)
-          (parentKonvaNode as { add: (node: Konva.Node) => void }).add(__konvaNode);
+          (parentKonvaNode as { add: (node: Node) => void }).add(__konvaNode);
         updatePicture(__konvaNode);
       });
 

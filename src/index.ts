@@ -7,6 +7,7 @@ import { KonvaNodeConstructor } from './types';
 import { useImage } from './use-image';
 
 export { useImage };
+export type { KonvaNodeConstructor } from './types';
 
 const VueKonva = {
   install: (
@@ -18,7 +19,7 @@ const VueKonva = {
     const prefixToUse = options?.prefix || componentPrefix;
 
     // hack for umd build
-    const Konva = KonvaModule.default || KonvaModule;
+    const Konva = (KonvaModule as any).default || KonvaModule;
 
     const konvaNodeConstructors: Record<string, KonvaNodeConstructor> = {
       Arc: Konva.Arc,
