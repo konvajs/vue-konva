@@ -13,9 +13,9 @@
   "main": "dist/vue-konva.umd.js",
   "module": "dist/vue-konva.mjs",
   "exports": {
+    "types": "./dist/index.d.ts",
     "import": "./dist/vue-konva.mjs",
-    "require": "./dist/vue-konva.umd.js",
-    "types": "./dist/index.d.ts"
+    "require": "./dist/vue-konva.umd.js"
   },
   "vetur": {
     "tags": "vetur/tags.json",
@@ -23,7 +23,8 @@
   },
   "files": [
     "dist/",
-    "vetur/"
+    "vetur/",
+    "index.d.ts"
   ],
   "funding": [
     {
