@@ -10,7 +10,7 @@ import type { Node } from 'konva/lib/Node';
 import updatePicture from './updatePicture';
 import applyNodeProps from './applyNodeProps';
 
-export const componentPrefix = 'v';
+export const componentPrefix = 'V';
 
 export function findParentKonva(instance: ComponentInternalInstance) {
   function re(instance: ComponentInternalInstance | null): ComponentInternalInstance | null {
