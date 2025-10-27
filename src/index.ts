@@ -4,36 +4,13 @@ import { componentPrefix } from './utils';
 import KonvaNode from './components/KonvaNode';
 import { KonvaNodeConstructor } from './types';
 import { useImage } from './use-image';
-import konvaComponents from './components';
+import * as konvaComponentsModule from './components';
 
 export { useImage };
 export type { KonvaNodeConstructor } from './types';
 
 export { Stage };
-export const {
-  Arc,
-  Arrow,
-  Circle,
-  Ellipse,
-  FastLayer,
-  Group,
-  Image,
-  Label,
-  Layer,
-  Line,
-  Path,
-  Rect,
-  RegularPolygon,
-  Ring,
-  Shape,
-  Sprite,
-  Star,
-  Tag,
-  Text,
-  TextPath,
-  Transformer,
-  Wedge,
-} = konvaComponents;
+export * from './components';
 
 const VueKonva = {
   install: (
@@ -44,11 +21,16 @@ const VueKonva = {
   ) => {
     const prefixToUse = options?.prefix || componentPrefix;
 
+    const customNodes = options?.customNodes
+    ? Object.entries(options.customNodes).map(([name, constructor]) =>
+        KonvaNode(name, constructor)
+      )
+    : []
+
     const components: Component[] = [
       Stage,
-      ...Object.entries({...konvaComponents, ...options?.customNodes}).map(([name, constructor]) =>
-        KonvaNode(name, constructor),
-      ),
+      ...Object.values(konvaComponentsModule),
+      ...customNodes,
     ];
     components.forEach((component) => {
       app.component(`${prefixToUse}${component.name}`, component);
