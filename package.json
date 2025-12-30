@@ -56,15 +56,15 @@
     "vue": "^3"
   },
   "devDependencies": {
-    "@types/node": "^24.0.13",
+    "@types/node": "^25.0.3",
     "@vue/test-utils": "^2.4.6",
-    "canvas": "^3.1.2",
-    "jsdom": "^26.1.0",
+    "canvas": "^3.2.0",
+    "jsdom": "^27.4.0",
     "konva": ">7",
-    "typescript": "^5.8.3",
-    "vite": "^7.0.4",
-    "vitest": "^3.2.4",
-    "vue": "^3.5.17"
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16",
+    "vue": "^3.5.26"
   },
   "engines": {
     "node": ">= 4.0.0",
