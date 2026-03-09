@@ -1,10 +1,11 @@
-import { nextTick, h, defineComponent } from 'vue';
+import { nextTick, h, defineComponent, ref } from 'vue';
 import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest';
 import Konva from 'konva';
 import { mount, config } from '@vue/test-utils';
 
 import './mocking';
 import VueKonva from '../src';
+import { useImage } from '../src/use-image';
 
 describe('Test references', () => {
   beforeEach(() => {
@@ -251,6 +252,35 @@ describe('Test props setting', () => {
   afterEach(() => {
     config.global.plugins = [];
   });
+  it('can pass props directly without config', async () => {
+    const { vm } = mount({
+      template: `
+        <v-stage :config='stage'>
+        <v-layer>
+          <v-rect ref='rect' :x='x' :y='y' :width='200' :height='100' fill='red' />
+        </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: { width: 300, height: 400 },
+          x: 50,
+          y: 100,
+        };
+      },
+    });
+
+    const rect = (vm.$refs.rect as any).getNode();
+    expect(rect.x()).to.equal(50);
+    expect(rect.y()).to.equal(100);
+    expect(rect.width()).to.equal(200);
+    expect(rect.fill()).to.equal('red');
+
+    vm.x = 150;
+    await nextTick();
+    expect(rect.x()).to.equal(150);
+  });
+
   it('can update component props', async () => {
     const { vm } = mount({
       template: `
@@ -723,6 +753,390 @@ describe('Test props setting', () => {
     await nextTick();
     expect(rect1.zIndex()).to.equal(0);
     expect(rect2.zIndex()).to.equal(1);
+  });
+});
+
+describe('Test strict mode', () => {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
+
+  it('overwrite properties if changed manually in strict mode', async () => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref='stage' :config='stage'>
+        <v-layer>
+          <v-rect :config='rect' :__useStrictMode='true' ref='rect'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400,
+          },
+          rect: {
+            x: 10,
+            fill: 'red',
+          },
+        };
+      },
+    });
+
+    const rect = (vm.$refs.rect as any).getNode();
+
+    // change position manually
+    rect.x(20);
+    expect(rect.x()).to.equal(20);
+
+    // trigger a re-render by changing fill
+    vm.rect.fill = 'white';
+    await nextTick();
+
+    // in strict mode, x should be reset to the config value
+    expect(rect.x()).to.equal(10);
+    expect(rect.fill()).to.equal('white');
+  });
+});
+
+describe('Test v-model support', () => {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
+
+  it('v-model:x and v-model:y update on drag', async () => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref='stage' :config='stage'>
+        <v-layer>
+          <v-rect ref='rect' v-model:x='x' v-model:y='y'
+            :config='{ width: 100, height: 100, draggable: true }' />
+        </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: { width: 300, height: 400 },
+          x: 10,
+          y: 20,
+        };
+      },
+    });
+
+    const stage = (vm.$refs.stage as any).getStage();
+
+    // simulate drag
+    stage.simulateMouseDown({ x: 50, y: 50 });
+    stage.simulateMouseMove({ x: 100, y: 120 });
+    stage.simulateMouseUp({ x: 100, y: 120 });
+
+    await nextTick();
+    const rect = (vm.$refs.rect as any).getNode();
+    expect(vm.x).to.equal(rect.x());
+    expect(vm.y).to.equal(rect.y());
+  });
+
+  it('v-model updates Vue ref when Konva property changes', async () => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref='stage' :config='stage'>
+        <v-layer>
+          <v-rect ref='rect' v-model:x='x' v-model:rotation='rotation'
+            :config='{ width: 100, height: 100 }' />
+        </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: { width: 300, height: 400 },
+          x: 0,
+          rotation: 0,
+        };
+      },
+    });
+
+    const rect = (vm.$refs.rect as any).getNode();
+
+    // change Konva node directly
+    rect.x(42);
+    await nextTick();
+    expect(vm.x).to.equal(42);
+
+    rect.rotation(90);
+    await nextTick();
+    expect(vm.rotation).to.equal(90);
+  });
+
+  it('v-model works alongside config prop', async () => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref='stage' :config='stage'>
+        <v-layer>
+          <v-rect ref='rect' v-model:x='x'
+            :config='{ width: 100, height: 100, fill: "red" }' />
+        </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: { width: 300, height: 400 },
+          x: 50,
+        };
+      },
+    });
+
+    const rect = (vm.$refs.rect as any).getNode();
+    expect(rect.x()).to.equal(50);
+    expect(rect.fill()).to.equal('red');
+
+    // Vue -> Konva
+    vm.x = 100;
+    await nextTick();
+    expect(rect.x()).to.equal(100);
+
+    // Konva -> Vue
+    rect.x(200);
+    await nextTick();
+    expect(vm.x).to.equal(200);
+  });
+
+  it('cleans up v-model listeners on unmount', async () => {
+    const { vm } = mount({
+      template: `
+        <v-stage ref='stage' :config='stage'>
+        <v-layer>
+          <v-rect v-if='show' ref='rect' v-model:x='x'
+            :config='{ width: 100, height: 100 }' />
+        </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: { width: 300, height: 400 },
+          show: true,
+          x: 10,
+        };
+      },
+    });
+
+    const rect = (vm.$refs.rect as any).getNode();
+    rect.x(50);
+    expect(vm.x).to.equal(50);
+
+    vm.show = false;
+    await nextTick();
+
+    // after unmount, changing node should not affect Vue data
+    rect.x(999);
+    await nextTick();
+    expect(vm.x).to.equal(50);
+  });
+});
+
+describe('Test duplicate events', () => {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
+
+  it('does not fire shape events twice after config update', async () => {
+    const clickHandler = vi.fn();
+
+    const { vm } = mount({
+      template: `
+        <v-stage ref='stage' :config='stage'>
+        <v-layer>
+          <v-rect ref='rect' :config='rect' @click='clickHandler'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400,
+          },
+          rect: {
+            width: 100,
+            height: 100,
+            fill: 'red',
+          },
+        };
+      },
+      methods: {
+        clickHandler() {
+          clickHandler();
+        },
+      },
+    });
+
+    const rect = (vm.$refs.rect as any).getNode();
+
+    rect._fire('click', {});
+    expect(clickHandler).toHaveBeenCalledTimes(1);
+
+    // update config to trigger re-render
+    vm.rect.fill = 'blue';
+    await nextTick();
+
+    rect._fire('click', {});
+    expect(clickHandler).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not fire stage events twice after config update', async () => {
+    const mousedownHandler = vi.fn();
+
+    const { vm } = mount({
+      template: `
+        <v-stage ref='stage' :config='stage' @mousedown='mousedownHandler'>
+        <v-layer>
+          <v-rect :config='rect'>
+          </v-rect>
+        </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400,
+          },
+          rect: {
+            width: 100,
+            height: 100,
+          },
+        };
+      },
+      methods: {
+        mousedownHandler() {
+          mousedownHandler();
+        },
+      },
+    });
+
+    const stage = (vm.$refs.stage as any).getStage();
+
+    stage.simulateMouseDown({ x: 50, y: 50 });
+    expect(mousedownHandler).toHaveBeenCalledTimes(1);
+
+    // update stage config
+    vm.stage.width = 400;
+    await nextTick();
+
+    stage.simulateMouseDown({ x: 50, y: 50 });
+    expect(mousedownHandler).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('Test wrapper components', () => {
+  beforeEach(() => {
+    config.global.plugins = [VueKonva];
+  });
+
+  afterEach(() => {
+    config.global.plugins = [];
+  });
+
+  it('shapes inside a wrapper component are added to the layer', () => {
+    const ShapeWrapper = {
+      template: `
+        <v-rect :config="{ name: 'wrappedRect', width: 50, height: 50, fill: 'green' }" />
+      `,
+    };
+
+    const { vm } = mount(
+      {
+        template: `
+          <v-stage ref='stage' :config='stage'>
+          <v-layer ref='layer'>
+            <ShapeWrapper />
+            <v-circle :config="{ name: 'directCircle', radius: 25 }" />
+          </v-layer>
+          </v-stage>
+        `,
+        data() {
+          return {
+            stage: {
+              width: 300,
+              height: 400,
+            },
+          };
+        },
+      },
+      {
+        global: {
+          components: {
+            ShapeWrapper,
+          },
+        },
+      },
+    );
+
+    const layer = (vm.$refs.layer as any).getNode();
+
+    expect(layer.children.length).to.equal(2);
+    expect(layer.findOne('.wrappedRect')).to.not.equal(undefined);
+    expect(layer.findOne('.directCircle')).to.not.equal(undefined);
+  });
+
+  it('multiple shapes inside a wrapper component are added to the layer', () => {
+    const MultiShapeWrapper = {
+      template: `
+        <v-group :config="{ name: 'group' }">
+          <v-rect :config="{ name: 'rect1', width: 50, height: 50 }" />
+          <v-rect :config="{ name: 'rect2', width: 50, height: 50 }" />
+        </v-group>
+      `,
+    };
+
+    const { vm } = mount(
+      {
+        template: `
+          <v-stage ref='stage' :config='stage'>
+          <v-layer ref='layer'>
+            <MultiShapeWrapper />
+          </v-layer>
+          </v-stage>
+        `,
+        data() {
+          return {
+            stage: {
+              width: 300,
+              height: 400,
+            },
+          };
+        },
+      },
+      {
+        global: {
+          components: {
+            MultiShapeWrapper,
+          },
+        },
+      },
+    );
+
+    const layer = (vm.$refs.layer as any).getNode();
+    const group = layer.findOne('.group');
+
+    expect(group).to.not.equal(undefined);
+    expect(group.children.length).to.equal(2);
+    expect(group.findOne('.rect1')).to.not.equal(undefined);
+    expect(group.findOne('.rect2')).to.not.equal(undefined);
   });
 });
 
@@ -1291,6 +1705,7 @@ describe('validations', () => {
   });
 
   it('Make sure no other DOM tags are used', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const { vm } = mount(
       {
         data() {
@@ -1322,7 +1737,6 @@ describe('validations', () => {
     );
     const stage = (vm.$refs.stage as any).getStage();
 
-    const consoleError = vi.spyOn(console, 'error');
     vm.items = [{ id: '2' }, { id: '1' }];
     await nextTick();
     const circles = stage.find('Circle');
@@ -1405,5 +1819,89 @@ describe('validations', () => {
     expect(circles[1].id()).to.equal('1');
     expect(consoleError).not.toHaveBeenCalled();
     consoleError.mockRestore();
+  });
+});
+
+// jsdom's Image doesn't fire onload/onerror, so we use the canvas package's
+// Image which actually loads data URIs and fires events.
+describe('Test useImage', () => {
+  const OriginalImage = globalThis.Image;
+  const DATA_URI = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+  beforeEach(async () => {
+    const canvas = await import('canvas');
+    globalThis.Image = canvas.Image as any;
+  });
+
+  afterEach(() => {
+    globalThis.Image = OriginalImage;
+  });
+
+  it('status is loaded after successful load', () => {
+    const wrapper = mount({
+      setup() {
+        const [image, status] = useImage(DATA_URI);
+        return { image, status };
+      },
+      template: '<div />',
+    });
+
+    expect(wrapper.vm.status).to.equal('loaded');
+    expect(wrapper.vm.image).to.not.equal(null);
+  });
+
+  it('status changes to error on load failure', async () => {
+    const wrapper = mount({
+      setup() {
+        const [image, status] = useImage('bad-url');
+        return { image, status };
+      },
+      template: '<div />',
+    });
+
+    await new Promise((r) => setTimeout(r, 50));
+
+    expect(wrapper.vm.status).to.equal('error');
+    expect(wrapper.vm.image).to.equal(null);
+  });
+
+  it('reloads when url changes', async () => {
+    const wrapper = mount({
+      setup() {
+        const url = ref(DATA_URI);
+        const [image, status] = useImage(url);
+        return { image, status, url };
+      },
+      template: '<div />',
+    });
+
+    expect(wrapper.vm.status).to.equal('loaded');
+
+    wrapper.vm.url = DATA_URI + '?v2';
+    await nextTick();
+
+    // new data URI loads synchronously too
+    expect(wrapper.vm.status).to.equal('loaded');
+  });
+
+  it('sets crossOrigin when provided', async () => {
+    let imgEl: any;
+    const { Image: CanvasImage } = await import('canvas');
+    globalThis.Image = class extends (CanvasImage as any) {
+      constructor() {
+        super();
+        imgEl = this;
+      }
+    } as any;
+
+    mount({
+      setup() {
+        const [image, status] = useImage(DATA_URI, 'anonymous');
+        return { image, status };
+      },
+      template: '<div />',
+    });
+
+    expect(imgEl.crossOrigin).to.equal('anonymous');
   });
 });

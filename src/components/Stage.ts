@@ -12,7 +12,7 @@ import {
 } from 'vue';
 import KonvaModule from 'konva';
 import type { StageConfig } from 'konva/lib/Stage';
-import { applyNodeProps, checkOrder } from '../utils';
+import { applyNodeProps, checkOrder, syncVModelBindings } from '../utils';
 
 const Stage = (KonvaModule as any).default?.Stage || KonvaModule.Stage;
 
@@ -78,11 +78,13 @@ export default defineComponent({
       }
       uploadKonva();
       validateChildren();
+      syncVModelBindings(__konvaNode, instance);
     });
 
     onUpdated(() => {
       uploadKonva();
       checkOrder(instance.subTree, __konvaNode);
+      syncVModelBindings(__konvaNode, instance);
     });
 
     onBeforeUnmount(() => {

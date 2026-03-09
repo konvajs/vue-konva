@@ -10,7 +10,7 @@ import {
   VNode,
 } from 'vue';
 import type { Node } from 'konva/lib/Node';
-import { applyNodeProps, findParentKonva, updatePicture, checkOrder } from '../utils';
+import { applyNodeProps, findParentKonva, updatePicture, checkOrder, syncVModelBindings, VMODEL_NAMESPACE } from '../utils';
 import { KonvaNodeConstructor } from '../types';
 
 const EVENTS_NAMESPACE = '.vue-konva-event';
@@ -78,17 +78,20 @@ export default function (componentName: string, NodeConstructor: KonvaNodeConstr
         if (parentKonvaNode && 'add' in parentKonvaNode)
           (parentKonvaNode as { add: (node: Node) => void }).add(__konvaNode);
         updatePicture(__konvaNode);
+        syncVModelBindings(__konvaNode, instance);
       });
 
       onUnmounted(() => {
         updatePicture(__konvaNode);
         __konvaNode.destroy();
         __konvaNode.off(EVENTS_NAMESPACE);
+        __konvaNode.off(VMODEL_NAMESPACE);
       });
 
       onUpdated(() => {
         uploadKonva();
         checkOrder(instance.subTree, __konvaNode);
+        syncVModelBindings(__konvaNode, instance);
       });
 
       watch(() => props.config, uploadKonva, { deep: true });

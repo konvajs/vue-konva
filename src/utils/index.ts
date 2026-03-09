@@ -88,3 +88,4 @@ export function checkOrder(subTree: VNode, konvaNode: Node) {
 }
 
 export { updatePicture, applyNodeProps };
+export { default as syncVModelBindings, VMODEL_NAMESPACE } from './syncVModelBindings';
