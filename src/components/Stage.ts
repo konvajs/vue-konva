@@ -73,7 +73,6 @@ export default defineComponent({
 
     onMounted(() => {
       if (container.value) {
-        container.value.innerHTML = '';
         __konvaNode.container(container.value);
       }
       uploadKonva();

@@ -102,7 +102,7 @@ export default function (componentName: string, NodeConstructor: KonvaNodeConstr
       });
 
       const isContainer = CONTAINERS.hasOwnProperty(componentName);
-      return () => (isContainer ? h('template', {}, slots.default?.()) : null);
+      return () => (isContainer ? slots.default?.() : null);
     },
   });
 }

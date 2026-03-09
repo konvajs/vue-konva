@@ -62,6 +62,8 @@ describe('Test references', () => {
       template: `
         <v-stage ref='stage' :config='stage'>
         <v-layer ref='layer'>
+          <v-rect :config='{ width: 50, height: 50 }' />
+          <v-circle :config='{ radius: 25 }' />
         </v-layer>
         </v-stage>
       `,
@@ -80,6 +82,13 @@ describe('Test references', () => {
 
     const layer = (vm.$refs.layer as any).getNode();
     expect(layer instanceof Konva.Layer).to.equal(true);
+
+    // Shapes and containers should not create any DOM elements.
+    // Only Konva's own content div should be in the stage container.
+    const stageContainer = stage.container();
+    const allDomElements = stageContainer.querySelectorAll('*');
+    const konvaElements = stageContainer.querySelectorAll('.konvajs-content, .konvajs-content *');
+    expect(allDomElements.length).to.equal(konvaElements.length);
   });
 
   it('Make sure it does not draw HTML', () => {
@@ -101,13 +110,12 @@ describe('Test references', () => {
     });
 
     const stage = (vm.$refs.stage as any).getStage();
+    const container = stage.container();
 
-    setTimeout(() => {
-      const container = stage.container();
-
-      expect(container.children.length).to.equal(1);
-      // done() TODO
-    }, 50);
+    // Only Konva's own content div should be in the stage container.
+    // No Vue DOM elements should leak into it.
+    expect(container.children.length).to.equal(1);
+    expect(container.children[0].classList.contains('konvajs-content')).to.equal(true);
   });
 });
 
@@ -1653,6 +1661,72 @@ describe('test reconciler', () => {
           </div>
         `,
     });
+  });
+
+  it('can dynamically add layers with v-for', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { vm } = mount({
+      template: `
+        <v-stage ref='stage' :config='stage'>
+          <v-layer v-for='layer in layers' :key='layer.id' :config='{ name: layer.name }'>
+            <v-rect :config='{ width: 50, height: 50 }' />
+          </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: { width: 300, height: 400 },
+          layers: [{ id: 1, name: 'layer1' }],
+        };
+      },
+    });
+
+    const stage = (vm.$refs.stage as any).getStage();
+    expect(stage.children.length).to.equal(1);
+
+    // dynamically add a layer
+    vm.layers.push({ id: 2, name: 'layer2' });
+    await nextTick();
+    expect(stage.children.length).to.equal(2);
+
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
+  it('can toggle layers with v-if', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { vm } = mount({
+      template: `
+        <v-stage ref='stage' :config='stage'>
+          <v-layer :config="{ name: 'base' }">
+            <v-rect :config='{ width: 50, height: 50 }' />
+          </v-layer>
+          <v-layer v-if='showExtra' :config="{ name: 'extra' }">
+            <v-rect :config='{ width: 50, height: 50 }' />
+          </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: { width: 300, height: 400 },
+          showExtra: false,
+        };
+      },
+    });
+
+    const stage = (vm.$refs.stage as any).getStage();
+    expect(stage.children.length).to.equal(1);
+
+    vm.showExtra = true;
+    await nextTick();
+    expect(stage.children.length).to.equal(2);
+
+    vm.showExtra = false;
+    await nextTick();
+    expect(stage.children.length).to.equal(1);
+
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 });
 
