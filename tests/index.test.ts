@@ -190,6 +190,30 @@ describe('Test stage component', () => {
     expect(stage.container().style.backgroundColor).to.equal('red');
   });
 
+  it('can set class', () => {
+    const wrapper = mount({
+      template: `
+        <v-stage ref='stage' :config='stage' class='mt-10 custom-stage'>
+        <v-layer>
+          <v-rect />
+        </v-layer>
+        </v-stage>
+      `,
+      data() {
+        return {
+          stage: {
+            width: 300,
+            height: 400,
+          },
+        };
+      },
+    });
+
+    const stageDiv = wrapper.find('.mt-10');
+    expect(stageDiv.exists()).to.equal(true);
+    expect(stageDiv.classes()).to.include('custom-stage');
+  });
+
   it('no DOM events', () => {
     let eventCount = 0;
 
