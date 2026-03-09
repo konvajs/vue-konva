@@ -232,6 +232,38 @@ Vue.use(VueKonva, {
 <v-my-rect />
 ```
 
+## Minimal Bundle (Tree-Shaking)
+
+By default, `vue-konva` imports the full `konva` package with all shapes included. If you want to minimize your bundle size, you can use the core build that only includes what you explicitly import.
+
+```js
+// Use core build instead of full build
+import VueKonva from 'vue-konva/core';
+
+// Import only the shapes you need
+import 'konva/lib/shapes/Rect';
+import 'konva/lib/shapes/Circle';
+import 'konva/lib/shapes/Text';
+
+const app = createApp(App);
+app.use(VueKonva);
+app.mount('#app');
+```
+
+Or if you prefer individual component imports:
+
+```js
+import { Stage, Layer, Rect, Circle } from 'vue-konva/core';
+
+// You still need to import the Konva shapes you use
+import 'konva/lib/shapes/Rect';
+import 'konva/lib/shapes/Circle';
+```
+
+This approach only includes the Konva shapes you actually use, significantly reducing bundle size.
+
+**Note:** `Layer`, `Group`, `FastLayer`, and `Label` are always available in the core build since they are part of Konva's core module. You only need to import individual shapes like `Rect`, `Circle`, `Text`, etc.
+
 ## Change log
 
 The change log can be found on the [Releases page](https://github.com/konvajs/vue-konva/releases).

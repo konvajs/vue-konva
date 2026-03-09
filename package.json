@@ -13,9 +13,16 @@
   "main": "dist/vue-konva.umd.js",
   "module": "dist/vue-konva.mjs",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/vue-konva.mjs",
-    "require": "./dist/vue-konva.umd.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/vue-konva.mjs",
+      "require": "./dist/vue-konva.umd.js"
+    },
+    "./core": {
+      "types": "./dist/index-core.d.ts",
+      "import": "./dist/vue-konva-core.mjs",
+      "require": "./dist/vue-konva-core.js"
+    }
   },
   "vetur": {
     "tags": "vetur/tags.json",
@@ -48,7 +55,7 @@
     "url": "https://github.com/konvajs/vue-konva/issues"
   },
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "build": "vite build && BUILD_CORE=1 vite build && tsc --emitDeclarationOnly --declaration --outDir dist",
     "test": "vitest"
   },
   "peerDependencies": {

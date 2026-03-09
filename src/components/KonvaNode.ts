@@ -1,5 +1,4 @@
 import {
-  h,
   reactive,
   watch,
   onMounted,
@@ -10,7 +9,14 @@ import {
   VNode,
 } from 'vue';
 import type { Node } from 'konva/lib/Node';
-import { applyNodeProps, findParentKonva, updatePicture, checkOrder, syncVModelBindings, VMODEL_NAMESPACE } from '../utils';
+import {
+  applyNodeProps,
+  findParentKonva,
+  updatePicture,
+  checkOrder,
+  syncVModelBindings,
+  VMODEL_NAMESPACE,
+} from '../utils';
 import { KonvaNodeConstructor } from '../types';
 
 const EVENTS_NAMESPACE = '.vue-konva-event';
