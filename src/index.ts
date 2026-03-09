@@ -7,7 +7,7 @@ import { useImage } from './use-image';
 import * as konvaComponentsModule from './components';
 
 export { useImage };
-export type { KonvaNodeConstructor } from './types';
+export type { KonvaNodeConstructor, VueKonvaRef } from './types';
 
 export { Stage };
 export * from './components';
