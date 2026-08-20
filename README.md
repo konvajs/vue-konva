@@ -9,33 +9,35 @@
   </a>
   </span>
 
-![ReactKonva Logo](https://github.com/rafaesc/vue-konva/raw/master/vue-konva.png)
+![Vue Konva logo](https://github.com/rafaesc/vue-konva/raw/master/vue-konva.png)
 
-Vue Konva is a JavaScript library for drawing complex canvas graphics using Vue.
+Vue Konva provides declarative Vue components for the [Konva](https://konvajs.org/) 2D canvas scene graph. Use it to build design editors, whiteboards, diagrams, annotations, and other interactive graphics.
 
-It provides declarative and reactive bindings to the [Konva Framework](https://konvajs.org/).
+Vue Konva is MIT licensed. Each component uses the name of its Konva node with a `v-` prefix.
 
-All `vue-konva` components correspond to `Konva` components of the same name with the prefix 'v-'. All the parameters available for `Konva` objects can add as `config` in the prop for corresponding `vue-konva` components.
+- [Vue tutorial](https://konvajs.org/docs/vue/index.html)
+- [Live demos](https://konvajs.org/docs/sandbox.html)
+- [Konva API](https://konvajs.org/api/Konva.html)
+- [Star the project](https://github.com/konvajs/vue-konva)
 
-Core shapes are: `v-rect`, `v-circle`, `v-ellipse`, `v-line`, `v-image`, `v-text`, `v-text-path`, `v-star`, `v-label`, `v-path`, `v-regular-polygon`.
-Also you can create custom shape.
+[![A Konva Transformer around a selected image](https://konvajs.org/assets/demos/image-resize-min.png)](https://konvajs.org/docs/vue/Transformer.html)
+
+Each `vue-konva` component corresponds to a Konva node and uses the `v-` prefix. Pass Konva properties through the component `config` prop.
+
+Core shapes include `v-rect`, `v-circle`, `v-line`, `v-image`, `v-text`, and `v-path`. You can also create a custom shape.
 
 To get more info about `Konva` you can read [Konva Overview](https://konvajs.org/docs/overview.html).
 
-## Documentation / live edit
-
-See [Tutorials page](https://konvajs.org/docs/vue/)
-
 ## Quick Start
 
-[Vue.js](https://vuejs.org) version 2.4+ is required.
+[Vue 3](https://vuejs.org/) is required for the current package.
 
 ### 1 Install via npm
 
 `vue@3`:
 
 ```npm
-npm install vue-konva konva --save
+npm install vue-konva konva
 ```
 
 `vue@2`:
