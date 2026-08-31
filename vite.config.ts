@@ -25,6 +25,7 @@ export default defineConfig({
         globals: {
           vue: 'Vue',
           konva: 'Konva',
+          'konva/lib/Core': 'Konva',
         },
       },
     },
