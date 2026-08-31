@@ -7,8 +7,8 @@ import type {
 } from 'vue';
 import type { Node } from 'konva/lib/Node';
 
-import updatePicture from './updatePicture';
-import applyNodeProps from './applyNodeProps';
+import updatePicture from './updatePicture.js';
+import applyNodeProps from './applyNodeProps.js';
 
 export const componentPrefix = 'V';
 
@@ -88,4 +88,4 @@ export function checkOrder(subTree: VNode, konvaNode: Node) {
 }
 
 export { updatePicture, applyNodeProps };
-export { default as syncVModelBindings, VMODEL_NAMESPACE } from './syncVModelBindings';
+export { default as syncVModelBindings, VMODEL_NAMESPACE } from './syncVModelBindings.js';

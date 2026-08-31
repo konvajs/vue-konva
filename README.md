@@ -107,45 +107,49 @@ export default {
 
 ### Or use a CDN
 
+The UMD build registers itself as the global `VueKonva`.
+
 ```html
 <html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
   </head>
   <body>
     <div id="app">
-      <v-stage ref="stage" :config="configKonva">
-        <v-layer ref="layer">
+      <v-stage :config="configKonva">
+        <v-layer>
           <v-circle :config="configCircle"></v-circle>
         </v-layer>
       </v-stage>
     </div>
-    <!--1. Link Vue Javascript & Konva-->
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/konva/konva.js"></script>
-    <!--2. Link VueKonva Javascript -->
-    <script src="https://unpkg.com/vue-konva/umd/vue-konva.min.js"></script>
+    <!--1. Link Vue and Konva-->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://unpkg.com/konva@10/konva.min.js"></script>
+    <!--2. Link VueKonva-->
+    <script src="https://unpkg.com/vue-konva@3/dist/vue-konva.umd.js"></script>
     <script>
-      // 3. Create the Vue instance
-      new Vue({
-        el: '#app',
-        data: {
-          configKonva: {
-            width: 200,
-            height: 200,
-          },
-          configCircle: {
-            x: 100,
-            y: 100,
-            radius: 70,
-            fill: 'red',
-            stroke: 'black',
-            strokeWidth: 4,
-          },
+      // 3. Create the Vue application
+      const app = Vue.createApp({
+        data() {
+          return {
+            configKonva: {
+              width: 200,
+              height: 200,
+            },
+            configCircle: {
+              x: 100,
+              y: 100,
+              radius: 70,
+              fill: 'red',
+              stroke: 'black',
+              strokeWidth: 4,
+            },
+          };
         },
       });
+      app.use(VueKonva);
+      app.mount('#app');
     </script>
   </body>
 </html>

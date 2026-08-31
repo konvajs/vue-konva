@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- `vue-konva/core` no longer pulls the full Konva bundle. `updatePicture` imported `konva` instead of `konva/lib/Core`, which dragged every shape and filter into the core build (#268, thanks @RogerReal)
+- Published type declarations no longer reference `index.d.ts`, a file that was never included in the package tarball
+- Types now resolve correctly under `moduleResolution: node16`/`nodenext` from ESM. The package previously shipped CJS-flavoured declarations for its ESM entry, so `import VueKonva from 'vue-konva'` was typed as the module namespace rather than the plugin
+- `vue-konva/core` now resolves under the legacy `moduleResolution: node`
+- Template type-checking of the global components now works. The `GlobalComponents` augmentation declared unprefixed names (`Circle`) while `install()` registers prefixed ones (`VCircle`), so `<v-circle>` never matched. The augmentation also now covers `v-stage` and the `vue-konva/core` entry
+- The UMD build exposes a usable `VueKonva` global. It was previously `window["vue-konva"]`, and the namespace object had no `install`, so `app.use(...)` could not work
+- Corrected the CDN example in the README, which pointed at a 404 URL and used the Vue 2 API
+
+### Changed
+
+- **Breaking (UMD/CDN only):** the UMD global is now `VueKonva` instead of `window["vue-konva"]`
+- **Breaking (deep imports only):** built files are renamed for the dual-package layout — `vue-konva.mjs` becomes `vue-konva.js`, `vue-konva.umd.js` stays for CDN use, and `require()` now resolves to `vue-konva.cjs`. Importing `vue-konva` or `vue-konva/core` is unaffected
+- Added `install` as a named export on both entry points
+- Marked the package `sideEffects: false` to improve tree-shaking
+- Removed the duplicated `StageCore` component and the duplicated plugin bootstrap; both entry points now share one implementation
+- Updated the toolchain to TypeScript 7, Vite 8, Vitest 4.1 and jsdom 30
+- `engines.node` now says `>=18` instead of `>= 4.0.0`
+
 ## [3.4.0] - 2026-03-09
 
 - Add `v-model` support for Konva node properties (e.g. `v-model:x`, `v-model:rotation`) using Konva's `*Change` events

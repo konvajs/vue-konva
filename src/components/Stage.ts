@@ -10,9 +10,9 @@ import {
   defineComponent,
   PropType,
 } from 'vue';
-import KonvaModule from 'konva';
+import KonvaModule from 'konva/lib/Core';
 import type { StageConfig } from 'konva/lib/Stage';
-import { applyNodeProps, checkOrder, syncVModelBindings } from '../utils';
+import { applyNodeProps, checkOrder, syncVModelBindings } from '../utils/index.js';
 
 const Stage = (KonvaModule as any).default?.Stage || KonvaModule.Stage;
 

@@ -9,21 +9,42 @@
   ],
   "homepage": "https://github.com/konvajs/vue-konva#readme",
   "author": "Rafael Escala <rafaesc92@gmail.com>",
-  "types": "dist/index.d.ts",
-  "main": "dist/vue-konva.umd.js",
-  "module": "dist/vue-konva.mjs",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/vue-konva.cjs",
+  "module": "./dist/vue-konva.js",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/vue-konva.mjs",
-      "require": "./dist/vue-konva.umd.js"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/vue-konva.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/vue-konva.cjs"
+      }
     },
     "./core": {
-      "types": "./dist/index-core.d.ts",
-      "import": "./dist/vue-konva-core.mjs",
-      "require": "./dist/vue-konva-core.js"
+      "import": {
+        "types": "./dist/index-core.d.ts",
+        "default": "./dist/vue-konva-core.js"
+      },
+      "require": {
+        "types": "./dist/index-core.d.cts",
+        "default": "./dist/vue-konva-core.cjs"
+      }
     }
   },
+  "typesVersions": {
+    "*": {
+      "core": [
+        "./dist/index-core.d.ts"
+      ]
+    }
+  },
+  "unpkg": "./dist/vue-konva.umd.js",
+  "jsdelivr": "./dist/vue-konva.umd.js",
+  "sideEffects": false,
   "vetur": {
     "tags": "vetur/tags.json",
     "attributes": "vetur/attributes.json"
@@ -55,31 +76,28 @@
     "url": "https://github.com/konvajs/vue-konva/issues"
   },
   "scripts": {
-    "build": "vite build && BUILD_CORE=1 vite build && tsc --emitDeclarationOnly --declaration --outDir dist",
-    "test": "vitest"
+    "build": "vite build && BUILD_CORE=1 vite build && tsc -p tsconfig.build.json && node scripts/build-cjs-types.mjs",
+    "test": "vitest",
+    "check:package": "node scripts/check-dist-types.mjs && attw --pack . && publint"
   },
   "peerDependencies": {
     "konva": ">7",
     "vue": "^3"
   },
   "devDependencies": {
-    "@types/node": "^25.3.5",
-    "@vue/test-utils": "^2.4.6",
-    "canvas": "^3.2.1",
-    "jsdom": "^28.1.0",
-    "konva": ">=10",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.18",
-    "vue": "^3.5.29"
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@types/node": "^26.4.0",
+    "@vue/test-utils": "^2.5.0",
+    "canvas": "^3.2.3",
+    "jsdom": "^30.0.1",
+    "konva": "^10.3.2",
+    "publint": "^0.3.24",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11",
+    "vue": "^3.5.42"
   },
   "engines": {
-    "node": ">= 4.0.0",
-    "npm": ">= 3.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+    "node": ">=18"
+  }
 }

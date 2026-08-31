@@ -1,7 +1,6 @@
 // adapted FROM: https://github.com/lavrton/react-konva/blob/master/src/react-konva-fiber.js
-import '../../index.d.ts';
 import type { ComponentInternalInstance } from 'vue';
-import updatePicture from './updatePicture';
+import updatePicture from './updatePicture.js';
 
 const propsToSkip = { key: true, style: true, elm: true, isRootInsert: true };
 const EVENTS_NAMESPACE = '.vue-konva-event';

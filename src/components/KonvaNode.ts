@@ -16,8 +16,8 @@ import {
   checkOrder,
   syncVModelBindings,
   VMODEL_NAMESPACE,
-} from '../utils';
-import { KonvaNodeConstructor } from '../types';
+} from '../utils/index.js';
+import { KonvaNodeConstructor } from '../types.js';
 
 const EVENTS_NAMESPACE = '.vue-konva-event';
 

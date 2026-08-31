@@ -1,5 +1,5 @@
 import KonvaModule from 'konva';
-import KonvaNode from './components/KonvaNode';
+import KonvaNode from './components/KonvaNode.js';
 
 // hack for umd build
 const Konva = (KonvaModule as any).default || KonvaModule;
@@ -26,31 +26,3 @@ export const Text = KonvaNode('Text', Konva.Text);
 export const TextPath = KonvaNode('TextPath', Konva.TextPath);
 export const Transformer = KonvaNode('Transformer', Konva.Transformer);
 export const Wedge = KonvaNode('Wedge', Konva.Wedge);
-
-
-declare module 'vue' {
-  export interface GlobalComponents {
-    Arc: typeof Arc;
-    Arrow: typeof Arrow;
-    Circle: typeof Circle;
-    Ellipse: typeof Ellipse;
-    FastLayer: typeof FastLayer;
-    Group: typeof Group;
-    Image: typeof Image;
-    Label: typeof Label;
-    Layer: typeof Layer;
-    Line: typeof Line;
-    Path: typeof Path;
-    Rect: typeof Rect;
-    RegularPolygon: typeof RegularPolygon;
-    Ring: typeof Ring;
-    Shape: typeof Shape;
-    Sprite: typeof Sprite;
-    Star: typeof Star;
-    Tag: typeof Tag;
-    Text: typeof Text;
-    TextPath: typeof TextPath;
-    Transformer: typeof Transformer;
-    Wedge: typeof Wedge;
-  }
-}

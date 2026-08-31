@@ -1,5 +1,5 @@
 import KonvaModule from 'konva/lib/Core';
-import KonvaNode from './components/KonvaNode';
+import KonvaNode from './components/KonvaNode.js';
 
 const Konva: any = (KonvaModule as any).default || KonvaModule;
 
