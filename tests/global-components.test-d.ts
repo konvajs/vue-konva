@@ -1,42 +1,37 @@
 import { describe, expectTypeOf, it } from 'vitest';
-import type { GlobalComponents } from 'vue';
+import type { GlobalComponents, Plugin } from 'vue';
 
 // Importing an entry point pulls in its `declare module 'vue'` augmentation.
-import '../src/index';
-import '../src/index-core';
+import VueKonva from '../src/index.js';
+import VueKonvaCore from '../src/index-core.js';
+import type * as konvaComponents from '../src/components.js';
+import type * as konvaCoreComponents from '../src/components-core.js';
 
-type HasKey<K extends string> = K extends keyof GlobalComponents ? true : false;
+// `install()` registers `${prefix}${name}`, so `<v-circle>` resolves to `VCircle`.
+// Unprefixed keys are never registered and would type-check nothing.
+type Registered = `V${keyof typeof konvaComponents}` | 'VStage';
+
+// The runtime suite mounts with these plugins, but typecheck.ignoreSourceErrors
+// means a .test.ts file enforces nothing about their type.
+describe('plugin shape', () => {
+  it('is accepted by app.use from both entry points', () => {
+    expectTypeOf(VueKonva).toExtend<Plugin>();
+    expectTypeOf(VueKonvaCore).toExtend<Plugin>();
+  });
+});
 
 describe('GlobalComponents augmentation', () => {
-  // `install()` registers every component as `${prefix}${name}` with a default
-  // prefix of `V`, so templates using the documented `<v-circle>` resolve to
-  // `VCircle`. Unprefixed keys are never registered by the plugin.
-  it('declares the prefixed names that install() actually registers', () => {
-    expectTypeOf<HasKey<'VStage'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VLayer'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VCircle'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VRect'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VTransformer'>>().toEqualTypeOf<true>();
+  it('applies the augmentation, including the stage tag', () => {
+    expectTypeOf<Registered>().toExtend<keyof GlobalComponents>();
   });
 
-  it('covers every shape, not just a sample', () => {
-    expectTypeOf<HasKey<'VArc'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VArrow'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VEllipse'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VFastLayer'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VGroup'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VImage'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VLabel'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VLine'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VPath'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VRegularPolygon'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VRing'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VShape'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VSprite'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VStar'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VTag'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VText'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VTextPath'>>().toEqualTypeOf<true>();
-    expectTypeOf<HasKey<'VWedge'>>().toEqualTypeOf<true>();
+  // The augmentation derives from components.ts, so a shape added there but
+  // forgotten in components-core.ts would silently skip the core entry.
+  it('keeps the full and core component sets in step', () => {
+    expectTypeOf<keyof typeof konvaComponents>().toEqualTypeOf<keyof typeof konvaCoreComponents>();
+  });
+
+  it('does not declare unprefixed tags, which resolve to nothing', () => {
+    expectTypeOf<'Circle'>().not.toExtend<keyof GlobalComponents>();
   });
 });

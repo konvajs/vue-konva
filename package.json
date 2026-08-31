@@ -1,6 +1,6 @@
 {
   "name": "vue-konva",
-  "version": "3.4.0",
+  "version": "4.0.0",
   "description": "Vue binding to canvas element via Konva framework",
   "keywords": [
     "vue",
@@ -11,35 +11,15 @@
   "author": "Rafael Escala <rafaesc92@gmail.com>",
   "type": "module",
   "types": "./dist/index.d.ts",
-  "main": "./dist/vue-konva.cjs",
-  "module": "./dist/vue-konva.js",
+  "main": "./dist/vue-konva.js",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/vue-konva.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/vue-konva.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/vue-konva.js"
     },
     "./core": {
-      "import": {
-        "types": "./dist/index-core.d.ts",
-        "default": "./dist/vue-konva-core.js"
-      },
-      "require": {
-        "types": "./dist/index-core.d.cts",
-        "default": "./dist/vue-konva-core.cjs"
-      }
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "core": [
-        "./dist/index-core.d.ts"
-      ]
+      "types": "./dist/index-core.d.ts",
+      "default": "./dist/vue-konva-core.js"
     }
   },
   "unpkg": "./dist/vue-konva.umd.js",
@@ -76,9 +56,10 @@
     "url": "https://github.com/konvajs/vue-konva/issues"
   },
   "scripts": {
-    "build": "vite build && BUILD_CORE=1 vite build && tsc -p tsconfig.build.json && node scripts/build-cjs-types.mjs",
+    "build": "vite build && BUILD_CORE=1 vite build && tsc -p tsconfig.build.json",
     "test": "vitest",
-    "check:package": "node scripts/check-dist-types.mjs && attw --pack . && publint"
+    "check:package": "node scripts/check-dist.mjs && attw --pack . --profile esm-only && publint",
+    "prepublishOnly": "npm run build && npm run check:package"
   },
   "peerDependencies": {
     "konva": ">7",

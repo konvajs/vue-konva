@@ -34,21 +34,13 @@ To get more info about `Konva` you can read [Konva Overview](https://konvajs.org
 
 ### 1 Install via npm
 
-`vue@3`:
-
 ```npm
 npm install vue-konva konva
 ```
 
-`vue@2`:
-
-```npm
-npm install vue-konva@2 konva --save
-```
+For Vue 2, use `vue-konva@2`.
 
 ### 2 Import and use VueKonva
-
-`vue@3`:
 
 ```js
 import { createApp } from 'vue';
@@ -58,15 +50,6 @@ import VueKonva from 'vue-konva';
 const app = createApp(App);
 app.use(VueKonva);
 app.mount('#app');
-```
-
-`vue@2`:
-
-```javascript
-import Vue from 'vue';
-import VueKonva from 'vue-konva';
-
-Vue.use(VueKonva);
 ```
 
 ### 3 Reference in your component templates
@@ -110,49 +93,29 @@ export default {
 The UMD build registers itself as the global `VueKonva`.
 
 ```html
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  </head>
-  <body>
-    <div id="app">
-      <v-stage :config="configKonva">
-        <v-layer>
-          <v-circle :config="configCircle"></v-circle>
-        </v-layer>
-      </v-stage>
-    </div>
-    <!--1. Link Vue and Konva-->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-    <script src="https://unpkg.com/konva@10/konva.min.js"></script>
-    <!--2. Link VueKonva-->
-    <script src="https://unpkg.com/vue-konva@3/dist/vue-konva.umd.js"></script>
-    <script>
-      // 3. Create the Vue application
-      const app = Vue.createApp({
-        data() {
-          return {
-            configKonva: {
-              width: 200,
-              height: 200,
-            },
-            configCircle: {
-              x: 100,
-              y: 100,
-              radius: 70,
-              fill: 'red',
-              stroke: 'black',
-              strokeWidth: 4,
-            },
-          };
-        },
-      });
-      app.use(VueKonva);
-      app.mount('#app');
-    </script>
-  </body>
-</html>
+<div id="app">
+  <v-stage :config="configKonva">
+    <v-layer>
+      <v-circle :config="configCircle"></v-circle>
+    </v-layer>
+  </v-stage>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/konva@10/konva.min.js"></script>
+<script src="https://unpkg.com/vue-konva@4/dist/vue-konva.umd.js"></script>
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+        configKonva: { width: 200, height: 200 },
+        configCircle: { x: 100, y: 100, radius: 70, fill: 'red', stroke: 'black' },
+      };
+    },
+  });
+  app.use(VueKonva);
+  app.mount('#app');
+</script>
 ```
 
 # Core API

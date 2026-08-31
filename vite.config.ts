@@ -3,39 +3,36 @@ import { defineConfig } from 'vitest/config';
 
 const isCoreBuild = process.env.BUILD_CORE === '1';
 
+// The core entry exists to be tree-shaken by a bundler, so it ships ESM only.
+// The main entry adds a UMD bundle for CDN <script> users. It keeps a .js
+// extension because CDNs serve .cjs as application/node, which browsers refuse
+// to execute; nothing in "exports" points at it, so Node never loads it as ESM.
+const mainBundles: Record<string, string> = {
+  es: 'vue-konva.js',
+  umd: 'vue-konva.umd.js',
+};
+
 export default defineConfig({
-  plugins: [],
   build: {
     emptyOutDir: !isCoreBuild,
     lib: isCoreBuild
       ? {
           entry: fileURLToPath(new URL('src/index-core.ts', import.meta.url)),
-          name: 'vue-konva-core',
           fileName: 'vue-konva-core',
-          formats: ['es', 'cjs'],
+          formats: ['es'],
         }
       : {
           entry: fileURLToPath(new URL('src/index.ts', import.meta.url)),
           // UMD global. Must be a valid identifier so CDN users can write
           // `app.use(VueKonva)` after the script tag.
           name: 'VueKonva',
-          formats: ['es', 'cjs', 'umd'],
-          // The package is "type": "module", so Node reads .js as ESM and the
-          // require condition needs a real .cjs. The UMD bundle keeps a .js
-          // extension because CDNs serve .cjs as application/node, which
-          // browsers refuse to execute in a <script> tag.
-          fileName: (format) =>
-            ({ es: 'vue-konva.js', cjs: 'vue-konva.cjs', umd: 'vue-konva.umd.js' })[format] ??
-            `vue-konva.${format}.js`,
+          formats: ['es', 'umd'],
+          fileName: (format) => mainBundles[format],
         },
     rollupOptions: {
       external: ['vue', /^konva/],
       output: {
-        globals: {
-          vue: 'Vue',
-          konva: 'Konva',
-          'konva/lib/Core': 'Konva',
-        },
+        globals: { vue: 'Vue', konva: 'Konva', 'konva/lib/Core': 'Konva' },
       },
     },
   },

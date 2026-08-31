@@ -3,27 +3,46 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [4.0.0] - 2026-08-31
+
+### Breaking
+
+- **The package is now ESM only for module consumers.** The CommonJS build is gone; `dist/`
+  ships `vue-konva.js`, `vue-konva-core.js` and their declarations, plus a UMD bundle for
+  CDN use. Konva has been ESM only for some time, so the CommonJS build could not load its
+  own peer dependency on any runtime lacking `require(esm)` — it removed no capability that
+  was actually working. Bundlers (Vite, webpack, Rollup) and modern Node are unaffected;
+  `require()` needs Node 20.19+ or 22.12+, which supports requiring ESM.
+- Built files are renamed: `vue-konva.mjs` is now `vue-konva.js`, and `vue-konva-core.mjs`
+  is now `vue-konva-core.js`. Importing `vue-konva` or `vue-konva/core` is unaffected.
+- The UMD global is now `VueKonva`, not `window["vue-konva"]` — which was not a usable
+  identifier and carried no `install`, so `app.use(...)` could never have worked from a
+  script tag. The README's CDN URL, which returned 404 for the whole 3.x line, is corrected.
+- `typesVersions` was dropped, so `moduleResolution: "node"` (TypeScript's legacy node10
+  mode) is no longer supported. Use `bundler`, `node16` or `nodenext`.
+- `engines.node` now says `>=18` instead of `>= 4.0.0`.
 
 ### Fixed
 
-- `vue-konva/core` no longer pulls the full Konva bundle. `updatePicture` imported `konva` instead of `konva/lib/Core`, which dragged every shape and filter into the core build (#268, thanks @RogerReal)
-- Published type declarations no longer reference `index.d.ts`, a file that was never included in the package tarball
-- Types now resolve correctly under `moduleResolution: node16`/`nodenext` from ESM. The package previously shipped CJS-flavoured declarations for its ESM entry, so `import VueKonva from 'vue-konva'` was typed as the module namespace rather than the plugin
-- `vue-konva/core` now resolves under the legacy `moduleResolution: node`
-- Template type-checking of the global components now works. The `GlobalComponents` augmentation declared unprefixed names (`Circle`) while `install()` registers prefixed ones (`VCircle`), so `<v-circle>` never matched. The augmentation also now covers `v-stage` and the `vue-konva/core` entry
-- The UMD build exposes a usable `VueKonva` global. It was previously `window["vue-konva"]`, and the namespace object had no `install`, so `app.use(...)` could not work
-- Corrected the CDN example in the README, which pointed at a 404 URL and used the Vue 2 API
+- `vue-konva/core` no longer pulls in the full Konva bundle. `updatePicture` imported
+  `konva` rather than `konva/lib/Core`, which dragged every shape and filter into the core
+  build (#268, thanks @RogerReal)
+- Published type declarations no longer reference `index.d.ts`, a file that was never
+  included in the package tarball
+- Types now resolve correctly under `moduleResolution: node16`/`nodenext`. The package
+  previously shipped CommonJS-flavoured declarations for its ESM entry, so
+  `import VueKonva from 'vue-konva'` was typed as the module namespace rather than the plugin
+- Template type-checking of the global components now works. The `GlobalComponents`
+  augmentation declared unprefixed names (`Circle`) while `install()` registers prefixed ones
+  (`VCircle`), so `<v-circle>` never matched. It now also covers `v-stage` and the
+  `vue-konva/core` entry
 
 ### Changed
 
-- **Breaking (UMD/CDN only):** the UMD global is now `VueKonva` instead of `window["vue-konva"]`
-- **Breaking (deep imports only):** built files are renamed for the dual-package layout — `vue-konva.mjs` becomes `vue-konva.js`, `vue-konva.umd.js` stays for CDN use, and `require()` now resolves to `vue-konva.cjs`. Importing `vue-konva` or `vue-konva/core` is unaffected
-- Added `install` as a named export on both entry points
 - Marked the package `sideEffects: false` to improve tree-shaking
-- Removed the duplicated `StageCore` component and the duplicated plugin bootstrap; both entry points now share one implementation
+- Removed the duplicated `StageCore` component and the duplicated plugin bootstrap; both
+  entry points now share one implementation
 - Updated the toolchain to TypeScript 7, Vite 8, Vitest 4.1 and jsdom 30
-- `engines.node` now says `>=18` instead of `>= 4.0.0`
 
 ## [3.4.0] - 2026-03-09
 
