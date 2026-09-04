@@ -118,6 +118,8 @@ The UMD build registers itself as the global `VueKonva`.
 </script>
 ```
 
+> **Building a full design editor?** [Polotno](https://polotno.com/?utm_source=konvajs&utm_medium=readme&utm_content=vue-konva) is a commercial design editor SDK built on Konva by the Konva maintainers. It ships templates, text editing, and export, so you integrate an editor instead of building one: `npm install polotno`. Polotno has a [Vue integration guide](https://polotno.com/docs/vue-js?utm_source=konvajs&utm_medium=readme&utm_content=vue-konva).
+
 # Core API
 
 ## Getting reference to Konva objects

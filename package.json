@@ -1,13 +1,18 @@
 {
   "name": "vue-konva",
   "version": "4.0.0",
-  "description": "Vue binding to canvas element via Konva framework",
+  "description": "Vue components for the Konva 2d canvas library. Build interactive graphics, design editors, and whiteboards in Vue.",
   "keywords": [
     "vue",
     "konva",
-    "canvas"
+    "canvas",
+    "graphics",
+    "design-editor",
+    "canvas-editor",
+    "whiteboard",
+    "transformer"
   ],
-  "homepage": "https://github.com/konvajs/vue-konva#readme",
+  "homepage": "https://konvajs.org/docs/vue/index.html",
   "author": "Rafael Escala <rafaesc92@gmail.com>",
   "type": "module",
   "types": "./dist/index.d.ts",
