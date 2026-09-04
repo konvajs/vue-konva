@@ -1,6 +1,6 @@
 {
   "name": "vue-konva",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Vue components for the Konva 2d canvas library. Build interactive graphics, design editors, and whiteboards in Vue.",
   "keywords": [
     "vue",
